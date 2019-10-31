@@ -1,3 +1,3 @@
-pkgtemplate_addin <- function() {
-  pkgtemplate::run_app()
+shinywqg_addin <- function() {
+  shinywqg::run_app()
 }

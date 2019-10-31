@@ -1,1 +1,1 @@
-pkgtemplate:::app_server
+shinywqg:::app_server
