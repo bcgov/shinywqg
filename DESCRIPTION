@@ -12,7 +12,8 @@ Imports:
     lifecycle,
     shiny,
     DT,
-    shinyjs
+    shinyjs,
+    htmltools
 Suggests: 
     covr,
     testthat (>= 2.1.0),

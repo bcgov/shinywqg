@@ -49,9 +49,9 @@ show <- function(id, anim = TRUE){
 embed_help <- function(tag, id, ns, help){
   element <- div(shiny::actionLink(ns(id), shiny::icon("info-circle")),
                  class = "pull-right")
-  tag$children[[1]] <- tag$children[[1]] %>%
-    htmltools::tagAppendChild(element) %>%
-    htmltools::tagAppendAttributes(style = "width:100%;")
+  tag$children[[1]] <- htmltools::tagAppendAttributes(
+    htmltools::tagAppendChild(tag$children[[1]], 
+                              style = "width:100%;"))
   tagList(tag,
           shinyjs::hidden(div(id = ns(paste0("div_", id)),
                               help_text(help))))
