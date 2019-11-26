@@ -2,7 +2,7 @@ app_ui <- function() {
   tagList(
     css_hide_errors(),
     css_navbar(),
-    navbarPage(title =  "Pkgtemplate",
+    navbarPage(title =  "Shinywqg",
       selected = "Data",
       tabPanel(title = "Data",
         br(),

@@ -1,5 +1,5 @@
-Name: Pkgtemplate addin
-Description: Pkgtemplate addin.
-Binding: pkgtemplate_addin
+Name: Shinywqg addin
+Description: Rstudio addin to run bcgov Water Quality Guideline.
+Binding: shinywqg_addin
 Interactive: true
 
