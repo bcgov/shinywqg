@@ -13,7 +13,8 @@ Imports:
     shiny,
     DT,
     shinyjs,
-    htmltools
+    htmltools,
+    wqbc
 Suggests: 
     covr,
     testthat (>= 2.1.0),
