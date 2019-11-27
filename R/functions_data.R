@@ -12,11 +12,9 @@ extract_codes <- function(variable, guideline){
   x <- get_data(variable, guideline)$UpperLimit
   # not inlcuding EMS_HG_T because not an arg in lookup_lmits
   codes <- c("EMS_0004|EMS_0107|EMS_HGME|EMS_0104")
-  sapply(x, function(y){
+  unique(unlist(sapply(x, function(y){
     str_extract_all(y, codes)[[1]] 
-  }, simplify = TRUE, USE.NAMES = FALSE) %>%
-    unlist() %>%
-    unique() 
+  }, simplify = TRUE, USE.NAMES = FALSE)))
 }
 
 get_data <- function(variable, guideline){

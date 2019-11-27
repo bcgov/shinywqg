@@ -13,4 +13,4 @@
 ^build\.R$
 ^cran-comments\.md$
 ^project-notes$
-^data-raw$
+
