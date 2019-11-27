@@ -25,8 +25,7 @@ mod_data_ui <- function(id) {
       tabsetPanel(
         tabPanel(title = "Table",
                  br(),
-                 dl_button(ns("dl_csv"), "Download csv"),
-                 dl_button(ns("dl_excel"), "Download excel"),
+                 uiOutput(ns("ui_dl_table")),
                  br2(),
                  tableOutput(ns("table_guideline"))),
         tabPanel(title = "Report"
@@ -47,13 +46,17 @@ mod_data_server <- function(input, output, session) {
   
   get_limit <- reactive({
     req(input$variable)
+    req(input$guideline)
     waiter::show_butler()
-    x <- wqbc::lookup_limits(
+    x <- try(wqbc::lookup_limits(
       ph = input$EMS_0004, 
       hardness = input$EMS_0107, 
       methyl_mercury = input$EMS_HGME, 
-      chloride = input$EMS_0104)
-    
+      chloride = input$EMS_0104), silent = TRUE)
+    if(is_try_error(x)){
+      waiter::hide_butler()
+      return()
+    }
     x <- x[x$Variable == input$variable,]
     waiter::hide_butler()
     x
@@ -72,6 +75,14 @@ mod_data_server <- function(input, output, session) {
   
   output$table_guideline <- renderTable({
     get_limit()
+  })
+  
+  output$ui_dl_table <- renderUI({
+    req(get_limit())
+    tagList(
+      dl_button(ns("dl_csv"), "Download csv"),
+      dl_button(ns("dl_excel"), "Download excel") 
+    )
   })
 
 }
