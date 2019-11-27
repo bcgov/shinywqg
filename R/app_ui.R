@@ -2,6 +2,8 @@ app_ui <- function() {
   tagList(
     css_hide_errors(),
     css_navbar(),
+    css_button(),
+    waiter::use_butler(),
     navbarPage(title =  "Shinywqg",
       selected = "Data",
       tabPanel(title = "Data",

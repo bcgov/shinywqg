@@ -7,7 +7,7 @@ help_text <- function(x){
   p(x, style = "font-size: 11px; color: grey;")
 }
 
-dl_button <- function(..., icon = "download", class = "btn-primary"){
+dl_button <- function(..., icon = "download", class = "small-dl"){
   downloadButton(..., icon = icon(icon), class = class)
 }
 
@@ -66,6 +66,12 @@ css_hide_errors <- function() {
 .shiny-output-error {visibility: hidden;}
 .shiny-output-error:before {visibility: hidden;}
 ")
+}
+
+css_button <- function(){
+  css_add(".small-dl{
+  padding:4px; font-size:85%;
+}")
 }
 
 css_navbar <- function(text_color = "#E0E0E0",
