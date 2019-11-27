@@ -84,5 +84,17 @@ mod_data_server <- function(input, output, session) {
       dl_button(ns("dl_excel"), "Download excel") 
     )
   })
+  
+  output$dl_csv <- downloadHandler(
+    filename = function() "wqg_table.csv",
+    content = function(file) {
+      readr::write_csv(get_limit(), file)
+    })
+  
+  output$dl_excel <- downloadHandler(
+    filename = function() "wqg_table.xlsx",
+    content = function(file) {
+      openxlsx::write.xlsx(get_limit(), file)
+    })
 
 }

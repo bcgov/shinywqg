@@ -15,7 +15,9 @@ Imports:
     shinyjs,
     htmltools,
     wqbc,
-    waiter
+    waiter,
+    readr,
+    openxlsx
 Suggests: 
     covr,
     testthat (>= 2.1.0),
