@@ -14,7 +14,8 @@ Imports:
     DT,
     shinyjs,
     htmltools,
-    wqbc
+    wqbc,
+    waiter
 Suggests: 
     covr,
     testthat (>= 2.1.0),
