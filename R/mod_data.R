@@ -15,11 +15,12 @@ mod_data_ui <- function(id) {
 
   sidebarLayout(
     sidebarPanel(
-      selectInput(ns("variable"), label = "Variable",
+      select_input_x(ns("variable"), label = "Variable",
                   choices = c(limits$Variable, ""),
                   selected = ""),
       uiOutput(ns("ui_guideline")),
-      uiOutput(ns("ui_dependent"))
+      uiOutput(ns("ui_dependent")),
+      uiOutput(ns("ui_term"))
     ),
     mainPanel(
       tabsetPanel(
@@ -47,17 +48,15 @@ mod_data_server <- function(input, output, session) {
   get_limit <- reactive({
     req(input$variable)
     req(input$guideline)
+    req(input$term)
     waiter::show_butler()
-    x <- try(wqbc::lookup_limits(
-      ph = input$EMS_0004, 
-      hardness = input$EMS_0107, 
-      methyl_mercury = input$EMS_HGME, 
-      chloride = input$EMS_0104), silent = TRUE)
-    if(is_try_error(x)){
-      waiter::hide_butler()
-      return()
-    }
-    x <- x[x$Variable == input$variable,]
+    x <- wqg_table(variable = input$variable,
+                   guideline = input$guideline,
+                   term = input$term,
+                   ph = input$EMS_0004, 
+                   hardness = input$EMS_0107, 
+                   methyl_mercury = input$EMS_HGME, 
+                   chloride = input$EMS_0104)
     waiter::hide_butler()
     x
   })
@@ -73,6 +72,14 @@ mod_data_server <- function(input, output, session) {
     numeric_inputs(extract_codes(input$variable, input$guideline), ns)
   })
   
+  output$ui_term <- renderUI({
+    req(input$variable)
+    req(input$guideline)
+    checkboxGroupInput(ns("term"), "Term", 
+                       choices = c("short", "long"),
+                       selected = c("short", "long"),
+                       inline = TRUE)
+  })
   output$table_guideline <- renderTable({
     get_limit()
   })

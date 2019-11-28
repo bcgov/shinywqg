@@ -1,6 +1,18 @@
 limits <- read.csv("data-raw/limits.csv", stringsAsFactors = FALSE)
 codes <- read.csv("data-raw/codes.csv", stringsAsFactors = FALSE)
 
+# eval_limit <- function(equation, cvalues){
+#   x <- try(eval(parse(text = as.character(x)), envir = cvalues), 
+#       silent = TRUE)
+#   x
+# }
+# parse(text = as.character(x))
+# x <- limits[3,]$UpperLimit
+# cvalue <- as.list(3)
+# names(cvalue) <- "EMS_0004"
+# 
+# eval_limit(limits$UpperLimit[3], cvalue)
+
 get_variable <- function(code){
   code <- unique(code)
   sapply(code, function(x){
@@ -23,6 +35,17 @@ get_data <- function(variable, guideline){
 
 get_guidelines <- function(variable){
   unique(limits$Use[limits$Variable %in% variable])
+}
+
+add_missing <- function(x, variable, term){
+  all <- do.call("rbind", lapply(term, function(x){
+    y <- limits[limits$Variable %in% variable, c("Variable", "Units")]
+    y$Term = x
+    y
+  }))
+  missing <- dplyr::anti_join(all, x, c("Variable", "Term"))
+  dplyr::bind_rows(x, missing) %>%
+    dplyr::arrange(Variable, Term)
 }
 
 # x <- limits$UpperLimit[3]
