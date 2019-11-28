@@ -17,7 +17,8 @@ Imports:
     wqbc,
     waiter,
     readr,
-    openxlsx
+    openxlsx,
+    dplyr
 Suggests: 
     covr,
     testthat (>= 2.1.0),
