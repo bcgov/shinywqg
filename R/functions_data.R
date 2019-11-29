@@ -1,4 +1,7 @@
 limits <- read.csv("data-raw/limits.csv", stringsAsFactors = FALSE)
+limits2 <- limits[1:20,] 
+limits2$Use <- "Salty Times"
+limits <- rbind(limits, limits2)
 codes <- read.csv("data-raw/codes.csv", stringsAsFactors = FALSE)
 
 # eval_limit <- function(equation, cvalues){
@@ -33,8 +36,14 @@ get_data <- function(variable, guideline){
   limits[limits$Variable %in% variable & limits$Use %in% guideline,]
 }
 
-get_guidelines <- function(variable){
-  unique(limits$Use[limits$Variable %in% variable])
+get_guidelines <- function(strict, variable){
+  if(strict == "in ANY of selected Variables"){
+    return(unique(limits[["Use"]][limits[["Variable"]] %in% variable]))
+  }
+  l <- lapply(variable, function(y){
+    unique(limits[["Use"]][limits[["Variable"]] %in% y])
+  })
+  Reduce(intersect, l)
 }
 
 add_missing <- function(x, variable, term){

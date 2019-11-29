@@ -16,9 +16,10 @@ mod_data_ui <- function(id) {
   sidebarLayout(
     sidebarPanel(
       select_input_x(ns("variable"), 
-                     label = "Variable", 
+                     label = "Select Variable(s)", 
                      choices = c(limits$Variable, ""), 
                      selected = ""),
+      uiOutput(ns("ui_strict")),
       uiOutput(ns("ui_guideline")),
       uiOutput(ns("ui_dependent")),
       uiOutput(ns("ui_term")),
@@ -74,10 +75,21 @@ mod_data_server <- function(input, output, session) {
       dplyr::arrange(Variable, Term)
   })
   
-  output$ui_guideline <- renderUI({
+  output$ui_strict <- renderUI({
     req(input$variable)
-    selectInput(ns("guideline"), label = "Guideline",
-                choices = c(get_guidelines(input$variable), ""),
+    tagList(
+      tags$label("Select Guideline(s)"),
+      radioButtons(ns("strict"), label = NULL,
+                   choices = c("in ANY of selected Variables",
+                               "in ALL of selected Variables"),
+                   selected = "in ANY of selected Variables")
+    )
+  })
+  
+  output$ui_guideline <- renderUI({
+    req(input$strict)
+    select_input_x(ns("guideline"), label = NULL,
+                choices = c(get_guidelines(input$strict, input$variable), ""),
                 selected = '')
   })
   
