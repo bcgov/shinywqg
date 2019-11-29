@@ -49,9 +49,9 @@ mod_data_ui <- function(id) {
 mod_data_server <- function(input, output, session) {
   ns <- session$ns
   
-  # observeEvent(input$info_missing, {
-  #   shinyjs::toggle("div_info_missing", anim = TRUE)
-  # })
+  observeEvent(input$info_missing, {
+    shinyjs::toggle("div_info_missing", anim = TRUE)
+  })
   
   get_limit <- reactive({
     req(input$variable)
@@ -105,15 +105,6 @@ mod_data_server <- function(input, output, session) {
                                    "if a condition has failed" = "condition"),
                        selected = NULL) %>% 
       embed_help("info_missing", ns, missing_help)
-    # tagList(
-    #   tags$label("Remove missing data") ,
-    #   checkboxInput(ns("rm_missing"), 
-    #                 label = "if no equation is available", 
-    #                 value = FALSE),
-    #   checkboxInput(ns("rm_condition"), 
-    #                 label = "if a condition has failed", 
-    #                 value = FALSE)
-    
   })
   
   output$table <- renderTable({

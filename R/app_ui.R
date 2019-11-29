@@ -4,6 +4,7 @@ app_ui <- function() {
     css_navbar(),
     css_button(),
     waiter::use_butler(),
+    shinyjs::useShinyjs(),
     navbarPage(title =  "Shinywqg",
       selected = "Data",
       tabPanel(title = "Data",
