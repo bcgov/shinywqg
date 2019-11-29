@@ -4,6 +4,9 @@ limits2$Use <- "Salty Times"
 limits <- rbind(limits, limits2)
 codes <- read.csv("data-raw/codes.csv", stringsAsFactors = FALSE)
 
+missing_help <- "There are two reasons why guideline values may be missing:
+                1. A condition was not met;
+                2. There is no available equation for that variable/use/term combination."
 # eval_limit <- function(equation, cvalues){
 #   x <- try(eval(parse(text = as.character(x)), envir = cvalues), 
 #       silent = TRUE)
@@ -36,24 +39,41 @@ get_data <- function(variable, guideline){
   limits[limits$Variable %in% variable & limits$Use %in% guideline,]
 }
 
-get_guidelines <- function(strict, variable){
-  if(strict == "in ANY of selected Variables"){
-    return(unique(limits[["Use"]][limits[["Variable"]] %in% variable]))
-  }
-  l <- lapply(variable, function(y){
-    unique(limits[["Use"]][limits[["Variable"]] %in% y])
-  })
-  Reduce(intersect, l)
+get_guidelines <- function(variable){
+  unique(limits[["Use"]][limits[["Variable"]] %in% variable])
 }
 
-add_missing <- function(x, variable, term){
+add_missing <- function(x, variable, term, guideline){
+  limits <- limits[limits$Use %in% guideline,]
   all <- do.call("rbind", lapply(term, function(x){
-    y <- limits[limits$Variable %in% variable, c("Variable", "Units")]
+    y <- limits[limits$Variable %in% variable, c("Variable", "Use", "Units")]
     y$Term = x
     y
   }))
-  missing <- dplyr::anti_join(all, x, c("Variable", "Term"))
+  missing <- dplyr::anti_join(all, x, c("Variable", "Term")) %>%
+    dplyr::distinct()
   dplyr::bind_rows(x, missing) 
+}
+
+filter_missing <- function(df, rm_missing, variable, term, guideline){
+  
+  condition_missing <- df[is.na(df$UpperLimit),]
+  x <- sort(rm_missing)
+  if(is.null(x)){
+    x <- "foo"
+  }
+  
+  if(!("equation" %in% x)){
+    df <- df %>% add_missing(variable, term, guideline)
+    if(x == "condition"){
+      df <- dplyr::anti_join(df, condition_missing, by = names(condition_missing))
+    }
+  }
+  
+  if(identical(x, c("condition", "equation"))){
+    df <- df[!is.na(df$UpperLimit),]
+  }
+  df
 }
 
 # x <- limits$UpperLimit[3]

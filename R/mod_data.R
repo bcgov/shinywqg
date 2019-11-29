@@ -19,7 +19,6 @@ mod_data_ui <- function(id) {
                      label = "Select Variable(s)", 
                      choices = c(limits$Variable, ""), 
                      selected = ""),
-      uiOutput(ns("ui_strict")),
       uiOutput(ns("ui_guideline")),
       uiOutput(ns("ui_dependent")),
       uiOutput(ns("ui_term")),
@@ -50,6 +49,10 @@ mod_data_ui <- function(id) {
 mod_data_server <- function(input, output, session) {
   ns <- session$ns
   
+  # observeEvent(input$info_missing, {
+  #   shinyjs::toggle("div_info_missing", anim = TRUE)
+  # })
+  
   get_limit <- reactive({
     req(input$variable)
     req(input$guideline)
@@ -68,28 +71,16 @@ mod_data_server <- function(input, output, session) {
   
   get_limit2 <- reactive({
     req(get_limit())
-    df <- get_limit()
-    if(!input$rm_missing)
-      df <- df %>% add_missing(input$variable, input$term)
-    df %>%
-      dplyr::arrange(Variable, Term)
-  })
-  
-  output$ui_strict <- renderUI({
-    req(input$variable)
-    tagList(
-      tags$label("Select Guideline(s)"),
-      radioButtons(ns("strict"), label = NULL,
-                   choices = c("in ANY of selected Variables",
-                               "in ALL of selected Variables"),
-                   selected = "in ANY of selected Variables")
-    )
+   filter_missing(get_limit(), input$rm_missing, input$variable, 
+                  input$term, input$guideline) %>%
+     dplyr::arrange(Variable, Term)
+   
   })
   
   output$ui_guideline <- renderUI({
-    req(input$strict)
-    select_input_x(ns("guideline"), label = NULL,
-                choices = c(get_guidelines(input$strict, input$variable), ""),
+    req(input$variable)
+    select_input_x(ns("guideline"), label = "Select Use(s)",
+                choices = c(get_guidelines(input$variable), ""),
                 selected = '')
   })
   
@@ -109,9 +100,20 @@ mod_data_server <- function(input, output, session) {
   output$ui_rm_missing <- renderUI({
     req(input$variable)
     req(input$guideline)
-    checkboxInput(ns("rm_missing"), 
-                  label = "Remove rows with missing values", 
-                  value = FALSE)
+    checkboxGroupInput(ns("rm_missing"), label = "Remove missing data",
+                       choices = c("if no equation is available" = "equation", 
+                                   "if a condition has failed" = "condition"),
+                       selected = NULL) %>% 
+      embed_help("info_missing", ns, missing_help)
+    # tagList(
+    #   tags$label("Remove missing data") ,
+    #   checkboxInput(ns("rm_missing"), 
+    #                 label = "if no equation is available", 
+    #                 value = FALSE),
+    #   checkboxInput(ns("rm_condition"), 
+    #                 label = "if a condition has failed", 
+    #                 value = FALSE)
+    
   })
   
   output$table <- renderTable({
@@ -148,6 +150,8 @@ mod_data_server <- function(input, output, session) {
       includeHTML(temp_report)
     )
   })
+  
+  
   
   output$dl_csv <- downloadHandler(
     filename = function() "wqg_table.csv",
