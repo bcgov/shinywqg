@@ -29,8 +29,8 @@ mod_data_ui <- function(id) {
                  uiOutput(ns("ui_dl_table")),
                  br2(),
                  tableOutput(ns("table_guideline"))),
-        tabPanel(title = "Report"
-                 )
+        tabPanel(title = "Report",
+                 textOutput(ns("report")))
       )
       
     )
@@ -88,8 +88,13 @@ mod_data_server <- function(input, output, session) {
     req(get_limit())
     tagList(
       dl_button(ns("dl_csv"), "Download csv"),
-      dl_button(ns("dl_excel"), "Download excel") 
+      dl_button(ns("dl_excel"), "Download excel"),
+      dl_button(ns("dl_html"))
     )
+  })
+  
+  output$report <- renderText({
+    wqg_rmd(get_limit(), "html")
   })
   
   output$dl_csv <- downloadHandler(
@@ -103,5 +108,21 @@ mod_data_server <- function(input, output, session) {
     content = function(file) {
       openxlsx::write.xlsx(get_limit(), file)
     })
+  
+  output$dl_html <- downloadHandler(
+    filename = "wqg_report.html",
+    content = function(file) {
+      temp_report <- file.path(tempdir(), "report.Rmd")
+      file.copy(system.file("extdata", package = "shinywqg", "report.Rmd"),
+                temp_report, overwrite = TRUE)
+      
+      params <- list(table = get_limit())
+      
+      rmarkdown::render(temp_report, output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
+    }
+  )
 
 }

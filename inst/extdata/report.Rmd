@@ -1,0 +1,17 @@
+---
+title: "Water Quality Guideline Report"
+output: html_document
+params:
+  table: NA
+---
+
+```{r, echo = FALSE}
+knitr::kable(params$table) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+<!-- A plot of `params$n` random points. -->
+
+<!-- ```{r} -->
+<!-- plot(rnorm(params$n), rnorm(params$n)) -->
+<!-- ``` -->
