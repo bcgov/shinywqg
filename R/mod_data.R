@@ -123,8 +123,18 @@ mod_data_server <- function(input, output, session) {
     )
   })
   
-  output$report <- renderText({
-    wqg_rmd(get_limit2(), "html")
+  output$report <- renderUI({
+    temp_report <- file.path(tempdir(), paste0(session$token, ".Rmd"))
+    params <- list(table = get_limit2())
+    rmarkdown::render(system.file("extdata", package = "shinywqg", 
+                                  "report_html.Rmd"),
+                      output_file = temp_report,
+                      params = params,
+                      envir = new.env(parent = globalenv()))
+    tags$div(
+      class = "rmd-class",
+      includeHTML(temp_report)
+    )
   })
   
   output$dl_csv <- downloadHandler(
@@ -138,6 +148,10 @@ mod_data_server <- function(input, output, session) {
     content = function(file) {
       openxlsx::write.xlsx(get_limit2(), file)
     })
+  
+  render_html <- reactive({
+    
+  })
   
   output$dl_html <- downloadHandler(
     filename = "wqg_report.html",

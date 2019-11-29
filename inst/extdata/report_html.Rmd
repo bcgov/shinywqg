@@ -1,6 +1,10 @@
 ---
 title: "Water Quality Guideline Report"
-output: html_document
+output:
+  html_document:
+    toc: true
+    theme: null
+    mathjax: null
 params:
   table: NA
 ---
