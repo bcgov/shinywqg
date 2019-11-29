@@ -46,24 +46,7 @@ lookup_limits2 <- function (ph = NULL, hardness = NULL, chloride = NULL, methyl_
   limits
 }
 
-variable <- c("Cadmium Dissolved", "Aluminium Dissolved", "Arsenic Total")
-ph = 3
-hardness = 5
-term = c("short", "long")
-x <- do.call("rbind", lapply(term, function(x){
-  y <- lookup_limits2(
-    ph = ph, 
-    hardness = hardness, 
-    methyl_mercury = NULL, 
-    chloride = NULL,
-    variable = variable,
-    term = x)
-  y$Term <- x
-  y <- dplyr::mutate_if(y, is.factor, as.character)
-  y}))
-
-# variable <- c("Cadmium Dissolved", "Aluminium Dissolved")
-# ph = 3
-# hardness = 3
-# 
-# x <- lookup_limits2(ph = ph, hardness = hardness, variable = variable)
+# variable <- c("Alkalinity Total", "Arsenic Total")
+# ph = 0
+# hardness = 0
+# lookup_limits2(variable = variable, term = "short")

@@ -149,10 +149,6 @@ mod_data_server <- function(input, output, session) {
       openxlsx::write.xlsx(get_limit2(), file)
     })
   
-  render_html <- reactive({
-    
-  })
-  
   output$dl_html <- downloadHandler(
     filename = "wqg_report.html",
     content = function(file) {

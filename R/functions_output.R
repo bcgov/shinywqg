@@ -9,7 +9,12 @@ wqg_table <- function(variable, guideline, term,
       chloride = chloride,
       variable = variable,
       term = x)
-    y$Term <- x
+    if(nrow(y) > 0){
+      y$Term <- x
+    } else {
+      y <- cbind(y, data.frame(Term = character(), stringsAsFactors = FALSE))
+    }
+      
     dplyr::mutate_if(y, is.factor, as.character)
   }))
 }
