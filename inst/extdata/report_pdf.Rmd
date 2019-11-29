@@ -1,0 +1,16 @@
+---
+title: "Water Quality Guideline Report"
+output: pdf_document
+params:
+  table: NA
+---
+
+```{r, echo = FALSE}
+gt::gt(params$table)
+```
+
+<!-- A plot of `params$n` random points. -->
+
+<!-- ```{r} -->
+<!-- plot(rnorm(params$n), rnorm(params$n)) -->
+<!-- ``` -->

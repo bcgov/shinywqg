@@ -6,8 +6,7 @@ params:
 ---
 
 ```{r, echo = FALSE}
-knitr::kable(params$table) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"))
+gt::gt(params$table)
 ```
 
 <!-- A plot of `params$n` random points. -->

@@ -17,7 +17,42 @@ wqg_table <- function(variable, guideline, term,
   x
 }
 
-
-wqg_report <- function(x){
-  
+wqg_rmd <- function(x, output){
+  output <- paste0(tolower(output), "_document")
+  markobj <- c('---',
+               'title: "Water Quality Guideline"',
+               paste('output:', output),
+               '---',
+               '',
+               '## Water Quality Guideline',
+               '',
+               '```{r}',
+               'print(x)',
+               '```')
+  knitr::knit(text = markobj)
 }
+# a <- 1:5
+# markobj <- c('---',
+#              'title: "test"',
+#              'output: html_document',
+#              '---',
+#              '',
+#              '## R Markdown',
+#              '',
+#              'This is an R Markdown document.',
+#              '```{r}',
+#              'b <- 11:15',
+#              'print(a)',
+#              'print(b)',
+#              '```')
+# 
+# txt <- knitr::knit(text = markobj)
+# 
+# ## convert to html file
+# markdown::markdownToHTML(text = txt, output = "test.html")
+# 
+# ## open file in browser
+# browseURL("test.html")
+# wqg_report <- function(x){
+#   
+# }

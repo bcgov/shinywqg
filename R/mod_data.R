@@ -30,9 +30,11 @@ mod_data_ui <- function(id) {
                  br2(),
                  tableOutput(ns("table_guideline"))),
         tabPanel(title = "Report",
-                 textOutput(ns("report")))
+                 br(),
+                 uiOutput(ns("ui_dl_report")),
+                 br2(),
+                 tableOutput(ns("report")))
       )
-      
     )
   )
 }
@@ -87,9 +89,17 @@ mod_data_server <- function(input, output, session) {
   output$ui_dl_table <- renderUI({
     req(get_limit())
     tagList(
-      dl_button(ns("dl_csv"), "Download csv"),
-      dl_button(ns("dl_excel"), "Download excel"),
-      dl_button(ns("dl_html"))
+      dl_button(ns("dl_csv"), "csv table"),
+      dl_button(ns("dl_excel"), "excel table")
+    )
+  })
+  
+  output$ui_dl_report <- renderUI({
+    req(get_limit())
+    tagList(
+      dl_button(ns("dl_html"), "html report"),
+      dl_button(ns("dl_pdf"), "pdf report"),
+      dl_button(ns("dl_rmd"), "Rmarkdown file")
     )
   })
   
@@ -112,8 +122,8 @@ mod_data_server <- function(input, output, session) {
   output$dl_html <- downloadHandler(
     filename = "wqg_report.html",
     content = function(file) {
-      temp_report <- file.path(tempdir(), "report.Rmd")
-      file.copy(system.file("extdata", package = "shinywqg", "report.Rmd"),
+      temp_report <- file.path(tempdir(), "report_html.Rmd")
+      file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
                 temp_report, overwrite = TRUE)
       
       params <- list(table = get_limit())
@@ -122,6 +132,38 @@ mod_data_server <- function(input, output, session) {
                         params = params,
                         envir = new.env(parent = globalenv())
       )
+    }
+  )
+  
+  output$dl_pdf <- downloadHandler(
+    filename = "wqg_report.pdf",
+    content = function(file) {
+      temp_report <- file.path(tempdir(), "report_pdf.Rmd")
+      file.copy(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
+                temp_report, overwrite = TRUE)
+      
+      params <- list(table = get_limit())
+      
+      rmarkdown::render(temp_report, output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
+    }
+  )
+  
+  output$dl_rmd <- downloadHandler(
+    filename = "wqg_report.Rmd",
+    content = function(file) {
+      # temp_report <- file.path(tempdir(), "report.Rmd")
+      file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
+                file)
+      
+      # params <- list(table = get_limit())
+      # 
+      # rmarkdown::render(temp_report, output_file = file,
+      #                   params = params,
+      #                   envir = new.env(parent = globalenv())
+      # )
     }
   )
 
