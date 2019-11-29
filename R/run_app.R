@@ -2,5 +2,5 @@
 #'
 #' @export
 run_app <- function() {
-  shiny::shinyAppDir(system.file("app", package = "shinywqg"))
+  shiny::runApp(system.file("app", package = "shinywqg"), launch.browser = TRUE)
 }
