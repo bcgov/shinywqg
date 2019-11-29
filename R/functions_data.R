@@ -46,7 +46,7 @@ get_guidelines <- function(variable){
 add_missing <- function(x, variable, term, guideline){
   limits <- limits[limits$Use %in% guideline,]
   all <- do.call("rbind", lapply(term, function(x){
-    y <- limits[limits$Variable %in% variable, c("Variable", "Use", "Units")]
+    y <- limits[limits$Variable %in% variable, c("Variable", "Units")]
     y$Term = x
     y
   }))
