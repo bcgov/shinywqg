@@ -15,12 +15,14 @@ mod_data_ui <- function(id) {
 
   sidebarLayout(
     sidebarPanel(
-      select_input_x(ns("variable"), label = "Variable",
-                  choices = c(limits$Variable, ""),
-                  selected = ""),
+      select_input_x(ns("variable"), 
+                     label = "Variable", 
+                     choices = c(limits$Variable, ""), 
+                     selected = ""),
       uiOutput(ns("ui_guideline")),
       uiOutput(ns("ui_dependent")),
-      uiOutput(ns("ui_term"))
+      uiOutput(ns("ui_term")),
+      uiOutput(ns("ui_rm_missing"))
     ),
     mainPanel(
       tabsetPanel(
@@ -28,12 +30,12 @@ mod_data_ui <- function(id) {
                  br(),
                  uiOutput(ns("ui_dl_table")),
                  br2(),
-                 tableOutput(ns("table_guideline"))),
+                 tableOutput(ns("table"))),
         tabPanel(title = "Report",
                  br(),
                  uiOutput(ns("ui_dl_report")),
                  br2(),
-                 tableOutput(ns("report")))
+                 uiOutput(ns("report")))
       )
     )
   )
@@ -63,6 +65,15 @@ mod_data_server <- function(input, output, session) {
     x
   })
   
+  get_limit2 <- reactive({
+    req(get_limit())
+    df <- get_limit()
+    if(!input$rm_missing)
+      df <- df %>% add_missing(input$variable, input$term)
+    df %>%
+      dplyr::arrange(Variable, Term)
+  })
+  
   output$ui_guideline <- renderUI({
     req(input$variable)
     selectInput(ns("guideline"), label = "Guideline",
@@ -82,12 +93,21 @@ mod_data_server <- function(input, output, session) {
                        selected = c("short", "long"),
                        inline = TRUE)
   })
-  output$table_guideline <- renderTable({
-    get_limit()
+  
+  output$ui_rm_missing <- renderUI({
+    req(input$variable)
+    req(input$guideline)
+    checkboxInput(ns("rm_missing"), 
+                  label = "Remove rows with missing values", 
+                  value = FALSE)
+  })
+  
+  output$table <- renderTable({
+    get_limit2()
   })
   
   output$ui_dl_table <- renderUI({
-    req(get_limit())
+    req(get_limit2())
     tagList(
       dl_button(ns("dl_csv"), "csv table"),
       dl_button(ns("dl_excel"), "excel table")
@@ -95,7 +115,7 @@ mod_data_server <- function(input, output, session) {
   })
   
   output$ui_dl_report <- renderUI({
-    req(get_limit())
+    req(get_limit2())
     tagList(
       dl_button(ns("dl_html"), "html report"),
       dl_button(ns("dl_pdf"), "pdf report"),
@@ -104,19 +124,19 @@ mod_data_server <- function(input, output, session) {
   })
   
   output$report <- renderText({
-    wqg_rmd(get_limit(), "html")
+    wqg_rmd(get_limit2(), "html")
   })
   
   output$dl_csv <- downloadHandler(
     filename = function() "wqg_table.csv",
     content = function(file) {
-      readr::write_csv(get_limit(), file)
+      readr::write_csv(get_limit2(), file)
     })
   
   output$dl_excel <- downloadHandler(
     filename = function() "wqg_table.xlsx",
     content = function(file) {
-      openxlsx::write.xlsx(get_limit(), file)
+      openxlsx::write.xlsx(get_limit2(), file)
     })
   
   output$dl_html <- downloadHandler(
@@ -125,9 +145,7 @@ mod_data_server <- function(input, output, session) {
       temp_report <- file.path(tempdir(), "report_html.Rmd")
       file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
                 temp_report, overwrite = TRUE)
-      
-      params <- list(table = get_limit())
-      
+      params <- list(table = get_limit2())
       rmarkdown::render(temp_report, output_file = file,
                         params = params,
                         envir = new.env(parent = globalenv())
@@ -141,9 +159,7 @@ mod_data_server <- function(input, output, session) {
       temp_report <- file.path(tempdir(), "report_pdf.Rmd")
       file.copy(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
                 temp_report, overwrite = TRUE)
-      
-      params <- list(table = get_limit())
-      
+      params <- list(table = get_limit2())
       rmarkdown::render(temp_report, output_file = file,
                         params = params,
                         envir = new.env(parent = globalenv())
@@ -154,16 +170,7 @@ mod_data_server <- function(input, output, session) {
   output$dl_rmd <- downloadHandler(
     filename = "wqg_report.Rmd",
     content = function(file) {
-      # temp_report <- file.path(tempdir(), "report.Rmd")
-      file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
-                file)
-      
-      # params <- list(table = get_limit())
-      # 
-      # rmarkdown::render(temp_report, output_file = file,
-      #                   params = params,
-      #                   envir = new.env(parent = globalenv())
-      # )
+      file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"), file)
     }
   )
 

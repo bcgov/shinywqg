@@ -44,8 +44,7 @@ add_missing <- function(x, variable, term){
     y
   }))
   missing <- dplyr::anti_join(all, x, c("Variable", "Term"))
-  dplyr::bind_rows(x, missing) %>%
-    dplyr::arrange(Variable, Term)
+  dplyr::bind_rows(x, missing) 
 }
 
 # x <- limits$UpperLimit[3]
