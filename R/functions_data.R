@@ -1,4 +1,5 @@
 limits <- read.csv("data-raw/limits.csv", stringsAsFactors = FALSE)
+limits <- dplyr::mutate(limits, Condition = if_else(Condition == "", NA_character_, Condition))
 limits2 <- limits[1:20,] 
 limits2$Use <- "Salty Times"
 limits <- rbind(limits, limits2)
@@ -74,6 +75,12 @@ filter_missing <- function(df, rm_missing, variable, term, guideline){
     df <- df[!is.na(df$UpperLimit),]
   }
   df
+}
+
+filter_limits <- function(variable, use, term){
+  limits %>% dplyr::filter(Variable == variable, 
+                           Use == use,
+                           tolower(Term) == tolower(term))
 }
 
 # x <- limits$UpperLimit[3]
