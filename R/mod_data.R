@@ -59,7 +59,7 @@ mod_data_server <- function(input, output, session) {
     req(input$term)
     waiter::show_butler()
     x <- wqg_table(variable = input$variable,
-                   guideline = input$guideline,
+                   use = input$guideline,
                    term = input$term,
                    ph = input$EMS_0004, 
                    hardness = input$EMS_0107, 
@@ -71,9 +71,7 @@ mod_data_server <- function(input, output, session) {
   
   get_limit2 <- reactive({
     req(get_limit())
-   filter_missing(get_limit(), input$rm_missing, input$variable, 
-                  input$term, input$guideline) %>%
-     dplyr::arrange(Variable, Term)
+   get_limit()
    
   })
   
@@ -141,8 +139,6 @@ mod_data_server <- function(input, output, session) {
       includeHTML(temp_report)
     )
   })
-  
-  
   
   output$dl_csv <- downloadHandler(
     filename = function() "wqg_table.csv",
