@@ -78,7 +78,7 @@ mod_data_server <- function(input, output, session) {
   
   output$ui_use <- renderUI({
     req(input$variable)
-    select_input_x(ns("use"), label = "Select Use(s)",
+    selectInput(ns("use"), label = "Select Use(s)",
                 choices = c(get_uses(input$variable), ""),
                 selected = '')
   })
