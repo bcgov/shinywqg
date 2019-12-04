@@ -27,24 +27,24 @@ get_variable <- function(code){
   }, simplify = TRUE, USE.NAMES = FALSE) 
 }
 
-extract_codes <- function(variable, guideline){
-  x <- get_data(variable, guideline)$UpperLimit
+extract_codes <- function(variable, use){
+  x <- get_data(variable, use)$UpperLimit
   codes <- c("EMS_0004|EMS_0107|EMS_HGME|EMS_HG_T|EMS_0104")
   unique(unlist(sapply(x, function(y){
     str_extract_all(y, codes)[[1]] 
   }, simplify = TRUE, USE.NAMES = FALSE)))
 }
 
-get_data <- function(variable, guideline){
-  limits[limits$Variable %in% variable & limits$Use %in% guideline,]
+get_data <- function(variable, use){
+  limits[limits$Variable %in% variable & limits$Use %in% use,]
 }
 
-get_guidelines <- function(variable){
+get_uses <- function(variable){
   unique(limits[["Use"]][limits[["Variable"]] %in% variable])
 }
 
-add_missing <- function(x, variable, term, guideline){
-  limits <- limits[limits$Use %in% guideline,]
+add_missing <- function(x, variable, term, use){
+  limits <- limits[limits$Use %in% use,]
   all <- do.call("rbind", lapply(term, function(x){
     y <- limits[limits$Variable %in% variable, c("Variable", "Units")]
     y$Term = x
@@ -55,7 +55,7 @@ add_missing <- function(x, variable, term, guideline){
   dplyr::bind_rows(x, missing) 
 }
 
-filter_missing <- function(df, rm_missing, variable, term, guideline){
+filter_missing <- function(df, rm_missing, variable, term, use){
   
   condition_missing <- df[is.na(df$UpperLimit),]
   x <- sort(rm_missing)
@@ -64,7 +64,7 @@ filter_missing <- function(df, rm_missing, variable, term, guideline){
   }
   
   if(!("equation" %in% x)){
-    df <- df %>% add_missing(variable, term, guideline)
+    df <- df %>% add_missing(variable, term, use)
     if(x == "condition"){
       df <- dplyr::anti_join(df, condition_missing, by = names(condition_missing))
     }
@@ -83,7 +83,7 @@ filter_limits <- function(variable, use, term){
 }
 
 # x <- limits$UpperLimit[3]
-# y <- extract_codes(x)
+# y <- extract_codes(x, 'Freshwater Life')
 # get_variable(y)
 
 # str_contains <- function(x, code = "EMS_0004"){

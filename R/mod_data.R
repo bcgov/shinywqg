@@ -19,7 +19,7 @@ mod_data_ui <- function(id) {
                      label = "Select Variable(s)", 
                      choices = c(limits$Variable, ""), 
                      selected = ""),
-      uiOutput(ns("ui_guideline")),
+      uiOutput(ns("ui_use")),
       uiOutput(ns("ui_dependent")),
       uiOutput(ns("ui_term")),
       uiOutput(ns("ui_rm_missing"))
@@ -55,11 +55,11 @@ mod_data_server <- function(input, output, session) {
   
   get_limit <- reactive({
     req(input$variable)
-    req(input$guideline)
+    req(input$use)
     req(input$term)
     waiter::show_butler()
     x <- wqg_table(variable = input$variable,
-                   use = input$guideline,
+                   use = input$use,
                    term = input$term,
                    ph = input$EMS_0004, 
                    hardness = input$EMS_0107, 
@@ -76,20 +76,20 @@ mod_data_server <- function(input, output, session) {
    
   })
   
-  output$ui_guideline <- renderUI({
+  output$ui_use <- renderUI({
     req(input$variable)
-    select_input_x(ns("guideline"), label = "Select Use(s)",
-                choices = c(get_guidelines(input$variable), ""),
+    select_input_x(ns("use"), label = "Select Use(s)",
+                choices = c(get_uses(input$variable), ""),
                 selected = '')
   })
   
   output$ui_dependent <- renderUI({
-    numeric_inputs(extract_codes(input$variable, input$guideline), ns)
+    numeric_inputs(extract_codes(input$variable, input$use), ns)
   })
   
   output$ui_term <- renderUI({
     req(input$variable)
-    req(input$guideline)
+    req(input$use)
     checkboxGroupInput(ns("term"), "Term", 
                        choices = c("short", "long"),
                        selected = c("short", "long"),
@@ -98,7 +98,7 @@ mod_data_server <- function(input, output, session) {
   
   output$ui_rm_missing <- renderUI({
     req(input$variable)
-    req(input$guideline)
+    req(input$use)
     checkboxGroupInput(ns("rm_missing"), label = "Remove missing data",
                        choices = c("if no equation is available" = "equation", 
                                    "if a condition has failed" = "condition"),
