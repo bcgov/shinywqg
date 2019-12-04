@@ -72,7 +72,9 @@ mod_data_server <- function(input, output, session) {
   
   get_limit2 <- reactive({
     req(get_limit())
-   get_limit()
+   get_limit() %>%
+     filter_missing(input$rm_missing, input$variable, input$term, input$use) %>%
+     dplyr::arrange(Variable, Use, Term)
    
   })
   

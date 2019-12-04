@@ -44,9 +44,10 @@ get_uses <- function(variable){
 }
 
 add_missing <- function(x, variable, term, use){
+  term <- tools::toTitleCase(term)
   limits <- limits[limits$Use %in% use,]
   all <- do.call("rbind", lapply(term, function(x){
-    y <- limits[limits$Variable %in% variable, c("Variable", "Units")]
+    y <- limits[limits$Variable %in% variable, c("Variable", "Use")]
     y$Term = x
     y
   }))
@@ -57,7 +58,7 @@ add_missing <- function(x, variable, term, use){
 
 filter_missing <- function(df, rm_missing, variable, term, use){
   
-  condition_missing <- df[is.na(df$UpperLimit),]
+  condition_missing <- df[is.na(df$Guideline),]
   x <- sort(rm_missing)
   if(is.null(x)){
     x <- "foo"
@@ -71,7 +72,7 @@ filter_missing <- function(df, rm_missing, variable, term, use){
   }
   
   if(identical(x, c("condition", "equation"))){
-    df <- df[!is.na(df$UpperLimit),]
+    df <- df[!is.na(df$Guideline),]
   }
   df
 }
