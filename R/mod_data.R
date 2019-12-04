@@ -64,7 +64,8 @@ mod_data_server <- function(input, output, session) {
                    ph = input$EMS_0004, 
                    hardness = input$EMS_0107, 
                    methyl_mercury = input$EMS_HGME, 
-                   chloride = input$EMS_0104)
+                   chloride = input$EMS_0104,
+                   total_mercury = input$EMS_HG_T)
     waiter::hide_butler()
     x
   })
@@ -105,7 +106,7 @@ mod_data_server <- function(input, output, session) {
       embed_help("info_missing", ns, missing_help)
   })
   
-  output$table <- renderTable({
+  output$table <- renderTable(digits = -1, {
     get_limit2()
   })
   

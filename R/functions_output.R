@@ -1,12 +1,16 @@
 wqg_table <- function(variable, use, term,
                       ph, hardness, 
-                      methyl_mercury, chloride){
+                      chloride,
+                      methyl_mercury, total_mercury){
   
   cvalues <- code_values(ph = ph,
-                             hardness = hardness,
-                             chloride = chloride,
-                             methyl_mercury = methyl_mercury)
+                         hardness = hardness,
+                         chloride = chloride,
+                         methyl_mercury = methyl_mercury,
+                         total_mercury = total_mercury)
   
+  x <- filter_limits(variable, use, term)
+
   x <- filter_limits(variable, use, term) %>%
     dplyr::group_by(Variable, Use, Term) %>%
     dplyr::mutate(Equation = lookup_equation(Condition, UpperLimit, cvalues)) %>%

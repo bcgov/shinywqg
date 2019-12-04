@@ -1,6 +1,6 @@
-code_values <- function(ph, hardness, chloride, methyl_mercury){
-  l <- list(ph, hardness, chloride, methyl_mercury, mercury_total)
-  names(l) <- c("EMS_0004", "EMS_0107", "EMS_HGME", "EMS_0104")
+code_values <- function(ph, hardness, chloride, methyl_mercury, total_mercury){
+  l <- list(ph, hardness, chloride, methyl_mercury, total_mercury)
+  names(l) <- c("EMS_0004", "EMS_0107", "EMS_0104", "EMS_HGME", "EMS_HG_T")
   l
 }
 
@@ -8,6 +8,8 @@ lookup_equation <- function(x, value, code_values){
   if(all(is.na(x)))
     return(value)
   con <- sapply(x, test_condition, code_values)
+  if(all(is.na(con)))
+    return(NA)
   if(!length(unlist(con)))
     return(NA)
   if(all(!con))
@@ -19,7 +21,8 @@ pretty_equation <- function(x){
   x <- gsub("EMS_0004", "pH", x)
   x <- gsub("EMS_0107", "Hardness", x)
   x <- gsub("EMS_0104", "Chloride", x)
-  x <- gsub("EMS_HGME", "Mercury Methyl", x)
+  x <- gsub("EMS_HGME", "Methyl Mercury", x)
+  x <- gsub("EMS_HG_T", "Total Mercury", x)
   x
 }
 

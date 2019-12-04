@@ -29,8 +29,7 @@ get_variable <- function(code){
 
 extract_codes <- function(variable, guideline){
   x <- get_data(variable, guideline)$UpperLimit
-  # not inlcuding EMS_HG_T because not an arg in lookup_lmits
-  codes <- c("EMS_0004|EMS_0107|EMS_HGME|EMS_0104")
+  codes <- c("EMS_0004|EMS_0107|EMS_HGME|EMS_HG_T|EMS_0104")
   unique(unlist(sapply(x, function(y){
     str_extract_all(y, codes)[[1]] 
   }, simplify = TRUE, USE.NAMES = FALSE)))
@@ -78,9 +77,9 @@ filter_missing <- function(df, rm_missing, variable, term, guideline){
 }
 
 filter_limits <- function(variable, use, term){
-  limits %>% dplyr::filter(Variable == variable, 
-                           Use == use,
-                           tolower(Term) == tolower(term))
+  limits %>% dplyr::filter(Variable %in% variable, 
+                           Use %in% use,
+                           tolower(Term) %in% tolower(term))
 }
 
 # x <- limits$UpperLimit[3]
