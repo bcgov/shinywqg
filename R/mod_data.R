@@ -88,7 +88,7 @@ mod_data_server <- function(input, output, session) {
     req(get_limit2())
     x <- get_limit2()
     rv$refs <- get_refs(x)
-    x %>% replace_refs()
+    x 
   })
   
   params <- reactive({

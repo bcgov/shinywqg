@@ -11,26 +11,36 @@ params:
   refs: NA
   cvalues: NA
 ---
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.align = "center", echo = FALSE, 
+                      warning = FALSE, message = FALSE,
+                      include = FALSE)
+library(knitr)
+library(kableExtra)
+```
 
 ### `r params$use` 
 
-```{r, echo = FALSE, include = FALSE} 
+```{r} 
 x <- paste0(names(params$cvalues), ': ', params$cvalues, collapse = "<br>") 
 ```
 
 ##### `r x` 
 
-```{r results = 'hide', echo = FALSE, include = FALSE}
+```{r results = 'hide'}
 df <- params$table %>%
   dplyr::mutate(Term = paste(Term, "Term"),
            Guideline = if_else(is.na(Guideline), NA_character_, 
                                paste(signif(Guideline, digits = 2), Units)),
-           Equation = if_else(is.na(as.numeric(Equation)), Equation, NA_character_)) %>%
+           Equation = if_else(is.na(as.numeric(Equation)), Equation, NA_character_),
+           Equation = paste0("$", Equation, "$")) %>%
     dplyr::select(Variable, Term, Guideline, Equation, Reference)
+
 ```
  
  
-```{r, echo = FALSE}
+```{r, include = TRUE}
+# knitr::kable(df, align = "c", booktabs = TRUE, escape = FALSE)
 gt::gt(df, rowname_col = "Term", groupname_col = "Variable") %>%
   gt::fmt_missing(columns = gt::everything()) %>%
   cols_align(
@@ -41,12 +51,26 @@ gt::gt(df, rowname_col = "Term", groupname_col = "Variable") %>%
     style = cells_styles(text_size = px(13)),
     locations = cells_data(
       columns = vars(Guideline, Equation, Reference))
-  ) 
+  ) %>%
+  tab_footnote(
+    "Canada 2014 blah blah",
+    locations = cells_data(
+      columns = vars(Reference),
+      rows = Reference == "CANADA_2014"
+    )
+  ) %>%
+  tab_footnote(
+    "British Columbia 2015 blah blah",
+    locations = cells_data(
+      columns = vars(Reference),
+      rows = Reference == "BC_2015"
+    )
+  )
 ```
 
-### References 
+### Download References 
 
-```{r, echo = FALSE, include = FALSE} 
+```{r} 
 refs <- paste0(paste0(names(params$refs), ".\\ "), params$refs, collapse = "<br>")
 ```
 

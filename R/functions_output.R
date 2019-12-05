@@ -1,11 +1,3 @@
-replace_refs <- function(x){
-  l <- get_refs(x)
-  for(i in names(l)){
-    x$Reference[x$Reference == l[i]] <- i
-  }
-  x
-}
-
 gt_table <- function(x){
   x %>%
     mutate(Term = paste(Term, "Term"),
