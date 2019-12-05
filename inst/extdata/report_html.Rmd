@@ -1,20 +1,54 @@
 ---
-title: "Water Quality Guideline Report"
+title: "Water Quality Guideline"
 output:
   html_document:
-    toc: true
+    toc: FALSE
     theme: null
     mathjax: null
 params:
+  use: NA
   table: NA
+  refs: NA
+  cvalues: NA
 ---
 
-```{r, echo = FALSE}
-gt::gt(params$table)
+### `r params$use` 
+
+```{r, echo = FALSE, include = FALSE} 
+x <- paste0(names(params$cvalues), ': ', params$cvalues, collapse = "<br>") 
 ```
 
-<!-- A plot of `params$n` random points. -->
+##### `r x` 
 
-<!-- ```{r} -->
-<!-- plot(rnorm(params$n), rnorm(params$n)) -->
-<!-- ``` -->
+```{r results = 'hide', echo = FALSE, include = FALSE}
+df <- params$table %>%
+  dplyr::mutate(Term = paste(Term, "Term"),
+           Guideline = if_else(is.na(Guideline), NA_character_, 
+                               paste(signif(Guideline, digits = 2), Units)),
+           Equation = if_else(is.na(as.numeric(Equation)), Equation, NA_character_)) %>%
+    dplyr::select(Variable, Term, Guideline, Equation, Reference)
+```
+ 
+ 
+```{r, echo = FALSE}
+gt::gt(df, rowname_col = "Term", groupname_col = "Variable") %>%
+  gt::fmt_missing(columns = gt::everything()) %>%
+  cols_align(
+    align = "center",
+    columns = everything()
+  ) %>%
+  tab_style(
+    style = cells_styles(text_size = px(13)),
+    locations = cells_data(
+      columns = vars(Guideline, Equation, Reference))
+  ) 
+```
+
+### References 
+
+```{r, echo = FALSE, include = FALSE} 
+refs <- paste0(paste0(names(params$refs), ".\\ "), params$refs, collapse = "<br>")
+```
+
+`r refs`
+

@@ -8,17 +8,6 @@ codes <- read.csv("data-raw/codes.csv", stringsAsFactors = FALSE)
 missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;
                 2. There is no available equation for that variable/use/term combination."
-# eval_limit <- function(equation, cvalues){
-#   x <- try(eval(parse(text = as.character(x)), envir = cvalues), 
-#       silent = TRUE)
-#   x
-# }
-# parse(text = as.character(x))
-# x <- limits[3,]$UpperLimit
-# cvalue <- as.list(3)
-# names(cvalue) <- "EMS_0004"
-# 
-# eval_limit(limits$UpperLimit[3], cvalue)
 
 get_variable <- function(code){
   code <- unique(code)
@@ -39,7 +28,7 @@ get_data <- function(variable, use){
   limits[limits$Variable %in% variable & limits$Use %in% use,]
 }
 
-get_uses <- function(variable){
+get_use <- function(variable){
   unique(limits[["Use"]][limits[["Variable"]] %in% variable])
 }
 
@@ -83,40 +72,14 @@ filter_limits <- function(variable, use, term){
                            tolower(Term) %in% tolower(term))
 }
 
-# x <- limits$UpperLimit[3]
-# y <- extract_codes(x, 'Freshwater Life')
-# get_variable(y)
+get_refs <- function(x){
+  l <- as.list(setdiff(unique(x$Reference), NA_character_))
+  names(l) <- 1:length(l)
+  l
+}
 
-# str_contains <- function(x, code = "EMS_0004"){
-#   grepl(code, x)
-# }
-# 
-# contains_ph <- function(x){
-#   str_contains(x, code = "EMS_0004")
-# }
-# 
-# contains_hardness <- function(x){
-#   str_contains(x, code = "EMS_0107")
-# }
-# 
-# contains_mercury_total <- function(x){
-#   str_contains(x, code = "EMS_HG_T")
-# }
-# 
-# contains_mercury_methyl <- function(x){
-#   str_contains(x, code = "EMS_HGME")
-# }
-# 
-# clean_limits <- function(limits){
-#   limits$Ph <- contains_ph(limits$UpperLimit)
-#   limits$Hardness <- contains_hardness(limits$UpperLimit)
-#   limits$MercuryTotal <- contains_mercury_total(limits$UpperLimit)
-#   limits$MercuryMethyl <- contains_mercury_methyl(limits$UpperLimit)
-#   limits$ConditionPh <- contains_ph(limits$Condition)
-#   limits$ConditionHardness <- contains_hardness(limits$Condition)
-#   limits$ConditionMercuryTotal <- contains_mercury_total(limits$Condition)
-#   limits$ConditionMercuryMethyl <- contains_mercury_methyl(limits$Condition)
-#   limits
-# }
-# 
-# limits <- clean_limits(limits)
+clean_cvalues <- function(x){
+  x[sapply(x, is.null)] <- NULL
+  names(x) <- replace_codes(names(x))
+  x
+}

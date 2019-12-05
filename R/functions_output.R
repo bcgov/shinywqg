@@ -1,16 +1,24 @@
-wqg_table <- function(variable, use, term,
-                      ph, hardness, 
-                      chloride,
-                      methyl_mercury, total_mercury){
-  
-  cvalues <- code_values(ph = ph,
-                         hardness = hardness,
-                         chloride = chloride,
-                         methyl_mercury = methyl_mercury,
-                         total_mercury = total_mercury)
-  
-  x <- filter_limits(variable, use, term)
+replace_refs <- function(x){
+  l <- get_refs(x)
+  for(i in names(l)){
+    x$Reference[x$Reference == l[i]] <- i
+  }
+  x
+}
 
+gt_table <- function(x){
+  x %>%
+    mutate(Term = paste(Term, "Term"),
+           Guideline = if_else(is.na(Guideline), NA_character_, 
+                               paste(signif(Guideline, digits = 2), Units)),
+           Equation = if_else(is.na(as.numeric(Equation)), Equation, NA_character_)) %>%
+    select(Variable, Term, Guideline, Equation, Reference) %>%
+    gt::gt(rowname_col = "Term", groupname_col = "Variable") %>%
+    gt::fmt_missing(columns = gt::everything())
+}
+
+wqg_table <- function(variable, use, term, cvalues){
+  
   x <- filter_limits(variable, use, term) %>%
     dplyr::group_by(Variable, Use, Term) %>%
     dplyr::mutate(Equation = lookup_equation(Condition, UpperLimit, cvalues)) %>%
@@ -20,7 +28,7 @@ wqg_table <- function(variable, use, term,
   x$Guideline <- sapply(x$Equation, calc_limit, cvalues)
 
   x %>% 
-    dplyr::mutate(Equation = pretty_equation(Equation)) %>%
+    dplyr::mutate(Equation = replace_codes(Equation)) %>%
     dplyr::select(Variable, Use, Term, Guideline,
                   Units, Reference, Equation)
     

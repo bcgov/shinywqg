@@ -16,13 +16,12 @@ lookup_equation <- function(x, value, code_values){
     return(NA)
   value[con] 
 }
-
-pretty_equation <- function(x){
+replace_codes <- function(x){
   x <- gsub("EMS_0004", "pH", x)
   x <- gsub("EMS_0107", "Hardness", x)
   x <- gsub("EMS_0104", "Chloride", x)
-  x <- gsub("EMS_HGME", "Methyl Mercury", x)
-  x <- gsub("EMS_HG_T", "Total Mercury", x)
+  x <- gsub("EMS_HGME", "Mercury Methyl", x)
+  x <- gsub("EMS_HG_T", "Mercury Total", x)
   x
 }
 

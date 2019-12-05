@@ -53,6 +53,14 @@ mod_data_server <- function(input, output, session) {
     shinyjs::toggle("div_info_missing", anim = TRUE)
   })
   
+  cvalues <- reactive({
+    code_values(ph = input$EMS_0004, 
+                hardness = input$EMS_0107, 
+                methyl_mercury = input$EMS_HGME, 
+                chloride = input$EMS_0104,
+                total_mercury = input$EMS_HG_T)
+  })
+  
   get_limit <- reactive({
     req(input$variable)
     req(input$use)
@@ -61,11 +69,7 @@ mod_data_server <- function(input, output, session) {
     x <- wqg_table(variable = input$variable,
                    use = input$use,
                    term = input$term,
-                   ph = input$EMS_0004, 
-                   hardness = input$EMS_0107, 
-                   methyl_mercury = input$EMS_HGME, 
-                   chloride = input$EMS_0104,
-                   total_mercury = input$EMS_HG_T)
+                   cvalues = cvalues())
     waiter::hide_butler()
     x
   })
@@ -78,10 +82,28 @@ mod_data_server <- function(input, output, session) {
    
   })
   
+  rv <- reactiveValues(refs = NULL)
+  
+  get_limit3 <- reactive({
+    req(get_limit2())
+    x <- get_limit2()
+    rv$refs <- get_refs(x)
+    x %>% replace_refs()
+  })
+  
+  params <- reactive({
+    codes <- extract_codes(input$variable, input$use)
+    cvalues <- cvalues()[codes]
+    list(table = get_limit3(),
+         use = input$use,
+         refs = rv$refs,
+         cvalues = clean_cvalues(cvalues))
+  })
+  
   output$ui_use <- renderUI({
     req(input$variable)
     selectInput(ns("use"), label = "Select Use(s)",
-                choices = c(get_uses(input$variable), ""),
+                choices = c(get_use(input$variable), ""),
                 selected = '')
   })
   
@@ -131,11 +153,10 @@ mod_data_server <- function(input, output, session) {
   
   output$report <- renderUI({
     temp_report <- file.path(tempdir(), paste0(session$token, ".Rmd"))
-    params <- list(table = get_limit2())
     rmarkdown::render(system.file("extdata", package = "shinywqg", 
                                   "report_html.Rmd"),
                       output_file = temp_report,
-                      params = params,
+                      params = params(),
                       envir = new.env(parent = globalenv()))
     tags$div(
       class = "rmd-class",
@@ -161,9 +182,8 @@ mod_data_server <- function(input, output, session) {
       temp_report <- file.path(tempdir(), "report_html.Rmd")
       file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
                 temp_report, overwrite = TRUE)
-      params <- list(table = get_limit2())
       rmarkdown::render(temp_report, output_file = file,
-                        params = params,
+                        params = params(),
                         envir = new.env(parent = globalenv())
       )
     }
@@ -175,9 +195,8 @@ mod_data_server <- function(input, output, session) {
       temp_report <- file.path(tempdir(), "report_pdf.Rmd")
       file.copy(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
                 temp_report, overwrite = TRUE)
-      params <- list(table = get_limit2())
       rmarkdown::render(temp_report, output_file = file,
-                        params = params,
+                        params = params(),
                         envir = new.env(parent = globalenv())
       )
     }
