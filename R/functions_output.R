@@ -1,14 +1,3 @@
-gt_table <- function(x){
-  x %>%
-    mutate(Term = paste(Term, "Term"),
-           Guideline = if_else(is.na(Guideline), NA_character_, 
-                               paste(signif(Guideline, digits = 2), Units)),
-           Equation = if_else(is.na(as.numeric(Equation)), Equation, NA_character_)) %>%
-    select(Variable, Term, Guideline, Equation, Reference) %>%
-    gt::gt(rowname_col = "Term", groupname_col = "Variable") %>%
-    gt::fmt_missing(columns = gt::everything())
-}
-
 wqg_table <- function(variable, use, term, cvalues){
   
   x <- filter_limits(variable, use, term) %>%
