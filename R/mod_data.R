@@ -25,18 +25,9 @@ mod_data_ui <- function(id) {
       uiOutput(ns("ui_rm_missing"))
     ),
     mainPanel(
-      tabsetPanel(
-        tabPanel(title = "Table",
-                 br(),
-                 uiOutput(ns("ui_dl_table")),
-                 br2(),
-                 tableOutput(ns("table"))),
-        tabPanel(title = "Report",
-                 br(),
-                 uiOutput(ns("ui_dl_report")),
-                 br2(),
-                 uiOutput(ns("report")))
-      )
+      uiOutput(ns("ui_dl_data")),
+      br2(),
+      uiOutput(ns("report"))
     )
   )
 }
@@ -134,20 +125,14 @@ mod_data_server <- function(input, output, session) {
     get_limit2()
   })
   
-  output$ui_dl_table <- renderUI({
-    req(get_limit2())
-    tagList(
-      dl_button(ns("dl_csv"), "csv table"),
-      dl_button(ns("dl_excel"), "excel table")
-    )
-  })
-  
-  output$ui_dl_report <- renderUI({
+  output$ui_dl_data <- renderUI({
     req(get_limit2())
     tagList(
       dl_button(ns("dl_html"), "html report"),
       dl_button(ns("dl_pdf"), "pdf report"),
-      dl_button(ns("dl_rmd"), "Rmarkdown file")
+      dl_button(ns("dl_rmd"), "Rmarkdown file"),
+      dl_button(ns("dl_csv"), "csv data"),
+      dl_button(ns("dl_excel"), "excel data")
     )
   })
   
