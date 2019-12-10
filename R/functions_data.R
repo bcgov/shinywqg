@@ -1,5 +1,5 @@
 limits <- read.csv("data-raw/limits.csv", stringsAsFactors = FALSE)
-limits <- dplyr::mutate(limits, Condition = if_else(Condition == "", NA_character_, Condition))
+limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
 limits2 <- limits[1:20,] 
 limits2$Use <- "Salty Times"
 limits <- rbind(limits, limits2)
