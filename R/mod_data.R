@@ -22,7 +22,8 @@ mod_data_ui <- function(id) {
       uiOutput(ns("ui_use")),
       uiOutput(ns("ui_dependent")),
       uiOutput(ns("ui_term")),
-      uiOutput(ns("ui_rm_missing"))
+      uiOutput(ns("ui_rm_missing")),
+      button(ns("get"), "Get/Update Guidelines")
     ),
     mainPanel(
       uiOutput(ns("ui_dl_data")),
@@ -52,43 +53,93 @@ mod_data_server <- function(input, output, session) {
                 total_mercury = input$EMS_HG_T)
   })
   
-  get_limit <- reactive({
-    req(input$variable)
-    req(input$use)
-    req(input$term)
+  params_rv <- reactiveValues(data = NULL,
+                              table = NULL,
+                              refs = NULL,
+                              cvalues = NULL,
+                              use = NULL)
+  
+  observeEvent(input$get, {
     waiter::show_butler()
     x <- wqg_table(variable = input$variable,
                    use = input$use,
                    term = input$term,
                    cvalues = cvalues())
-    waiter::hide_butler()
-    x
-  })
-  
-  get_limit2 <- reactive({
-    req(get_limit())
-   get_limit() %>%
-     filter_missing(input$rm_missing, input$variable, input$term, input$use) %>%
-     dplyr::arrange(Variable, Use, Term)
-   
-  })
-  
-  rv <- reactiveValues(refs = NULL)
-  
-  get_limit3 <- reactive({
-    req(get_limit2())
-    x <- get_limit2()
-    rv$refs <- get_refs(x)
-    x 
-  })
-  
-  params <- reactive({
+    
     codes <- extract_codes(input$variable, input$use)
-    cvalues <- cvalues()[codes]
-    list(table = get_limit3(),
-         use = input$use,
-         cvalues = clean_cvalues(cvalues))
+    cvalues <- clean_cvalues(cvalues()[codes])
+    
+    print(cvalues)
+    
+    params_rv$use <- input$use
+    params_rv$data <- x
+    params_rv$refs <- get_refs(x)
+    params_rv$cvalues <- cvalues
+    
+    y <- x %>%
+      filter_missing(input$rm_missing, input$variable, input$term, input$use) %>%
+      dplyr::arrange(Variable, Use, Term)
+    
+    params_rv$table <- y
+    waiter::hide_butler()
   })
+  
+  output$report <- renderUI({
+    req(params_rv$table)
+    params <- list(use = params_rv$use,
+                   table = params_rv$table,
+                   cvalues = params_rv$cvalues)
+    temp_report <- file.path(tempdir(), paste0(session$token, ".Rmd"))
+    rmarkdown::render(system.file("extdata", package = "shinywqg", 
+                                  "report_html.Rmd"),
+                      output_file = temp_report,
+                      params = params,
+                      envir = new.env(parent = globalenv()))
+    tags$div(
+      class = "rmd-class",
+      includeHTML(temp_report)
+    )
+  })
+  
+  # get_limit <- reactive({
+  #   req(input$variable)
+  #   req(input$use)
+  #   req(input$term)
+  #   waiter::show_butler()
+  #   x <- wqg_table(variable = input$variable,
+  #                  use = input$use,
+  #                  term = input$term,
+  #                  cvalues = cvalues())
+  #   waiter::hide_butler()
+  #   x
+  # })
+  
+  # get_limit2 <- reactive({
+  #   req(get_limit())
+  #  get_limit() %>%
+  #    filter_missing(input$rm_missing, input$variable, input$term, input$use) %>%
+  #    dplyr::arrange(Variable, Use, Term)
+  #  
+  # })
+  
+  # rv <- reactiveValues(refs = NULL)
+  # 
+  # get_limit3 <- reactive({
+  #   req(get_limit2())
+  #   x <- get_limit2()
+  #   rv$refs <- get_refs(x)
+  #   x 
+  # })
+  
+  
+  
+  # params <- reactive({
+  #   codes <- extract_codes(input$variable, input$use)
+  #   cvalues <- cvalues()[codes]
+  #   list(table = get_limit3(),
+  #        use = input$use,
+  #        cvalues = clean_cvalues(cvalues))
+  # })
   
   output$ui_use <- renderUI({
     req(input$variable)
@@ -121,7 +172,7 @@ mod_data_server <- function(input, output, session) {
   })
   
   output$ui_dl_data <- renderUI({
-    req(get_limit2())
+    req(params_rv$table)
     tagList(
       dl_button(ns("dl_html"), "HTML report"),
       dl_button(ns("dl_pdf"), "PDF report"),
@@ -132,29 +183,16 @@ mod_data_server <- function(input, output, session) {
     )
   })
   
-  output$report <- renderUI({
-    temp_report <- file.path(tempdir(), paste0(session$token, ".Rmd"))
-    rmarkdown::render(system.file("extdata", package = "shinywqg", 
-                                  "report_html.Rmd"),
-                      output_file = temp_report,
-                      params = params(),
-                      envir = new.env(parent = globalenv()))
-    tags$div(
-      class = "rmd-class",
-      includeHTML(temp_report)
-    )
-  })
-  
   output$dl_csv <- downloadHandler(
     filename = function() "wqg_table.csv",
     content = function(file) {
-      readr::write_csv(get_limit2(), file)
+      readr::write_csv(params_rv$data, file)
     })
   
   output$dl_excel <- downloadHandler(
     filename = function() "wqg_table.xlsx",
     content = function(file) {
-      openxlsx::write.xlsx(get_limit2(), file)
+      openxlsx::write.xlsx(params_rv$data, file)
     })
   
   output$dl_html <- downloadHandler(
@@ -163,8 +201,11 @@ mod_data_server <- function(input, output, session) {
       temp_report <- file.path(tempdir(), "report_html.Rmd")
       file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
                 temp_report, overwrite = TRUE)
+      params <- list(use = params_rv$use,
+                     table = params_rv$table,
+                     cvalues = params_rv$cvalues)
       rmarkdown::render(temp_report, output_file = file,
-                        params = params(),
+                        params = params,
                         envir = new.env(parent = globalenv())
       )
     }
@@ -177,7 +218,7 @@ mod_data_server <- function(input, output, session) {
       file.copy(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
                 temp_report, overwrite = TRUE)
       rmarkdown::render(temp_report, output_file = file,
-                        params = params(),
+                        params = params_rv,
                         envir = new.env(parent = globalenv())
       )
     }
@@ -195,7 +236,7 @@ mod_data_server <- function(input, output, session) {
       content = function(fname) {
         tmpdir <- tempdir()
         setwd(tempdir())
-        files <- paste0(rv$refs, ".pdf")
+        files <- paste0(params_rv$refs, ".pdf")
         for(i in files){
           file.copy(system.file(package = "shinywqg", file.path("extdata/", i)), i)
         }
