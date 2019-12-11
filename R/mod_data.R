@@ -22,7 +22,8 @@ mod_data_ui <- function(id) {
       uiOutput(ns("ui_use")),
       uiOutput(ns("ui_dependent")),
       uiOutput(ns("ui_term")),
-      uiOutput(ns("ui_rm_missing"))
+      uiOutput(ns("ui_rm_missing")),
+      button(ns("get"), "Get Guidelines")
     ),
     mainPanel(
       uiOutput(ns("ui_dl_data")),
@@ -87,7 +88,6 @@ mod_data_server <- function(input, output, session) {
     cvalues <- cvalues()[codes]
     list(table = get_limit3(),
          use = input$use,
-         refs = rv$refs,
          cvalues = clean_cvalues(cvalues))
   })
   
@@ -121,18 +121,15 @@ mod_data_server <- function(input, output, session) {
       embed_help("info_missing", ns, missing_help)
   })
   
-  output$table <- renderTable(digits = -1, {
-    get_limit2()
-  })
-  
   output$ui_dl_data <- renderUI({
     req(get_limit2())
     tagList(
-      dl_button(ns("dl_html"), "html report"),
-      dl_button(ns("dl_pdf"), "pdf report"),
+      dl_button(ns("dl_html"), "HTML report"),
+      dl_button(ns("dl_pdf"), "PDF report"),
       dl_button(ns("dl_rmd"), "Rmarkdown file"),
-      dl_button(ns("dl_csv"), "csv data"),
-      dl_button(ns("dl_excel"), "excel data")
+      dl_button(ns("dl_csv"), "CSV data"),
+      dl_button(ns("dl_excel"), "Excel data"),
+      dl_button(ns("dl_refs"), "References")
     )
   })
   
@@ -193,5 +190,18 @@ mod_data_server <- function(input, output, session) {
       file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"), file)
     }
   )
-
+  
+  output$dl_refs <- downloadHandler(
+      filename = "refs.zip",
+      content = function(fname) {
+        tmpdir <- tempdir()
+        setwd(tempdir())
+        files <- paste0(rv$refs, ".pdf")
+        for(i in files){
+          file.copy(system.file(package = "shinywqg", file.path("extdata/", i)), i)
+        }
+        zip(zipfile = fname, files = files)
+      },
+      contentType = "application/zip"
+  )
 }
