@@ -73,9 +73,7 @@ filter_limits <- function(variable, use, term){
 }
 
 get_refs <- function(x){
-  l <- as.list(setdiff(unique(x$Reference), NA_character_))
-  names(l) <- 1:length(l)
-  l
+  setdiff(unique(x$Reference), NA_character_)
 }
 
 clean_cvalues <- function(x){
