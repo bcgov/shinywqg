@@ -1,52 +1,95 @@
 ---
-title: "Water Quality Guideline"
-output:
-  pdf_document:
-    toc: FALSE
+title: ""
+output: pdf_document
 params:
   use: NA
   table: NA
-  refs: NA
   cvalues: NA
 ---
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, message = FALSE,
+                      include = FALSE)
 
-### `r params$use` 
-
-```{r, echo = FALSE, include = FALSE} 
-x <- paste0(names(params$cvalues), ': ', params$cvalues, collapse = "\n") 
+library(dplyr)
+library(gt)
 ```
 
-##### `r x` 
+```{r} 
+cvalues <- paste0(names(params$cvalues), ': ', params$cvalues, collapse = "<br>") 
+```
 
-```{r results = 'hide', echo = FALSE, include = FALSE}
+```{r results = 'hide'}
+as_math <- function(x){
+  paste0("$$", x, "$$")
+}
+
 df <- params$table %>%
   dplyr::mutate(Term = paste(Term, "Term"),
            Guideline = if_else(is.na(Guideline), NA_character_, 
                                paste(signif(Guideline, digits = 2), Units)),
-           Equation = if_else(is.na(as.numeric(Equation)), Equation, NA_character_)) %>%
+           Equation = if_else(is.na(as.numeric(Equation)), as_math(Equation), NA_character_)) %>%
     dplyr::select(Variable, Term, Guideline, Equation, Reference)
+
+# equations <- setdiff(unique(df$Equation), NA)
+# df_eq <- data.frame(Key = 1:length(equations),
+#                 Equation = equations)
+# 
+# df <- df %>%
+#   dplyr::left_join(df_eq, "Equation") %>%
+#   dplyr::select(-Equation) %>%
+#   rename(Equation = Key)
+# 
+# df_eq <- df_eq %>%
+#   dplyr::mutate(Equation = as_math(Equation))
+
 ```
  
  
-```{r, echo = FALSE}
-gt::gt(df, rowname_col = "Term", groupname_col = "Variable") %>%
-  gt::fmt_missing(columns = gt::everything()) %>%
-  cols_align(
-    align = "center",
-    columns = everything()
+```{r, include = TRUE}
+df %>%
+  group_by(Variable) %>% 
+  gt::gt(rowname_col = "Term") %>%
+   tab_header(
+    title = params$use,
+    subtitle = html(cvalues)
   ) %>%
-  tab_style(
-    style = cells_styles(text_size = px(13)),
-    locations = cells_data(
-      columns = vars(Guideline, Equation, Reference))
-  ) 
+  gt::fmt_missing(columns = gt::everything()) %>%
+  gt::cols_align(
+    align = "center",
+    columns = gt::everything()
+  ) %>%
+  gt::tab_style(
+    style = gt::cell_text(size = px(13)),
+    locations = list(
+      gt::cells_data(
+      columns = gt::vars(Guideline, Equation, Reference)),
+      gt::cells_stub(rows = TRUE)
+    )
+  ) %>%
+  gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_group(
+      groups = TRUE
+    )
+  ) %>%
+  tab_footnote(
+    "Canada 2014 blah blah",
+    locations = gt::cells_data(
+      columns = gt::vars(Reference),
+      rows = Reference == "CANADA_2014"
+    )
+  ) %>%
+  tab_footnote(
+    "British Columbia 2015 blah blah",
+    locations = gt::cells_data(
+      columns = gt::vars(Reference),
+      rows = Reference == "BC_2015"
+    )
+  ) %>%
+  tab_options(footnotes.font.size = px(11),
+              table.width  = px(600),
+              row_group.padding = px(15),  heading.title.font.size = px(18),
+              heading.title.font.weight = "bold")
 ```
-
-### References 
-
-```{r, echo = FALSE, include = FALSE} 
-refs <- paste0(paste0(names(params$refs), ".\\ "), params$refs, collapse = "\n")
-```
-
-`r refs`
 
