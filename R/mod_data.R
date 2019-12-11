@@ -22,8 +22,7 @@ mod_data_ui <- function(id) {
       uiOutput(ns("ui_use")),
       uiOutput(ns("ui_dependent")),
       uiOutput(ns("ui_term")),
-      uiOutput(ns("ui_rm_missing")),
-      button(ns("get"), "Get Guidelines")
+      uiOutput(ns("ui_rm_missing"))
     ),
     mainPanel(
       uiOutput(ns("ui_dl_data")),
