@@ -82,8 +82,6 @@ mod_data_server <- function(input, output, session) {
     codes <- extract_codes(input$variable, input$use)
     cvalues <- clean_cvalues(cvalues()[codes])
     
-    print(cvalues)
-    
     params_rv$use <- input$use
     params_rv$data <- x
     params_rv$refs <- get_refs(x)
@@ -113,46 +111,6 @@ mod_data_server <- function(input, output, session) {
       includeHTML(temp_report)
     )
   })
-  
-  # get_limit <- reactive({
-  #   req(input$variable)
-  #   req(input$use)
-  #   req(input$term)
-  #   waiter::show_butler()
-  #   x <- wqg_table(variable = input$variable,
-  #                  use = input$use,
-  #                  term = input$term,
-  #                  cvalues = cvalues())
-  #   waiter::hide_butler()
-  #   x
-  # })
-  
-  # get_limit2 <- reactive({
-  #   req(get_limit())
-  #  get_limit() %>%
-  #    filter_missing(input$rm_missing, input$variable, input$term, input$use) %>%
-  #    dplyr::arrange(Variable, Use, Term)
-  #  
-  # })
-  
-  # rv <- reactiveValues(refs = NULL)
-  # 
-  # get_limit3 <- reactive({
-  #   req(get_limit2())
-  #   x <- get_limit2()
-  #   rv$refs <- get_refs(x)
-  #   x 
-  # })
-  
-  
-  
-  # params <- reactive({
-  #   codes <- extract_codes(input$variable, input$use)
-  #   cvalues <- cvalues()[codes]
-  #   list(table = get_limit3(),
-  #        use = input$use,
-  #        cvalues = clean_cvalues(cvalues))
-  # })
   
   output$ui_use <- renderUI({
     req(input$variable)
