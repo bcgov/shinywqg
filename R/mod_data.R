@@ -41,6 +41,19 @@ mod_data_ui <- function(id) {
 mod_data_server <- function(input, output, session) {
   ns <- session$ns
   
+  observe({
+    use <- input$use
+    if(!is.null(use)){
+      if(use != ""){
+        shinyjs::enable("get")
+      } else {
+        shinyjs::disable("get")
+      }
+    } else {
+      shinyjs::disable("get")
+    }
+  })
+  
   observeEvent(input$info_missing, {
     shinyjs::toggle("div_info_missing", anim = TRUE)
   })
