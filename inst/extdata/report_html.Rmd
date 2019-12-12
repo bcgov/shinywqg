@@ -21,36 +21,9 @@ library(gt)
 ```{r} 
 cvalues <- paste0(names(params$cvalues), ': ', params$cvalues, collapse = "<br>") 
 ```
-
-```{r results = 'hide'}
-as_math <- function(x){
-  paste0("$$", x, "$$")
-}
-
-df <- params$table %>%
-  dplyr::mutate(Term = paste(Term, "Term"),
-           Guideline = if_else(is.na(Guideline), NA_character_, 
-                               paste(signif(Guideline, digits = 2), Units)),
-           Equation = if_else(is.na(as.numeric(Equation)), as_math(Equation), NA_character_)) %>%
-    dplyr::select(Variable, Term, Guideline, Equation, Reference)
-
-# equations <- setdiff(unique(df$Equation), NA)
-# df_eq <- data.frame(Key = 1:length(equations),
-#                 Equation = equations)
-# 
-# df <- df %>%
-#   dplyr::left_join(df_eq, "Equation") %>%
-#   dplyr::select(-Equation) %>%
-#   rename(Equation = Key)
-# 
-# df_eq <- df_eq %>%
-#   dplyr::mutate(Equation = as_math(Equation))
-
-```
- 
  
 ```{r, include = TRUE}
-df %>%
+params$table %>%
   group_by(Variable) %>% 
   gt::gt(rowname_col = "Term") %>%
    tab_header(

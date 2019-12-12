@@ -9,10 +9,16 @@ missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;
                 2. There is no available equation for that variable/use/term combination."
 
-get_variable <- function(code){
+get_variable <- function(code, units = TRUE){
   code <- unique(code)
   sapply(code, function(x){
-    codes$Variable[codes$Code == x]
+    y <- codes$Variable[codes$Code == x]
+    if(!units)
+      return(y)
+    unit <- gsub(" ", "", paste("(", codes$Units[codes$Code == x], ")"))
+    if(unit == "(pH)")
+      unit <- ""
+    paste(y, unit)
   }, simplify = TRUE, USE.NAMES = FALSE) 
 }
 
@@ -76,8 +82,29 @@ get_refs <- function(x){
   setdiff(unique(x$Reference), NA_character_)
 }
 
-clean_cvalues <- function(x){
-  x[sapply(x, is.null)] <- NULL
-  names(x) <- replace_codes(names(x))
+clean_cvalues <- function(x, variable, use){
+  codes <- extract_codes(variable, use)
+  x <- x[codes]
+  names(x) <- get_variable(names(x), units = FALSE)
+  for(i in names(x)){
+    if(grepl("Chloride|Hardness", i))
+      x[[i]] <- paste(x[[i]], "mg/L")
+    if(grepl("Mercury",  i))
+      x[[i]] <- paste(x[[i]], "ug/L")
+  }
   x
+}
+
+clean_table <- function(x){
+  x %>%
+  dplyr::mutate(Term = paste(Term, "Term"),
+                Guideline = if_else(is.na(Guideline), NA_character_, 
+                                    paste(signif(Guideline, digits = 2), Units)),
+                Equation = if_else(!is.na(Equation), as_math(Equation), NA_character_)) %>%
+    dplyr::select(Variable, Term, Guideline, Equation, Reference) %>%
+    dplyr::arrange(Variable, Term)
+}
+
+as_math <- function(x){
+  paste0("$", x, "$")
 }

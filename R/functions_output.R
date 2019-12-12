@@ -15,6 +15,55 @@ wqg_table <- function(variable, use, term, cvalues){
     
 }
 
+gt_table <- function(x, use, cvalues){
+  cvalues <- paste0(names(cvalues), ': ', cvalues, collapse = "<br>") 
+  x %>%
+    dplyr::group_by(Variable) %>% 
+    gt::gt(rowname_col = "Term") %>%
+    gt::tab_header(
+      title = use,
+      subtitle = html(cvalues)
+    ) %>%
+    gt::fmt_missing(columns = gt::everything()) %>%
+    gt::cols_align(
+      align = "center",
+      columns = gt::everything()
+    ) %>%
+    gt::tab_style(
+      style = gt::cell_text(size = px(13)),
+      locations = list(
+        gt::cells_data(
+          columns = gt::vars(Guideline, Equation, Reference)),
+        gt::cells_stub(rows = TRUE)
+      )
+    ) %>%
+    gt::tab_style(
+      style = gt::cell_text(weight = "bold"),
+      locations = gt::cells_group(
+        groups = TRUE
+      )
+    ) %>%
+    tab_footnote(
+      "Canada 2014 blah blah",
+      locations = gt::cells_data(
+        columns = gt::vars(Reference),
+        rows = Reference == "CANADA_2014"
+      )
+    ) %>%
+    tab_footnote(
+      "British Columbia 2015 blah blah",
+      locations = gt::cells_data(
+        columns = gt::vars(Reference),
+        rows = Reference == "BC_2015"
+      )
+    ) %>%
+    tab_options(footnotes.font.size = px(11),
+                table.width  = px(600),
+                row_group.padding = px(15),  
+                heading.title.font.size = px(18),
+                heading.title.font.weight = "bold")
+}
+
 # variable <- c("Aluminium Dissolved", "Arsenic Total")
 # use = "Freshwater Life"
 # term = c("short", "long")

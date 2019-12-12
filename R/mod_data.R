@@ -28,7 +28,7 @@ mod_data_ui <- function(id) {
     mainPanel(
       uiOutput(ns("ui_dl")),
       br2(),
-      uiOutput(ns("report"))
+      gt::gt_output(ns("table"))
     )
   )
 }
@@ -79,9 +79,8 @@ mod_data_server <- function(input, output, session) {
                    term = input$term,
                    cvalues = cvalues())
     
-    codes <- extract_codes(input$variable, input$use)
-    cvalues <- clean_cvalues(cvalues()[codes])
-    
+    cvalues <- clean_cvalues(cvalues(), input$variable, input$use)
+
     params_rv$use <- input$use
     params_rv$data <- x
     params_rv$refs <- get_refs(x)
@@ -89,27 +88,15 @@ mod_data_server <- function(input, output, session) {
     
     y <- x %>%
       filter_missing(input$rm_missing, input$variable, input$term, input$use) %>%
-      dplyr::arrange(Variable, Use, Term)
+      clean_table()
     
     params_rv$table <- y
     waiter::hide_butler()
   })
   
-  output$report <- renderUI({
+  output$table <- gt::render_gt({
     req(params_rv$table)
-    params <- list(use = params_rv$use,
-                   table = params_rv$table,
-                   cvalues = params_rv$cvalues)
-    temp_report <- file.path(tempdir(), paste0(session$token, ".Rmd"))
-    rmarkdown::render(system.file("extdata", package = "shinywqg", 
-                                  "report_html.Rmd"),
-                      output_file = temp_report,
-                      params = params,
-                      envir = new.env(parent = globalenv()))
-    tags$div(
-      class = "rmd-class",
-      includeHTML(temp_report)
-    )
+    gt_table(params_rv$table, params_rv$use, params_rv$cvalues)
   })
   
   output$ui_use <- renderUI({
