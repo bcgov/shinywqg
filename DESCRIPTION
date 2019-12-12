@@ -18,7 +18,8 @@ Imports:
     waiter,
     readr,
     openxlsx,
-    dplyr
+    dplyr,
+    shinyWidgets
 Suggests: 
     covr,
     testthat (>= 2.1.0),

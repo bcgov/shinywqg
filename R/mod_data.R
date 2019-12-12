@@ -26,7 +26,7 @@ mod_data_ui <- function(id) {
       button(ns("get"), "Get/Update Guidelines")
     ),
     mainPanel(
-      uiOutput(ns("ui_dl_data")),
+      uiOutput(ns("ui_dl")),
       br2(),
       uiOutput(ns("report"))
     )
@@ -142,14 +142,28 @@ mod_data_server <- function(input, output, session) {
       embed_help("info_missing", ns, missing_help)
   })
   
-  output$ui_dl_data <- renderUI({
+  output$ui_dl <- renderUI({
     req(params_rv$table)
     tagList(
-      dl_button(ns("dl_html"), "HTML report"),
-      dl_button(ns("dl_pdf"), "PDF report"),
-      dl_button(ns("dl_rmd"), "Rmarkdown file"),
-      dl_button(ns("dl_csv"), "CSV data"),
-      dl_button(ns("dl_excel"), "Excel data"),
+      shinyWidgets::dropdownButton(status = "primary", 
+                                   label = "Report",
+                                   size = "sm",
+                                   inline = TRUE, 
+                                   circle = FALSE,
+                                   icon = icon("download"),
+        dl_button(ns("dl_html"), "HTML"),
+        dl_button(ns("dl_pdf"), "PDF"),
+        dl_button(ns("dl_rmd"), "Rmarkdown")
+      ),
+      shinyWidgets::dropdownButton(status = "primary", 
+                                   label = "Data",
+                                   size = "sm",
+                                   inline = TRUE, 
+                                   circle = FALSE,
+                                   icon = icon("download"),
+                                   dl_button(ns("dl_csv"), "CSV"),
+                                   dl_button(ns("dl_excel"), "Excel")
+      ),
       dl_button(ns("dl_refs"), "References")
     )
   })
