@@ -23,7 +23,7 @@ mod_data_ui <- function(id) {
       uiOutput(ns("ui_dependent")),
       uiOutput(ns("ui_term")),
       uiOutput(ns("ui_rm_missing")),
-      button(ns("get"), "Get/Update Guidelines")
+      shinyjs::hidden(button(ns("get"), "Get/Update Guidelines"))
     ),
     mainPanel(
       uiOutput(ns("ui_dl")),
@@ -45,12 +45,12 @@ mod_data_server <- function(input, output, session) {
     use <- input$use
     if(!is.null(use)){
       if(use != ""){
-        shinyjs::enable("get")
+        shinyjs::show("get")
       } else {
-        shinyjs::disable("get")
+        shinyjs::hide("get")
       }
     } else {
-      shinyjs::disable("get")
+      shinyjs::hide("get")
     }
   })
   
@@ -73,7 +73,7 @@ mod_data_server <- function(input, output, session) {
                               use = NULL)
   
   observeEvent(input$get, {
-    waiter::show_butler()
+    suppressWarnings(waiter::show_butler())
     x <- wqg_table(variable = input$variable,
                    use = input$use,
                    term = input$term,
@@ -91,7 +91,7 @@ mod_data_server <- function(input, output, session) {
       clean_table()
     
     params_rv$table <- y
-    waiter::hide_butler()
+    suppressWarnings(waiter::hide_butler())
   })
   
   output$table <- gt::render_gt({
@@ -189,8 +189,11 @@ mod_data_server <- function(input, output, session) {
       temp_report <- file.path(tempdir(), "report_pdf.Rmd")
       file.copy(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
                 temp_report, overwrite = TRUE)
+      params <- list(use = params_rv$use,
+                     table = params_rv$table,
+                     cvalues = params_rv$cvalues)
       rmarkdown::render(temp_report, output_file = file,
-                        params = params_rv,
+                        params = params,
                         envir = new.env(parent = globalenv())
       )
     }

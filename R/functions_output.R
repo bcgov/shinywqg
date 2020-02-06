@@ -22,7 +22,7 @@ gt_table <- function(x, use, cvalues){
     gt::gt(rowname_col = "Term") %>%
     gt::tab_header(
       title = use,
-      subtitle = html(cvalues)
+      subtitle = gt::html(cvalues)
     ) %>%
     gt::fmt_missing(columns = gt::everything()) %>%
     gt::cols_align(
@@ -30,7 +30,7 @@ gt_table <- function(x, use, cvalues){
       columns = gt::everything()
     ) %>%
     gt::tab_style(
-      style = gt::cell_text(size = px(13)),
+      style = gt::cell_text(size = gt::px(13)),
       locations = list(
         gt::cells_data(
           columns = gt::vars(Guideline, Equation, Reference)),
@@ -43,24 +43,24 @@ gt_table <- function(x, use, cvalues){
         groups = TRUE
       )
     ) %>%
-    tab_footnote(
-      "Canada 2014 blah blah",
+    gt::tab_footnote(
+      "Canada 2014 <this is incomplete>",
       locations = gt::cells_data(
         columns = gt::vars(Reference),
         rows = Reference == "CANADA_2014"
       )
     ) %>%
-    tab_footnote(
-      "British Columbia 2015 blah blah",
+    gt::tab_footnote(
+      "British Columbia 2015 <this is incomplete>",
       locations = gt::cells_data(
         columns = gt::vars(Reference),
         rows = Reference == "BC_2015"
       )
     ) %>%
-    tab_options(footnotes.font.size = px(11),
-                table.width  = px(600),
-                row_group.padding = px(15),  
-                heading.title.font.size = px(18),
+    gt::tab_options(footnotes.font.size = gt::px(11),
+                table.width  = gt::px(600),
+                row_group.padding = gt::px(15),  
+                heading.title.font.size = gt::px(18),
                 heading.title.font.weight = "bold")
 }
 

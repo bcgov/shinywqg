@@ -98,9 +98,9 @@ clean_cvalues <- function(x, variable, use){
 clean_table <- function(x){
   x %>%
   dplyr::mutate(Term = paste(Term, "Term"),
-                Guideline = if_else(is.na(Guideline), NA_character_, 
+                Guideline = dplyr::if_else(is.na(Guideline), NA_character_, 
                                     paste(signif(Guideline, digits = 2), Units)),
-                Equation = if_else(!is.na(Equation), as_math(Equation), NA_character_)) %>%
+                Equation = dplyr::if_else(!is.na(Equation), Equation, NA_character_)) %>%
     dplyr::select(Variable, Term, Guideline, Equation, Reference) %>%
     dplyr::arrange(Variable, Term)
 }
