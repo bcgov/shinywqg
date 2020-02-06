@@ -1,13 +1,3 @@
-limits <- read.csv("data-raw/limits.csv", stringsAsFactors = FALSE)
-limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
-limits2 <- limits[1:20,] 
-limits2$Use <- "Salty Times"
-limits <- rbind(limits, limits2)
-codes <- read.csv("data-raw/codes.csv", stringsAsFactors = FALSE)
-
-missing_help <- "There are two reasons why guideline values may be missing:
-                1. A condition was not met;
-                2. There is no available equation for that variable/use/term combination."
 
 get_variable <- function(code, units = TRUE){
   code <- unique(code)
