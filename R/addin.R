@@ -1,3 +1,3 @@
 shinywqg_addin <- function() {
-  shinywqg::run_app()
+  shinywqg::run_wqg_app()
 }

@@ -215,7 +215,7 @@ mod_data_server <- function(input, output, session) {
         for(i in files){
           file.copy(system.file(package = "shinywqg", file.path("extdata/", i)), i)
         }
-        zip(zipfile = fname, files = files)
+        utils::zip(zipfile = fname, files = files)
       },
       contentType = "application/zip"
   )

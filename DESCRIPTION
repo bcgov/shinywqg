@@ -6,6 +6,8 @@ Authors@R: c(
     )
 Description: User interface for the water quality guideline (WQG) website.
 License: MIT + file LICENSE
+Depends: 
+    R (>= 3.4.0)
 Imports:
     stats,
     chk,
@@ -19,13 +21,16 @@ Imports:
     readr,
     openxlsx,
     dplyr,
-    shinyWidgets
+    shinyWidgets,
+    gt
 Suggests: 
     covr,
     testthat (>= 2.1.0),
     knitr,
     rmarkdown
-Remotes: poissonconsulting/chk
+Remotes: 
+    poissonconsulting/chk,
+    bcgov/wqbc
 URL: https://github.com/poissonconsulting/shinywqg
 BugReports: https://github.com/poissonconsulting/shinywqg/issues
 Encoding: UTF-8
