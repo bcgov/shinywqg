@@ -1,4 +1,3 @@
-
 get_variable <- function(code, units = TRUE){
   code <- unique(code)
   sapply(code, function(x){

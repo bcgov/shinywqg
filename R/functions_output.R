@@ -1,19 +1,11 @@
-wqg_table <- function(variable, use, term, cvalues){
-  
-  x <- filter_limits(variable, use, term) %>%
-    dplyr::group_by(Variable, Use, Term) %>%
-    dplyr::mutate(Equation = lookup_equation(Condition, UpperLimit, cvalues)) %>%
-    dplyr::slice(1) %>%
-    dplyr::ungroup() 
-  
-  x$Guideline <- sapply(x$Equation, calc_limit, cvalues)
 
-  x %>% 
-    dplyr::mutate(Equation = replace_codes(Equation)) %>%
-    dplyr::select(Variable, Use, Term, Guideline,
-                  Units, Reference, Equation)
-    
-}
+# wqg_report <- function(variable, use, term, cvalues, rm_equation, rm_condition){
+#   x <- wqg_table(variable, use, term, cvalues)
+#   cvalues <- clean_cvalues(cvalues, variable, use)
+#   x <- x %>%
+#     filter_missing(input$rm_missing, input$variable, input$term, input$use) %>%
+#     clean_table()
+# }
 
 gt_table <- function(x, use, cvalues){
   cvalues <- paste0(names(cvalues), ': ', cvalues, collapse = "<br>") 
@@ -58,16 +50,25 @@ gt_table <- function(x, use, cvalues){
       )
     ) %>%
     gt::tab_options(footnotes.font.size = gt::px(11),
-                table.width  = gt::px(600),
-                row_group.padding = gt::px(15),  
-                heading.title.font.size = gt::px(18),
-                heading.title.font.weight = "bold")
+                    table.width  = gt::px(600),
+                    row_group.padding = gt::px(15),  
+                    heading.title.font.size = gt::px(18),
+                    heading.title.font.weight = "bold")
 }
 
-# variable <- c("Aluminium Dissolved", "Arsenic Total")
-# use = "Freshwater Life"
-# term = c("short", "long")
-# ph = 3
-# hardness = NULL
-# chloride = NULL
-# mercury_methyl = NULL
+wqg_table <- function(variable, use, term, cvalues){
+  
+  x <- filter_limits(variable, use, term) %>%
+    dplyr::group_by(Variable, Use, Term) %>%
+    dplyr::mutate(Equation = lookup_equation(Condition, UpperLimit, cvalues)) %>%
+    dplyr::slice(1) %>%
+    dplyr::ungroup() 
+  
+  x$Guideline <- sapply(x$Equation, calc_limit, cvalues)
+
+  x %>% 
+    dplyr::mutate(Equation = replace_codes(Equation)) %>%
+    dplyr::select(Variable, Use, Term, Guideline,
+                  Units, Reference, Equation)
+    
+}

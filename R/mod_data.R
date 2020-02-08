@@ -15,10 +15,11 @@ mod_data_ui <- function(id) {
 
   sidebarLayout(
     sidebarPanel(
-      select_input_x(ns("variable"), 
-                     label = "Select Variable(s)", 
+      selectInput(ns("variable"), 
+                     label = "Select Variable", 
                      choices = c(limits$Variable, ""), 
-                     selected = ""),
+                     selected = "",
+                  multiple = FALSE),
       uiOutput(ns("ui_use")),
       uiOutput(ns("ui_dependent")),
       uiOutput(ns("ui_term")),
@@ -82,7 +83,7 @@ mod_data_server <- function(input, output, session) {
     cvalues <- clean_cvalues(cvalues(), input$variable, input$use)
 
     params_rv$use <- input$use
-    params_rv$data <- x
+    # params_rv$data <- x
     params_rv$refs <- get_refs(x)
     params_rv$cvalues <- cvalues
     
@@ -101,7 +102,7 @@ mod_data_server <- function(input, output, session) {
   
   output$ui_use <- renderUI({
     req(input$variable)
-    selectInput(ns("use"), label = "Select Use(s)",
+    select_input_x(ns("use"), label = "Select Use(s)",
                 choices = c(get_use(input$variable), ""),
                 selected = '')
   })
