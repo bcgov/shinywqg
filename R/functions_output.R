@@ -55,20 +55,3 @@ gt_table <- function(x, use, cvalues){
                     heading.title.font.size = gt::px(18),
                     heading.title.font.weight = "bold")
 }
-
-wqg_table <- function(variable, use, term, cvalues){
-  
-  x <- filter_limits(variable, use, term) %>%
-    dplyr::group_by(Variable, Use, Term) %>%
-    dplyr::mutate(Equation = lookup_equation(Condition, UpperLimit, cvalues)) %>%
-    dplyr::slice(1) %>%
-    dplyr::ungroup() 
-  
-  x$Guideline <- sapply(x$Equation, calc_limit, cvalues)
-
-  x %>% 
-    dplyr::mutate(Equation = replace_codes(Equation)) %>%
-    dplyr::select(Variable, Use, Term, Guideline,
-                  Units, Reference, Equation)
-    
-}

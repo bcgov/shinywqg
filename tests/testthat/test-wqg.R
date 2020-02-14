@@ -5,5 +5,4 @@ test_that("wqg report works", {
   rm_condition_fail <- TRUE
   rm_equation_fail <- TRUE
   
-  data <- 
 })
