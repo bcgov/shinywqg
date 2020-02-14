@@ -6,14 +6,20 @@
 #     filter_missing(input$rm_missing, input$variable, input$term, input$use) %>%
 #     clean_table()
 # }
-
-gt_table <- function(x, use, cvalues){
-  cvalues <- paste0(names(cvalues), ': ', cvalues, collapse = "<br>") 
-  x %>%
-    dplyr::group_by(Variable) %>% 
-    gt::gt(rowname_col = "Term") %>%
+### x is result of wqg_clean()
+gt_table <- function(x, cvalues){
+  cvalues <- report_cvalues(cvalues)
+  variable <- unique(x$Variable)
+  note <- lapply(1:nrow(x), function(y){
+    get_footnotes(x[y,])
+  })
+  gt <- x %>%
+    dplyr::group_by(Use) %>%
+    dplyr::select(Use:Guideline) %>%
+    dplyr::rename(`Effect Level` = `Predicted Effect Level`) %>%
+    gt() %>%
     gt::tab_header(
-      title = use,
+      title = variable,
       subtitle = gt::html(cvalues)
     ) %>%
     gt::fmt_missing(columns = gt::everything()) %>%
@@ -25,33 +31,30 @@ gt_table <- function(x, use, cvalues){
       style = gt::cell_text(size = gt::px(13)),
       locations = list(
         gt::cells_data(
-          columns = gt::vars(Guideline, Equation, Reference)),
-        gt::cells_stub(rows = TRUE)
+          columns = gt::vars(Media, Type, Statistic, `Effect Level`, Status))
       )
     ) %>%
     gt::tab_style(
       style = gt::cell_text(weight = "bold"),
-      locations = gt::cells_group(
-        groups = TRUE
-      )
-    ) %>%
-    gt::tab_footnote(
-      "Canada 2014 <this is incomplete>",
-      locations = gt::cells_data(
-        columns = gt::vars(Reference),
-        rows = Reference == "CANADA_2014"
-      )
-    ) %>%
-    gt::tab_footnote(
-      "British Columbia 2015 <this is incomplete>",
-      locations = gt::cells_data(
-        columns = gt::vars(Reference),
-        rows = Reference == "BC_2015"
-      )
+      locations = list(
+        gt::cells_group(groups = TRUE),
+        gt::cells_title(groups = "title"))
     ) %>%
     gt::tab_options(footnotes.font.size = gt::px(11),
                     table.width  = gt::px(600),
                     row_group.padding = gt::px(15),  
                     heading.title.font.size = gt::px(18),
                     heading.title.font.weight = "bold")
+  
+  for(i in 1:nrow(x)){
+    gt <- gt::tab_footnote(gt, 
+                           footnote = gt::html(note[[i]]),
+                           locations = gt::cells_data(
+                             columns = gt::vars(Guideline),
+                             rows = i
+                           ))
+  }
+  gt
 }
+
+

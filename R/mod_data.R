@@ -84,6 +84,10 @@ mod_data_server <- function(input, output, session) {
     set_names(lapply(x, function(y){input[[y]]}), x)
   })
   
+  output$table <- gt::render_gt({
+    gt_table(wqg_data_report(), cvalues())
+  })
+  
 
   # observe({
   #   use <- input$use

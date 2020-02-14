@@ -38,10 +38,35 @@ code_to_variable <- function(code, units = TRUE){
   paste0(variable, " (", unit, ")")
 }
 
-# get_refs <- function(x){
-#   setdiff(unique(x$Reference), NA_character_)
-# }
+# recreates html link without shiny.tag class so can be easily pasted
+tag_a <- function(x, href){
+  paste0("<a href='", href,"'>", x, "</a>")
+}
+
+## x is clean data
+get_footnotes <- function(x){
+  ref <- x[["Reference"]]
+  links <- list(
+    "Reference" = x[["Reference Link"]],
+    "Overview Report" = x[["Overview Report Link"]],
+    "Technical Document" = x[["Technical Document Link"]]
+  ) %>% remove_nulls()
+
+  links <- lapply(names(links), function(y){
+    tag_a(y, href = links[y])
+  })
+  
+  paste(ref, paste(links, collapse = ", "), sep = ", ")
+}
 
 as_math <- function(x){
   paste0("$", x, "$")
+}
+
+report_cvalues <- function(x){
+  names(x) <- sapply(names(x), code_to_variable)
+  x <- remove_nulls(x)
+  cvalues <- ""
+  if(length(x))
+    cvalues <- paste0(names(x), ': ', x, collapse = "<br>") 
 }
