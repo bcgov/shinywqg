@@ -27,22 +27,20 @@ mod_data_ui <- function(id) {
       uiOutput(ns("ui_statistic")),
       uiOutput(ns("ui_cvalues")),
       uiOutput(ns("ui_cvaluenote")),
-      uiOutput(ns("ui_sigfig")),
-      
-      # uiOutput(ns("ui_term")),
+      uiOutput(ns("ui_sigfig"))
       # uiOutput(ns("ui_rm_missing")),
-      shinyjs::hidden(button(ns("get"), "Get/Update Guidelines"))
+      # shinyjs::hidden(button(ns("get"), "Get/Update Guidelines"))
     ),
     mainPanel(
       uiOutput(ns("ui_dl")),
-      br2(),
+      br(),
       tabsetPanel(
+        tabPanel(title = "Report",
+                 gt::gt_output(ns("table"))),
         tabPanel(title = "Raw Data",
                  table_output(ns("data_raw"))),
         tabPanel(title = "Report Data",
-                 table_output(ns("data_report"))),
-        tabPanel(title = "Report",
-                 gt::gt_output(ns("table")))
+                 table_output(ns("data_report")))
       )
     )
   )
@@ -210,83 +208,104 @@ mod_data_server <- function(input, output, session) {
     data_table(wqg_data_report() )
   })
   
-  # output$ui_dl <- renderUI({
-  #   req(params_rv$table)
-  #   tagList(
-  #     shinyWidgets::dropdownButton(status = "primary", 
-  #                                  label = "Report",
-  #                                  size = "sm",
-  #                                  inline = TRUE, 
-  #                                  circle = FALSE,
-  #                                  icon = icon("download"),
-  #       dl_button(ns("dl_html"), "HTML"),
-  #       dl_button(ns("dl_pdf"), "PDF"),
-  #       dl_button(ns("dl_rmd"), "Rmarkdown")
-  #     ),
-  #     shinyWidgets::dropdownButton(status = "primary", 
-  #                                  label = "Data",
-  #                                  size = "sm",
-  #                                  inline = TRUE, 
-  #                                  circle = FALSE,
-  #                                  icon = icon("download"),
-  #                                  dl_button(ns("dl_csv"), "CSV"),
-  #                                  dl_button(ns("dl_excel"), "Excel")
-  #     ),
-  #     dl_button(ns("dl_refs"), "References")
-  #   )
-  # })
+  output$ui_dl <- renderUI({
+    req(wqg_data_report())
+    tagList(
+      shinyWidgets::dropdownButton(status = "primary",
+                                   label = "Report",
+                                   size = "sm",
+                                   inline = TRUE,
+                                   circle = FALSE,
+                                   icon = icon("download"),
+        dl_button(ns("dl_html"), "HTML"),
+        dl_button(ns("dl_pdf"), "PDF"),
+        dl_button(ns("dl_rmd"), "Rmarkdown")
+      ),
+      shinyWidgets::dropdownButton(status = "primary",
+                                   label = "Raw Data",
+                                   size = "sm",
+                                   inline = TRUE,
+                                   circle = FALSE,
+                                   icon = icon("download"),
+                                   dl_button(ns("dl_csv_raw"), "CSV"),
+                                   dl_button(ns("dl_excel_raw"), "Excel")
+      ),
+      shinyWidgets::dropdownButton(status = "primary",
+                                   label = "Report Data",
+                                   size = "sm",
+                                   inline = TRUE,
+                                   circle = FALSE,
+                                   icon = icon("download"),
+                                   dl_button(ns("dl_csv_report"), "CSV"),
+                                   dl_button(ns("dl_excel_report"), "Excel")
+      )
+      # dl_button(ns("dl_refs"), "References")
+    )
+  })
   # 
-  # output$dl_csv <- downloadHandler(
-  #   filename = function() "wqg_table.csv",
-  #   content = function(file) {
-  #     readr::write_csv(params_rv$data, file)
-  #   })
-  # 
-  # output$dl_excel <- downloadHandler(
-  #   filename = function() "wqg_table.xlsx",
-  #   content = function(file) {
-  #     openxlsx::write.xlsx(params_rv$data, file)
-  #   })
-  # 
-  # output$dl_html <- downloadHandler(
-  #   filename = "wqg_report.html",
-  #   content = function(file) {
-  #     temp_report <- file.path(tempdir(), "report_html.Rmd")
-  #     file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
-  #               temp_report, overwrite = TRUE)
-  #     params <- list(use = params_rv$use,
-  #                    table = params_rv$table,
-  #                    cvalues = params_rv$cvalues)
-  #     rmarkdown::render(temp_report, output_file = file,
-  #                       params = params,
-  #                       envir = new.env(parent = globalenv())
-  #     )
-  #   }
-  # )
-  # 
-  # output$dl_pdf <- downloadHandler(
-  #   filename = "wqg_report.pdf",
-  #   content = function(file) {
-  #     temp_report <- file.path(tempdir(), "report_pdf.Rmd")
-  #     file.copy(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
-  #               temp_report, overwrite = TRUE)
-  #     params <- list(use = params_rv$use,
-  #                    table = params_rv$table,
-  #                    cvalues = params_rv$cvalues)
-  #     rmarkdown::render(temp_report, output_file = file,
-  #                       params = params,
-  #                       envir = new.env(parent = globalenv())
-  #     )
-  #   }
-  # )
-  # 
-  # output$dl_rmd <- downloadHandler(
-  #   filename = "wqg_report.Rmd",
-  #   content = function(file) {
-  #     file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"), file)
-  #   }
-  # )
-  # 
+  output$dl_csv_raw <- downloadHandler(
+    filename = function() "wqg_data_raw.csv",
+    content = function(file) {
+      readr::write_csv(wqg_data_raw(), file)
+    })
+
+  output$dl_excel_raw <- downloadHandler(
+    filename = function() "wqg_data_raw.xlsx",
+    content = function(file) {
+      openxlsx::write.xlsx(wqg_data_raw(), file)
+    })
+  
+  output$dl_csv_report <- downloadHandler(
+    filename = function() "wqg_data_report.csv",
+    content = function(file) {
+      readr::write_csv(wqg_data_report(), file)
+    })
+  
+  output$dl_excel_report <- downloadHandler(
+    filename = function() "wqg_data_report.xlsx",
+    content = function(file) {
+      openxlsx::write.xlsx(wqg_data_report(), file)
+    })
+
+  output$dl_html <- downloadHandler(
+    filename = "wqg_report.html",
+    content = function(file) {
+      temp_report <- file.path(tempdir(), "report_html.Rmd")
+      file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
+                temp_report, overwrite = TRUE)
+      params <- list(use = params_rv$use,
+                     table = params_rv$table,
+                     cvalues = params_rv$cvalues)
+      rmarkdown::render(temp_report, output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
+    }
+  )
+
+  output$dl_pdf <- downloadHandler(
+    filename = "wqg_report.pdf",
+    content = function(file) {
+      temp_report <- file.path(tempdir(), "report_pdf.Rmd")
+      file.copy(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
+                temp_report, overwrite = TRUE)
+      params <- list(use = params_rv$use,
+                     table = params_rv$table,
+                     cvalues = params_rv$cvalues)
+      rmarkdown::render(temp_report, output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
+    }
+  )
+
+  output$dl_rmd <- downloadHandler(
+    filename = "wqg_report.Rmd",
+    content = function(file) {
+      file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"), file)
+    }
+  )
+
   # output$dl_refs <- downloadHandler(
   #     filename = "refs.zip",
   #     content = function(fname) {
