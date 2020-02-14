@@ -24,7 +24,7 @@ extract_codes1 <- function(x){
 }
 
 extract_codes2 <- function(x){
-  unique(unlist(lapply(x, extract_codes)))
+  unique(unlist(lapply(x, extract_codes1)))
 }
 
 variable_use <- function(variable, x = limits){

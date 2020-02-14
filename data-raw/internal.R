@@ -37,7 +37,7 @@ extract_codes1 <- function(x){
 }
 
 extract_codes2 <- function(x){
-  unique(unlist(sapply(x, extract_codes, USE.NAMES = FALSE)))
+  unique(unlist(lapply(x, extract_codes1)))
 }
 
 limit_codes <- extract_codes2(limits$Limit)
