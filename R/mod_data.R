@@ -38,9 +38,9 @@ mod_data_ui <- function(id) {
       br2(),
       tabsetPanel(
         tabPanel(title = "Raw Data",
-                 wellPanel(DT::dataTableOutput(ns("data_raw")))),
+                 table_output(ns("data_raw"))),
         tabPanel(title = "Report Data",
-                 wellPanel(DT::dataTableOutput(ns("data_report")))),
+                 table_output(ns("data_report"))),
         tabPanel(title = "Report",
                  gt::gt_output(ns("table")))
       )
@@ -203,11 +203,11 @@ mod_data_server <- function(input, output, session) {
   })
   
   output$data_raw <- DT::renderDT({
-    wqg_data_raw()
+    data_table(wqg_data_raw())
   })
   
   output$data_report <- DT::renderDT({
-    wqg_data_report() 
+    data_table(wqg_data_report() )
   })
   
   # output$ui_dl <- renderUI({
