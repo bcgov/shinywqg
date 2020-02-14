@@ -142,7 +142,7 @@ mod_data_server <- function(input, output, session) {
   output$ui_use <- renderUI({
     req(input$variable)
     select_input_x(ns("use"), label = "Select Use(s)",
-                choices = c(get_use(input$variable), ""),
+                choices = c(variable_use(input$variable), ""),
                 selected = "")
   })
   
@@ -186,6 +186,12 @@ mod_data_server <- function(input, output, session) {
   
   wqg_data_raw <- reactive({
     req(input$sigfig)
+    req(input$variable)
+    req(input$use)
+    req(input$media)
+    req(input$type)
+    req(input$effect)
+    req(input$statistic)
     wqg_filter(input$variable, input$use, input$media, 
                input$type, input$effect, input$statistic) %>%
       wqg_evaluate(cvalues = cvalues(), sigfig = input$sigfig)

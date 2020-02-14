@@ -1,14 +1,36 @@
-code_to_variable <- function(code, units = TRUE){
-  x <- unique(code)
-  variable <- unique(codes$Variable[which(codes$EMS_Code == x)])
-  unit <- unique(codes$Units[which(codes$EMS_Code == x)])
-  paste0(variable, " (", unit, ")")
+wqg_filter <- function(variable, use, media, type, effect, statistic, x = limits){
+  x <- x %>%
+    dplyr::filter(Variable == variable,
+                  Use %in% use,
+                  Media %in% media,
+                  Type %in% type,
+                  PredictedEffectLevel %in% effect,
+                  Statistic %in% statistic) 
+  # remove duplicates caused by multiple EMS_Codes
+  ems <- sort(unique(x$EMS_Code))
+  x %>%
+    dplyr::filter(EMS_Code == ems[1])
 }
 
-get_refs <- function(x){
-  setdiff(unique(x$Reference), NA_character_)
+wqg_evaluate <- function(x, cvalues, sigfig){
+  x$ConditionPass <- sapply(x$Condition, test_condition, cvalues, USE.NAMES = FALSE)
+  ### assumes that never a LimitNote AND Limit 
+  x$Guideline <- sapply(1:nrow(x), function(y){
+    evaluate_guideline(x$Limit[y],
+                       x$LimitNotes[y],
+                       x$Direction[y],
+                       x$Units[y],
+                       cvalues, sigfig)
+  })
+  x
 }
 
-as_math <- function(x){
-  paste0("$", x, "$")
+wqg_clean <- function(data){
+  data %>%
+    dplyr::filter(ConditionPass) %>%
+    dplyr::select(Variable, Use, Media, Type, Statistic, 
+                  `Predicted Effect Level` = PredictedEffectLevel,
+                  Status, Guideline, Reference:`Technical Document Link`) %>%
+    dplyr::select_if(function(x) !all(is.na(x))) 
 }
+

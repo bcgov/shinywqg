@@ -5,6 +5,6 @@ test_that("data functions work", {
   expect_identical(nrow(x), 2L)
   expect_length(unique(x$EMS_Code), 1L)
   
-  x <- wqg_clean(x)
+  x <- wqg_evaluate(x)
   expect_length(x, 17L)
 })

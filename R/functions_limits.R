@@ -1,4 +1,3 @@
-
 test_condition <- function (x, cvalues) {
   if(is.na(x))
     return (TRUE)
@@ -13,4 +12,16 @@ calc_limit <- function (x, cvalues) {
   if(class(x) != "numeric")
     return (NA)
   x
+}
+
+evaluate_guideline <- function(limit, note, direction, units, cvalues, sigfig){
+  if(!is.na(note) & is.na(limit))
+    return(note)
+  limit <- signif(calc_limit(limit, cvalues), sigfig)
+  prefix <- switch(direction,
+                   "Upper Limit" = "<= ",
+                   "Lower Limit" = ">= ",
+                   ""
+  )
+  paste0(prefix, limit, " (", units, ")")
 }

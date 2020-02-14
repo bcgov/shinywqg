@@ -36,15 +36,3 @@ str_extract_all <- function(x, y) regmatches(x, gregexpr(y, x))
 rinteger <- function(n = 1) as.integer(stats::runif(n, -.max_integer, .max_integer))
 
 last <- function(x) x[length(x)]
-
-# useful for updating seed based on file name converted to int using
-# digest::digest2int(string)
-sum2intswrap <- function(x, y) {
-  sum <- as.double(x) + as.double(y)
-  is_na <- is.na(sum)
-  sum[!is_na & sum < -.max_integer] <-
-    sum[!is_na & sum < -.max_integer] %% .max_integer
-  sum[!is_na & sum > .max_integer] <-
-    sum[!is_na & sum > .max_integer] %% -.max_integer
-  as.integer(sum)
-}
