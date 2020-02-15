@@ -7,12 +7,10 @@
 #     clean_table()
 # }
 ### x is result of wqg_clean()
-gt_table <- function(x, cvalues){
-  cvalues <- report_cvalues(cvalues)
+gt_table <- function(x, cvalues, cvalues_active){
+  cvalues <- report_cvalues(cvalues, cvalues_active)
   variable <- unique(x$Variable)
-  note <- lapply(1:nrow(x), function(y){
-    get_footnotes(x[y,])
-  })
+  note <- get_footnotes(x)
   gt <- x %>%
     dplyr::group_by(Use) %>%
     dplyr::select(Use:Guideline) %>%
