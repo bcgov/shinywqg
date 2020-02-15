@@ -16,6 +16,7 @@ wqg_filter <- function(variable, use, media, type, effect, statistic, x = limits
 }
 
 wqg_evaluate <- function(x, cvalues, sigfig){
+  if(nrow(x) == 0) return()
   x$ConditionPass <- sapply(x$Condition, test_condition, cvalues, USE.NAMES = FALSE)
   ### assumes that never a LimitNote AND Limit 
   x$Guideline <- sapply(1:nrow(x), function(y){
@@ -29,6 +30,8 @@ wqg_evaluate <- function(x, cvalues, sigfig){
 }
 
 wqg_clean <- function(data){
+  if(is.null(data)) return()
+  if(nrow(data) == 0) return()
   data %>%
     dplyr::filter(ConditionPass) %>%
     dplyr::select(Variable, Use, Media, Type, Statistic, 

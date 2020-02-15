@@ -15,6 +15,7 @@ calc_limit <- function (x, cvalues) {
 }
 
 evaluate_guideline <- function(limit, note, direction, units, cvalues, sigfig){
+  if(!length(limit) | !length(note)) return()
   if(!is.na(note) & is.na(limit))
     return(note)
   limit <- signif(calc_limit(limit, cvalues), sigfig)

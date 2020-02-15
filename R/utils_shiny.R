@@ -22,7 +22,8 @@ select_input_x <- function(..., label = "Select sites:", choices, selected = cho
                  options = list(
                    'plugins' = list('remove_button'),
                    'create' = TRUE,
-                   'persist' = FALSE))
+                   'persist' = FALSE,
+                   onInitialize = I('function() { this.setValue(""); }')))
 }
 
 table_output <- function(...){

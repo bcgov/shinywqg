@@ -1,13 +1,7 @@
 
-# wqg_report <- function(variable, use, term, cvalues, rm_equation, rm_condition){
-#   x <- wqg_table(variable, use, term, cvalues)
-#   cvalues <- clean_cvalues(cvalues, variable, use)
-#   x <- x %>%
-#     filter_missing(input$rm_missing, input$variable, input$term, input$use) %>%
-#     clean_table()
-# }
 ### x is result of wqg_clean()
 gt_table <- function(x, cvalues, cvalues_active){
+  if(is.null(x)) return()
   if(nrow(x) == 0) return()
   cvalues <- report_cvalues(cvalues, cvalues_active)
   variable <- unique(x$Variable)

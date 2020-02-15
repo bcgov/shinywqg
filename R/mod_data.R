@@ -19,7 +19,10 @@ mod_data_ui <- function(id) {
                      label = "Select Variable", 
                      choices = c(limits$Variable, ""), 
                      selected = "",
-                     multiple = FALSE),
+                     multiple = FALSE,
+                     options = list(
+                       onInitialize = I('function() { this.setValue(""); }')
+                     )),
       uiOutput(ns("ui_use")),
       uiOutput(ns("ui_media")),
       uiOutput(ns("ui_type")),
@@ -81,14 +84,16 @@ mod_data_ui <- function(id) {
 mod_data_server <- function(input, output, session) {
   ns <- session$ns
   
+  
   observe({
-    if(!is.null(input$variable) & input$variable == ""){
+    if(input$variable == "" | is.null(input$use)){
       return({
         for(i in cvalue_codes){
           shinyjs::hide(i)
         }
       })
     }
+
     for(i in rv$cvalue_inactive){
       shinyjs::hide(i)
     }
@@ -106,7 +111,7 @@ mod_data_server <- function(input, output, session) {
     set_names(lapply(x, function(y){input[[y]]}), x)
   })
   
-  wqg_data_raw <- reactive({
+  wqg_data_evaluate <- reactive({
     req(input$sigfig)
     req(input$variable)
     req(input$use)
@@ -115,11 +120,7 @@ mod_data_server <- function(input, output, session) {
     req(input$effect)
     req(input$statistic)
     wqg_filter(input$variable, input$use, input$media, 
-               input$type, input$effect, input$statistic) 
-  })
-  
-  wqg_data_evaluate <- reactive({
-    wqg_data_raw() %>%
+               input$type, input$effect, input$statistic) %>%
       wqg_evaluate(cvalues = cvalues(), sigfig = input$sigfig)
   })
   
@@ -137,37 +138,40 @@ mod_data_server <- function(input, output, session) {
   rv <- reactiveValues(
     cvalue_active = NULL,
     cvalue_inactive = NULL,
-    raw = NULL,
-    report = NULL
+    raw = empty_evaluate,
+    report = empty_report
   )
   
   observe({
-    rv$raw <- empty_evaluate
-    rv$report <- empty_report
-    if(!is.null(input$variable)){
-      if(input$variable != ""){
-        if(!is.null(input$use)){
-          rv$raw <- wqg_data_evaluate()
-          if(any(wqg_data_evaluate()$ConditionPass)){
-            rv$report <- wqg_data_report()
-          }
-        }
-      }
+    if(is.null(input$use) | input$variable == ""){
+      rv$raw <- empty_evaluate
+      rv$report <- empty_report
+    } 
+    data <- wqg_data_evaluate()
+    rv$raw <- data
+    if(any(data$ConditionPass)){
+      rv$report <- wqg_data_report()
     }
   })
   
   observe({
-    data <- wqg_data_raw()
+    data <- wqg_data_evaluate()
     cval <- extract_codes2(data$Condition)
     rv$cvalue_active <- cval
     rv$cvalue_inactive <- setdiff(cvalue_codes, cval)
   })
   
   output$ui_use <- renderUI({
-    req(input$variable)
-    select_input_x(ns("use"), label = "Select Use(s)",
-                   choices = c(variable_use(input$variable), ""),
-                   selected = "")
+    # req(input$variable)
+    uses <- variable_use(input$variable)
+    selectizeInput(ns("use"), 
+                   label = "Select Use(s)", 
+                   choices = uses, 
+                   selected = uses[1],
+                   multiple = TRUE)
+    # select_input_x(ns("use"), label = "Select Use(s)",
+    #                choices = c(variable_use(input$variable), ""),
+    #                selected = "")
   })
   
   output$ui_media <- renderUI({
