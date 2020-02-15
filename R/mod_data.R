@@ -119,13 +119,18 @@ mod_data_server <- function(input, output, session) {
     req(input$type)
     req(input$effect)
     req(input$statistic)
-    wqg_filter(input$variable, input$use, input$media, 
-               input$type, input$effect, input$statistic) %>%
+   x <-  wqg_filter(input$variable, input$use, input$media, 
+               input$type, input$effect, input$statistic)
+   if(nrow(x) == 0) return()
+   x %>%
       wqg_evaluate(cvalues = cvalues(), sigfig = input$sigfig)
   })
   
   wqg_data_report <- reactive({
-    wqg_data_evaluate() %>%
+   x <-  wqg_data_evaluate()
+   if(is.null(x)) return()
+   if(nrow(x) == 0) return()
+   x %>%
       wqg_clean()
   })
   
