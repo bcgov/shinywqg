@@ -35,8 +35,12 @@ test_that("data functions work", {
   expect_identical(nrow(y), 1L)
   expect_identical(y$Guideline, "<= 0.4 (mg/L)")
   
-  
-  
-  
+  ### case of missing EMS_Code
+  x <- wqg_filter("Linear alkylbenzene sulphonates (LAS)",
+                  "Aquatic Life - Freshwater",
+                  "Water", "Long-term chronic",
+                  "No Effect", "mean")
+  expect_true(is.na(x$EMS_Code))
+  expect_identical(nrow(x), 1L)
   
 })
