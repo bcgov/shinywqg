@@ -15,7 +15,7 @@ gt_table <- function(x, cvalues, cvalues_active){
     dplyr::group_by(Use) %>%
     dplyr::select(Use:Guideline) %>%
     dplyr::rename(`Effect Level` = `Predicted Effect Level`) %>%
-    gt() %>%
+    gt::gt() %>%
     gt::tab_header(
       title = variable,
       subtitle = gt::html(cvalues)

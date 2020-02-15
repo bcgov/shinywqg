@@ -59,8 +59,7 @@ get_footnotes <- function(x){
     links <- lapply(names(links), function(z){
       tag_a(z, href = links[z])
     })
-    print(links)
-    
+
     paste(ref, paste(links, collapse = ", "), sep = ", ")
   })
 }

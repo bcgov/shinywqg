@@ -7,6 +7,9 @@ wqg_filter <- function(variable, use, media, type, effect, statistic, x = limits
                   PredictedEffectLevel %in% effect,
                   Statistic %in% statistic) 
   # remove duplicates caused by multiple EMS_Codes
+  if(all(is.na(x$EMS_Code))){
+    return(x)
+  }
   ems <- sort(unique(x$EMS_Code))
   x %>%
     dplyr::filter(EMS_Code == ems[1])
