@@ -45,27 +45,34 @@ tag_a <- function(x, href){
 
 ## x is clean data
 get_footnotes <- function(x){
-  ref <- x[["Reference"]]
-  links <- list(
-    "Reference" = x[["Reference Link"]],
-    "Overview Report" = x[["Overview Report Link"]],
-    "Technical Document" = x[["Technical Document Link"]]
-  ) %>% remove_nulls()
-
-  links <- lapply(names(links), function(y){
-    tag_a(y, href = links[y])
+  links <- lapply(1:nrow(x), function(y){
+    df <- x[y,]
+    ref <- df[["Reference"]]
+    links <- list(
+      "Reference" = df[["Reference Link"]],
+      "Overview Report" = df[["Overview Report Link"]],
+      "Technical Document" = df[["Technical Document Link"]]
+    ) %>% 
+      remove_nulls() %>%
+      remove_nas()
+    
+    links <- lapply(names(links), function(z){
+      tag_a(z, href = links[z])
+    })
+    print(links)
+    
+    paste(ref, paste(links, collapse = ", "), sep = ", ")
   })
-  
-  paste(ref, paste(links, collapse = ", "), sep = ", ")
 }
 
 as_math <- function(x){
   paste0("$", x, "$")
 }
 
-report_cvalues <- function(x){
+report_cvalues <- function(x, active){
+  x <- x[active]
   names(x) <- sapply(names(x), code_to_variable)
-  x <- remove_nulls(x)
+  # x <- remove_nulls(x)
   cvalues <- ""
   if(length(x))
     cvalues <- paste0(names(x), ': ', x, collapse = "<br>") 

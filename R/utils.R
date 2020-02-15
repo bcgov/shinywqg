@@ -24,6 +24,8 @@ is_try_error <- function(x) inherits(x, "try-error")
 
 # from https://recology.info/2018/10/limiting-dependencies/
 remove_nulls <- function(x) Filter(Negate(is.null), x)
+remove_nas <- function(x) Filter(Negate(is.na), x)
+
 
 # from https://recology.info/2018/10/limiting-dependencies/
 str_extract <- function(x, y) regmatches(x, regexpr(y, x))
