@@ -65,11 +65,9 @@ mod_data_ui <- function(id) {
                  br(),
                  gt::gt_output(ns("table"))),
         tabPanel(title = "Raw Data",
-                 br(),
-                 uiOutput(ns("ui_data_raw"))),
+                 table_output(ns("data_raw"))),
         tabPanel(title = "Report Data",
-                 br(),
-                 uiOutput(ns("ui_data_report")))
+                 table_output(ns("data_report")))
       )
     )
   )
@@ -138,8 +136,23 @@ mod_data_server <- function(input, output, session) {
   
   rv <- reactiveValues(
     cvalue_active = NULL,
-    cvalue_inactive = NULL
+    cvalue_inactive = NULL,
+    raw = NULL,
+    report = NULL
   )
+  
+  observe({
+    rv$raw <- empty_evaluate
+    rv$report <- empty_report
+    if(!is.null(input$variable)){
+      if(input$variable != ""){
+        if(!is.null(input$use)){
+          rv$raw <- wqg_data_evaluate()
+          rv$report <- wqg_data_report()
+        }
+      }
+    }
+  })
   
   observe({
     data <- wqg_data_raw()
@@ -192,42 +205,12 @@ mod_data_server <- function(input, output, session) {
     gt_table(wqg_data_report(), cvalues(), rv$cvalue_active)
   })
   
-  output$ui_data_raw <- renderUI({
-    req(wqg_data_evaluate())
-    table_output(ns("data_raw"))
-  })
-  
   output$data_raw <- DT::renderDT({
-    data_table(wqg_data_evaluate())
-  })
-  
-  output$ui_data_report <- renderUI({
-    req(wqg_data_report())
-    table_output(ns("data_report"))
+    data_table(rv$raw)
   })
   
   output$data_report <- DT::renderDT({
-    data_table(wqg_data_report())
-  })
-  
-  raw_dl <- reactive({
-    x <- empty_evaluate
-    if(input$variable != ""){
-      if(!is.null(input$use)){
-        x <- wqg_data_evaluate()
-      }
-    }
-    x
-  })
-  
-  report_dl <- reactive({
-    x <- empty_report
-    if(input$variable != ""){
-      if(!is.null(input$use)){
-        x <- wqg_data_report()
-      }
-    }
-    x
+    data_table(rv$report)
   })
   
   output$dl_csv_raw <- downloadHandler(
