@@ -148,7 +148,9 @@ mod_data_server <- function(input, output, session) {
       if(input$variable != ""){
         if(!is.null(input$use)){
           rv$raw <- wqg_data_evaluate()
-          rv$report <- wqg_data_report()
+          if(any(wqg_data_evaluate()$ConditionPass)){
+            rv$report <- wqg_data_report()
+          }
         }
       }
     }

@@ -43,4 +43,16 @@ test_that("data functions work", {
   expect_true(is.na(x$EMS_Code))
   expect_identical(nrow(x), 1L)
   
+  ### ensure if all conditions fail that gt_table handles properly
+  x <- wqg_filter("Ammonia Total",
+                       "Aquatic Life - Freshwater",
+                       "Water", c("Long-term chronic"),
+                       "No Effect", c("mean"))
+  
+  cvalues <- list(EMS_0004 = 5, EMS_0013 = 10)
+  y <- wqg_evaluate(x, cvalues, 2)
+  expect_true(!any(y$ConditionPass))
+  z <- wqg_clean(y)
+  expect_identical(nrow(z), 0L)
+  expect_null(gt_table(z, cvalues, c("EMS_0004", "EMS_0013")))
 })
