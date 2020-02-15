@@ -69,4 +69,18 @@ missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;
                 2. There is no available equation for that variable/use/term combination."
 
-usethis::use_data(limits, codes, cvalue_codes, missing_help, internal = TRUE, overwrite = TRUE)
+empty_raw <- limits[0,]
+empty_evaluate <- limits %>%
+  mutate(ConditionPass = NA, Guideline = NA)
+empty_evaluate <- empty_evaluate[0,]
+
+empty_report <- empty_evaluate[c("Variable", "Use", "Media", "Effect Level",
+                                 "Type", "Statistic", "Guideline", "Reference",
+                                 "Reference Link", "Overview Report Link",
+                                 "Technical Document Link")]
+
+usethis::use_data(limits, codes, cvalue_codes, 
+                  empty_raw, empty_report, empty_evaluate,
+                  missing_help, internal = TRUE, overwrite = TRUE)
+
+
