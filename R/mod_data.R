@@ -223,25 +223,25 @@ mod_data_server <- function(input, output, session) {
   output$dl_csv_raw <- downloadHandler(
     filename = function() "wqg_data_raw.csv",
     content = function(file) {
-      readr::write_csv(raw_dl(), file)
+      readr::write_csv(rv$raw, file)
     })
   
   output$dl_excel_raw <- downloadHandler(
     filename = function() "wqg_data_raw.xlsx",
     content = function(file) {
-      openxlsx::write.xlsx(raw_dl(), file)
+      openxlsx::write.xlsx(rv$raw, file)
     })
   
   output$dl_csv_report <- downloadHandler(
     filename = function() "wqg_data_report.csv",
     content = function(file) {
-      readr::write_csv(report_dl(), file)
+      readr::write_csv(rv$report, file)
     })
   
   output$dl_excel_report <- downloadHandler(
     filename = function() "wqg_data_report.xlsx",
     content = function(file) {
-      openxlsx::write.xlsx(report_dl(), file)
+      openxlsx::write.xlsx(rv$report, file)
     })
   
   output$dl_html <- downloadHandler(
