@@ -19,10 +19,7 @@ mod_data_ui <- function(id) {
                      label = "Select Variable", 
                      choices = c(limits$Variable, ""), 
                      selected = "",
-                     multiple = FALSE,
-                     options = list(
-                       onInitialize = I('function() { this.setValue(""); }')
-                     )),
+                     multiple = FALSE),
       uiOutput(ns("ui_use")),
       uiOutput(ns("ui_media")),
       uiOutput(ns("ui_type")),
@@ -43,15 +40,7 @@ mod_data_ui <- function(id) {
                                      dl_button(ns("dl_pdf"), "PDF"),
                                      dl_button(ns("dl_rmd"), "Rmarkdown")
         ),
-        shinyWidgets::dropdownButton(status = "primary",
-                                     label = "Raw Data",
-                                     size = "sm",
-                                     inline = TRUE,
-                                     circle = FALSE,
-                                     icon = icon("download"),
-                                     dl_button(ns("dl_csv_raw"), "CSV"),
-                                     dl_button(ns("dl_excel_raw"), "Excel")
-        ),
+        
         shinyWidgets::dropdownButton(status = "primary",
                                      label = "Report Data",
                                      size = "sm",
@@ -59,18 +48,25 @@ mod_data_ui <- function(id) {
                                      circle = FALSE,
                                      icon = icon("download"),
                                      dl_button(ns("dl_csv_report"), "CSV"),
-                                     dl_button(ns("dl_excel_report"), "Excel")
-        )
-      ),
+                                     dl_button(ns("dl_excel_report"), "Excel")),
+        shinyWidgets::dropdownButton(status = "primary",
+                                     label = "Raw Data",
+                                     size = "sm",
+                                     inline = TRUE,
+                                     circle = FALSE,
+                                     icon = icon("download"),
+                                     dl_button(ns("dl_csv_raw"), "CSV"),
+                                     dl_button(ns("dl_excel_raw"), "Excel"))
+        ),
       br2(),
       tabsetPanel(
         tabPanel(title = "Report",
                  br(),
                  gt::gt_output(ns("table"))),
-        tabPanel(title = "Raw Data",
-                 table_output(ns("data_raw"))),
         tabPanel(title = "Report Data",
-                 table_output(ns("data_report")))
+                 table_output(ns("data_report"))),
+        tabPanel(title = "Raw Data",
+                 table_output(ns("data_raw")))
       )
     )
   )
