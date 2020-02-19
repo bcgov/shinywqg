@@ -104,7 +104,14 @@ mod_data_server <- function(input, output, session) {
   
   cvalues <- reactive({
     x <- cvalue_codes
-    set_names(lapply(x, function(y){input[[y]]}), x)
+    x <- set_names(lapply(x, function(y){input[[y]]}), x)
+    if(!is.na(x["EMS_1107"])){
+      x["EMS_0107"] <- x["EMS_1107"]
+    }
+    if(is.na(x["EMS_0107"])){
+      x["EMS_0107"] <- x["EMS_1107"]
+    }
+    x
   })
   
   wqg_data_evaluate <- reactive({

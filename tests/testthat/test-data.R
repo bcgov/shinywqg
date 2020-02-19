@@ -26,6 +26,11 @@ test_that("data functions work", {
   expect_identical(sum(y$ConditionPass), 1L)
   expect_identical(y$Guideline, c("<= 0.4 (mg/L)", "<= 0.37 (mg/L)"))
   
+  # check cvalue = NA
+  y <- wqg_evaluate(x, list(EMS_0107 = 9, EMS_1107 = NA), 2)
+  expect_identical(sum(y$ConditionPass), 1L)
+  expect_identical(y$Guideline, c("<= 0.4 (mg/L)", "<= 0.37 (mg/L)"))
+  
   ### check sigfig
   y <- wqg_evaluate(x, list(EMS_0107 = 9, EMS_1107 = 5), 3)
   expect_identical(y$Guideline, c("<= 0.4 (mg/L)", "<= 0.366 (mg/L)"))

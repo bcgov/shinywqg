@@ -4,6 +4,8 @@ test_condition <- function (x, cvalues) {
   x <- try(eval(parse(text = x), envir = cvalues), silent = TRUE)
   if(class(x) != "logical")
     return (FALSE)
+  if(is.na(x))
+    return (FALSE)
   x
 }
 
