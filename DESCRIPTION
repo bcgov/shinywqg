@@ -22,12 +22,12 @@ Imports:
     openxlsx,
     dplyr,
     shinyWidgets,
-    gt
+    gt,
+    rmarkdown
 Suggests: 
     covr,
     testthat (>= 2.1.0),
-    knitr,
-    rmarkdown
+    knitr
 Remotes: 
     poissonconsulting/chk,
     bcgov/wqbc
