@@ -1,8 +1,7 @@
-
-### x is result of wqg_clean()
+#' Create gt table
+#'
+#' @export
 gt_table <- function(x, cvalues, cvalues_active){
-  if(is.null(x)) return()
-  if(nrow(x) == 0) return()
   cvalues <- report_cvalues(cvalues, cvalues_active)
   variable <- unique(x$Variable)
   note <- get_footnotes(x)

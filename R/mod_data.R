@@ -208,8 +208,10 @@ mod_data_server <- function(input, output, session) {
   })
   
   output$table <- gt::render_gt({
-    # if(nrow(rv$report) == 0) return()
-    gt_table(wqg_data_report(), cvalues(), rv$cvalue_active)
+    x <- wqg_data_report()
+    if(is.null(x)) return()
+    if(nrow(x) == 0) return()
+    gt_table(x, cvalues(), rv$cvalue_active)
   })
   
   output$data_raw <- DT::renderDT({
@@ -247,29 +249,24 @@ mod_data_server <- function(input, output, session) {
   output$dl_html <- downloadHandler(
     filename = "wqg_report.html",
     content = function(file) {
-      temp_report <- file.path(tempdir(), "report_html.Rmd")
-      file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
-                temp_report, overwrite = TRUE)
-      params <- list(use = params_rv$use,
-                     table = params_rv$table,
-                     cvalues = params_rv$cvalues)
-      rmarkdown::render(temp_report, output_file = file,
+      params <- list(data = rv$report,
+                     cvalue_active = rv$cvalue_active,
+                     cvalues = cvalues)
+      rmarkdown::render(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
+                        output_file = file,
                         params = params,
-                        envir = new.env(parent = globalenv())
-      )
+                        envir = new.env(parent = globalenv()))
     }
   )
   
   output$dl_pdf <- downloadHandler(
     filename = "wqg_report.pdf",
     content = function(file) {
-      temp_report <- file.path(tempdir(), "report_pdf.Rmd")
-      file.copy(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
-                temp_report, overwrite = TRUE)
-      params <- list(use = params_rv$use,
-                     table = params_rv$table,
-                     cvalues = params_rv$cvalues)
-      rmarkdown::render(temp_report, output_file = file,
+      params <- list(data = rv$report,
+                     cvalue_active = rv$cvalue_active,
+                     cvalues = cvalues)
+      rmarkdown::render(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
+                        output_file = file,
                         params = params,
                         envir = new.env(parent = globalenv())
       )
