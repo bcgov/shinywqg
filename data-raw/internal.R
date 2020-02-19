@@ -74,10 +74,11 @@ empty_evaluate <- limits %>%
   mutate(ConditionPass = NA, Guideline = NA)
 empty_evaluate <- empty_evaluate[0,]
 
-empty_report <- empty_evaluate[c("Variable", "Use", "Media", "Effect Level",
+empty_report <- empty_evaluate[c("Variable", "Use", "Media", "PredictedEffectLevel",
                                  "Type", "Statistic", "Guideline", "Reference",
                                  "Reference Link", "Overview Report Link",
                                  "Technical Document Link")]
+empty_report <- empty_report %>% rename(`Effect Level` = PredictedEffectLevel)
 
 usethis::use_data(limits, codes, cvalue_codes, 
                   empty_raw, empty_report, empty_evaluate,
