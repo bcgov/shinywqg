@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
 
-User interface for the water quality guideline (WQG) website.
+User interface to calculate water quality guidelines.
 }
 \seealso{
 Useful links:
@@ -20,6 +20,12 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Sebastian Dalgarno \email{seb@poissonconsulting.ca} (\href{https://orcid.org/0000-0002-3658-4517}{ORCID})
+
+Other contributors:
+\itemize{
+  \item Joe Thorley \email{joe@poissonconsulting.ca} (\href{https://orcid.org/0000-0002-7683-4592}{ORCID}) [contributor]
+  \item Province of British Columbia [copyright holder, funder]
+}
 
 }
 \keyword{internal}

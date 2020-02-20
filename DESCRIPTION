@@ -2,9 +2,11 @@ Package: shinywqg
 Title: Water Quality Guideline Shiny App
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Sebastian", "Dalgarno", , "seb@poissonconsulting.ca", c("aut", "cre"), comment = c(ORCID = "0000-0002-3658-4517"))
+    person("Sebastian", "Dalgarno", , "seb@poissonconsulting.ca", c("aut", "cre"), comment = c(ORCID = "0000-0002-3658-4517")),
+    person("Joe", "Thorley", , "joe@poissonconsulting.ca", "ctb", comment = c(ORCID = "0000-0002-7683-4592")),
+    person("Province of British Columbia", role = c("cph", "fnd"))
     )
-Description: User interface for the water quality guideline (WQG) website.
+Description: User interface to calculate water quality guidelines.
 License: MIT + file LICENSE
 Depends: 
     R (>= 3.4.0)
@@ -23,14 +25,16 @@ Imports:
     dplyr,
     shinyWidgets,
     gt,
-    rmarkdown
+    rmarkdown,
+    shinywqg
 Suggests: 
     covr,
     testthat (>= 2.1.0),
     knitr
 Remotes: 
     poissonconsulting/chk,
-    bcgov/wqbc
+    bcgov/wqbc,
+    poissonconsulting/shinywqg
 URL: https://github.com/poissonconsulting/shinywqg
 BugReports: https://github.com/poissonconsulting/shinywqg/issues
 Encoding: UTF-8
