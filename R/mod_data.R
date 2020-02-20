@@ -258,7 +258,7 @@ mod_data_server <- function(input, output, session) {
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
       notes <- get_footnotes(x)
       gt <- gt_table(x, cvalues, notes)
-      gtsave(gt, file)
+      gt::gtsave(gt, file)
       # path <- system.file(package = "shinywqg", "extdata/report_html.Rmd")
       # temp_report <- file.path(tempdir(), "report_html.Rmd")
       # file.copy(path, temp_report, overwrite = TRUE)
@@ -283,7 +283,7 @@ mod_data_server <- function(input, output, session) {
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
       notes <- get_footnotes(x)
       gt <- gt_table(x, cvalues, notes)
-      gtsave(gt, file)
+      gt::gtsave(gt, file)
       # 
       # path <- system.file(package = "shinywqg", "extdata/report_pdf.Rmd")
       # temp_report <- file.path(tempdir(), "report_pdf.Rmd")
