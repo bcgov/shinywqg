@@ -15,8 +15,6 @@ knitr::opts_chunk$set(echo = FALSE,
 ```
 
 ```{r, include = TRUE}
-library(shinywqg)
-
 gt_table(params$data, params$cvalues, "html")
 ```
 
