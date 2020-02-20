@@ -1,12 +1,6 @@
-#' Create gt table
-#'
-#' @param x A data.frame with evaluated and cleaned limits data.
-#' @param cvalues A character string of the parameter names and values used to calculate guideline.
-#' @param output A character string of either "html" or "pdf" indiacting output type.
-#' @export
-gt_table <- function(x, cvalues, output = "html"){
+
+gt_table <- function(x, cvalues, note, output = "html"){
   variable <- unique(x$Variable)
-  note <- get_footnotes(x, output)
   gt <- x %>%
     dplyr::group_by(Use) %>%
     dplyr::select(Use:Guideline) %>%

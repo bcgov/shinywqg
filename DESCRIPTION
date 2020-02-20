@@ -25,16 +25,14 @@ Imports:
     dplyr,
     shinyWidgets,
     gt,
-    rmarkdown,
-    shinywqg
+    rmarkdown
 Suggests: 
     covr,
     testthat (>= 2.1.0),
     knitr
 Remotes: 
     poissonconsulting/chk,
-    bcgov/wqbc,
-    poissonconsulting/shinywqg
+    bcgov/wqbc
 URL: https://github.com/poissonconsulting/shinywqg
 BugReports: https://github.com/poissonconsulting/shinywqg/issues
 Encoding: UTF-8

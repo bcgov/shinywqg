@@ -219,7 +219,8 @@ mod_data_server <- function(input, output, session) {
     if(is.null(x)) return()
     if(nrow(x) == 0) return()
     cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
-    gt_table(x, cvalues)
+    notes <- get_footnotes(x)
+    gt_table(x, cvalues, notes)
   })
   
   output$data_raw <- DT::renderDT({
@@ -257,8 +258,12 @@ mod_data_server <- function(input, output, session) {
   output$dl_html <- downloadHandler(
     filename = "wqg_report.html",
     content = function(file) {
-      params <- list(data = rv$report,
-                     cvalues = report_cvalues(cvalues(), rv$cvalue_active))
+      cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
+      data <- rv$report
+      notes <- get_footnotes(data)
+      params <- list(data = data,
+                     cvalues = cvalues,
+                     notes = notes)
       rmarkdown::render(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
                         output_file = file, 
                         output_format = rmarkdown::html_document(),
@@ -271,9 +276,11 @@ mod_data_server <- function(input, output, session) {
     filename = "wqg_report.pdf",
     content = function(file) {
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active, "pdf")
-      print(cvalues)
-      params <- list(data = rv$report,
-                     cvalues = cvalues)
+      data <- rv$report
+      notes <- get_footnotes(data, "pdf")
+      params <- list(data = data,
+                     cvalues = cvalues,
+                     notes = notes)
       rmarkdown::render(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
                         output_file = file, 
                         output_format = rmarkdown::pdf_document(),

@@ -44,7 +44,7 @@ tag_a <- function(x, href){
 }
 
 ## x is clean data
-get_footnotes <- function(x, output){
+get_footnotes <- function(x, output = "html"){
   links <- lapply(1:nrow(x), function(y){
     df <- x[y,]
     ref <- df[["Reference"]]
