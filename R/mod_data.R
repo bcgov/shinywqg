@@ -258,13 +258,17 @@ mod_data_server <- function(input, output, session) {
   output$dl_html <- downloadHandler(
     filename = "wqg_report.html",
     content = function(file) {
+      path <- system.file("extdata", package = "shinywqg", "report_html.Rmd")
+      temp_report <- file.path(tempdir(), "report_html.Rmd")
+      file.copy(path, temp_report, overwrite = TRUE)
+      
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
       data <- rv$report
       notes <- get_footnotes(data)
       params <- list(data = data,
                      cvalues = cvalues,
                      notes = notes)
-      rmarkdown::render(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
+      rmarkdown::render(temp_report,
                         output_file = file, 
                         output_format = rmarkdown::html_document(),
                         params = params,
@@ -275,13 +279,17 @@ mod_data_server <- function(input, output, session) {
   output$dl_pdf <- downloadHandler(
     filename = "wqg_report.pdf",
     content = function(file) {
+      path <- system.file("extdata", package = "shinywqg", "report_pdf.Rmd")
+      temp_report <- file.path(tempdir(), "report_pdf.Rmd")
+      file.copy(path, temp_report, overwrite = TRUE)
+      
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active, "pdf")
       data <- rv$report
       notes <- get_footnotes(data, "pdf")
       params <- list(data = data,
                      cvalues = cvalues,
                      notes = notes)
-      rmarkdown::render(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
+      rmarkdown::render(temp_report,
                         output_file = file, 
                         output_format = rmarkdown::pdf_document(),
                         params = params,
