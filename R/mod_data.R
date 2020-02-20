@@ -81,21 +81,6 @@ mod_data_server <- function(input, output, session) {
   ns <- session$ns
   
   observe({
-    config <- Sys.getenv("R_CONFIG_ACTIVE")
-    if(config == "shinyapps"){
-      rv$path <- "inst/extdata/"
-    }
-  })
-  
-  # deploy <- getShinyOption("deploy", NULL)
-  # observe({
-  #   
-  #   if(deploy){
-  #     rv$path <- "inst/extdata/"
-  #   }
-  # })
-  
-  observe({
     if(input$variable == "" | is.null(input$use)){
       return({
         for(i in cvalue_codes){
@@ -158,7 +143,7 @@ mod_data_server <- function(input, output, session) {
   })
   
   rv <- reactiveValues(
-    path = system.file(package = "shinywqg", "extdata/"),
+    path = "inst/extdata/",
     cvalue_active = NULL,
     cvalue_inactive = NULL,
     raw = empty_evaluate,
@@ -185,16 +170,12 @@ mod_data_server <- function(input, output, session) {
   })
   
   output$ui_use <- renderUI({
-    # req(input$variable)
     uses <- variable_use(input$variable)
     selectizeInput(ns("use"), 
                    label = "Select Use(s)", 
                    choices = uses, 
                    selected = uses[1],
                    multiple = TRUE)
-    # select_input_x(ns("use"), label = "Select Use(s)",
-    #                choices = c(variable_use(input$variable), ""),
-    #                selected = "")
   })
   
   output$ui_media <- renderUI({
