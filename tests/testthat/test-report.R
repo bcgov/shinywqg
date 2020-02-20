@@ -14,8 +14,7 @@ test_that("report renders", {
   cvalues <- report_cvalues(list(EMS_0107 = 9, EMS_1107 = 5), c("EMS_0107", "EMS_1107"))
     
   params <- list(data = x,
-                 cvalues = cvalues,
-                 output = "html")
+                 cvalues = cvalues)
   
   options(tinytex.verbose = TRUE)
   
@@ -27,8 +26,6 @@ test_that("report renders", {
   expect_is(y, "character")
   system2("open", args = file.path(path, "report.html"), wait = FALSE)
   
-  # params <- list(data = mtcars)
-  params$output <- "pdf"
   params$cvalues <- report_cvalues(list(EMS_0107 = 9, EMS_1107 = 5), 
                                    c("EMS_0107", "EMS_1107"), "pdf")
   
