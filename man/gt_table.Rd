@@ -4,7 +4,7 @@
 \alias{gt_table}
 \title{Create gt table}
 \usage{
-gt_table(x, cvalues, cvalues_active)
+gt_table(x, cvalues, cvalues_active, output)
 }
 \description{
 Create gt table

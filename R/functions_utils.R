@@ -44,7 +44,7 @@ tag_a <- function(x, href){
 }
 
 ## x is clean data
-get_footnotes <- function(x){
+get_footnotes <- function(x, output){
   links <- lapply(1:nrow(x), function(y){
     df <- x[y,]
     ref <- df[["Reference"]]
@@ -56,11 +56,17 @@ get_footnotes <- function(x){
       remove_nulls() %>%
       remove_nas()
     
-    links <- lapply(names(links), function(z){
-      tag_a(z, href = links[z])
-    })
-
-    paste(ref, paste(links, collapse = ", "), sep = ", ")
+    if(output == "html"){
+      links <- lapply(names(links), function(z){
+        tag_a(z, href = links[z])
+      })
+    } else {
+      links <- lapply(names(links), function(z){
+        paste(z, links[z], sep = " - ")
+      })
+    }
+    
+    paste(ref, paste(links, collapse = ", "), sep = "; ")
   })
 }
 
@@ -68,11 +74,16 @@ as_math <- function(x){
   paste0("$", x, "$")
 }
 
-report_cvalues <- function(x, active){
+report_cvalues <- function(x, active, output = "html"){
   x <- x[active]
   names(x) <- sapply(names(x), code_to_variable)
   # x <- remove_nulls(x)
   cvalues <- ""
   if(length(x))
-    cvalues <- paste0(names(x), ': ', x, collapse = "<br>") 
+    if(output == "html"){
+      cvalues <- paste0(names(x), ': ', x, collapse = "<br>") 
+    } else {
+      cvalues <- paste0(names(x), ': ', x, collapse = "  \n") 
+    }
+  cvalues
 }

@@ -1,13 +1,9 @@
 ---
 title: "<center> Water Quality Guideline </center>"
 output:
-  html_document:
-    toc: FALSE
-    theme: null
   pdf_document:
 params:
   data: NA
-  cvalue_active: NA
   cvalues: NA
 ---
 ```{r global_options, include=FALSE}
@@ -15,11 +11,16 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE, message = FALSE,
                       include = FALSE)
 ```
+```{r, include = TRUE}
+variable <- paste(unique(params$data$Variable), "  \n")
+```
+\center __`r variable`__ \center
+`r params$cvalues`
 
 ```{r, include = TRUE}
 library(shinywqg)
 
-gt_table(params$data, params$cvalues(), params$cvalue_active)
+gt_table(params$data, params$cvalues, "pdf")
 ```
 
 

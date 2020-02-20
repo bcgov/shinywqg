@@ -218,7 +218,8 @@ mod_data_server <- function(input, output, session) {
     x <- wqg_data_report()
     if(is.null(x)) return()
     if(nrow(x) == 0) return()
-    gt_table(x, cvalues(), rv$cvalue_active)
+    cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
+    gt_table(x, cvalues)
   })
   
   output$data_raw <- DT::renderDT({
@@ -257,10 +258,10 @@ mod_data_server <- function(input, output, session) {
     filename = "wqg_report.html",
     content = function(file) {
       params <- list(data = rv$report,
-                     cvalue_active = rv$cvalue_active,
-                     cvalues = cvalues)
+                     cvalues = report_cvalues(cvalues(), rv$cvalue_active))
       rmarkdown::render(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
-                        output_file = file,
+                        output_file = file, 
+                        output_format = rmarkdown::html_document(),
                         params = params,
                         envir = new.env(parent = globalenv()))
     }
@@ -269,11 +270,13 @@ mod_data_server <- function(input, output, session) {
   output$dl_pdf <- downloadHandler(
     filename = "wqg_report.pdf",
     content = function(file) {
+      cvalues <- report_cvalues(cvalues(), rv$cvalue_active, "pdf")
+      print(cvalues)
       params <- list(data = rv$report,
-                     cvalue_active = rv$cvalue_active,
                      cvalues = cvalues)
-      rmarkdown::render(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
-                        output_file = file,
+      rmarkdown::render(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
+                        output_file = file, 
+                        output_format = rmarkdown::pdf_document(),
                         params = params,
                         envir = new.env(parent = globalenv())
       )
@@ -283,7 +286,7 @@ mod_data_server <- function(input, output, session) {
   output$dl_rmd <- downloadHandler(
     filename = "wqg_report.Rmd",
     content = function(file) {
-      file.copy(system.file("extdata", package = "shinywqg", "report.Rmd"), file)
+      file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"), file)
     }
   )
 }
