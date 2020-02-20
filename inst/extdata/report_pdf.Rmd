@@ -18,6 +18,7 @@ variable <- paste(unique(params$data$Variable), "  \n")
 `r params$cvalues`
 
 ```{r, include = TRUE}
+library(shinywqg)
 gt_table(params$data, params$cvalues, "pdf")
 ```
 
