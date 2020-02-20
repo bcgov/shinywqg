@@ -37,8 +37,8 @@ mod_data_ui <- function(id) {
                                      circle = FALSE,
                                      icon = icon("download"),
                                      dl_button(ns("dl_html"), "HTML"),
-                                     dl_button(ns("dl_pdf"), "PDF"),
-                                     dl_button(ns("dl_rmd"), "Rmarkdown")
+                                     dl_button(ns("dl_pdf"), "PDF")
+                                     # dl_button(ns("dl_rmd"), "Rmarkdown")
         ),
         
         shinyWidgets::dropdownButton(status = "primary",
@@ -254,38 +254,51 @@ mod_data_server <- function(input, output, session) {
   output$dl_html <- downloadHandler(
     filename = "wqg_report.html",
     content = function(file) {
-      path <- system.file(package = "shinywqg", "extdata/report_html.Rmd")
-      temp_report <- file.path(tempdir(), "report_html.Rmd")
-      file.copy(path, temp_report, overwrite = TRUE)
-      
+      x <- wqg_data_report()
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
-      data <- rv$report
-      notes <- get_footnotes(data)
-      params <- list(data = data,
-                     cvalues = cvalues,
-                     notes = notes)
-      rmarkdown::render(temp_report,
-                        output_file = file, 
-                        params = params)
+      notes <- get_footnotes(x)
+      gt <- gt_table(x, cvalues, notes)
+      gtsave(gt, file)
+      # path <- system.file(package = "shinywqg", "extdata/report_html.Rmd")
+      # temp_report <- file.path(tempdir(), "report_html.Rmd")
+      # file.copy(path, temp_report, overwrite = TRUE)
+      # 
+      # cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
+      # data <- rv$report
+      # notes <- get_footnotes(data)
+      # params <- list(data = data,
+      #                cvalues = cvalues,
+      #                notes = notes)
+      # rmarkdown::render(temp_report,
+      #                   output_file = file, 
+      #                   params = params,
+      #                   envir = new.env(parent = globalenv()))
     }
   )
   
   output$dl_pdf <- downloadHandler(
     filename = "wqg_report.pdf",
     content = function(file) {
-      path <- system.file(package = "shinywqg", "extdata/report_pdf.Rmd")
-      temp_report <- file.path(tempdir(), "report_pdf.Rmd")
-      file.copy(path, temp_report, overwrite = TRUE)
-      
-      cvalues <- report_cvalues(cvalues(), rv$cvalue_active, "pdf")
-      data <- rv$report
-      notes <- get_footnotes(data, "pdf")
-      params <- list(data = data,
-                     cvalues = cvalues,
-                     notes = notes)
-      rmarkdown::render(temp_report,
-                        output_file = file, 
-                        params = params)
+      x <- wqg_data_report()
+      cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
+      notes <- get_footnotes(x)
+      gt <- gt_table(x, cvalues, notes)
+      gtsave(gt, file)
+      # 
+      # path <- system.file(package = "shinywqg", "extdata/report_pdf.Rmd")
+      # temp_report <- file.path(tempdir(), "report_pdf.Rmd")
+      # file.copy(path, temp_report, overwrite = TRUE)
+      # 
+      # cvalues <- report_cvalues(cvalues(), rv$cvalue_active, "pdf")
+      # data <- rv$report
+      # notes <- get_footnotes(data, "pdf")
+      # params <- list(data = data,
+      #                cvalues = cvalues,
+      #                notes = notes)
+      # rmarkdown::render(temp_report,
+      #                   output_file = file, 
+      #                   params = params,
+      #                   envir = new.env(parent = globalenv()))
     }
   )
   

@@ -85,5 +85,5 @@ report_cvalues <- function(x, active, output = "html"){
     } else {
       cvalues <- paste0(names(x), ': ', x, collapse = "  \n") 
     }
-  cvalues
+  paste0(cvalues, "<br><br>")
 }
