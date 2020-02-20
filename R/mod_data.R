@@ -80,6 +80,12 @@ mod_data_ui <- function(id) {
 mod_data_server <- function(input, output, session) {
   ns <- session$ns
   
+  deploy <- getShinyOption("deploy", NULL)
+  observe({
+    if(deploy){
+      rv$path <- "inst/extdata/"
+    }
+  })
   
   observe({
     if(input$variable == "" | is.null(input$use)){
@@ -144,6 +150,7 @@ mod_data_server <- function(input, output, session) {
   })
   
   rv <- reactiveValues(
+    path = system.file(package = "shinywqg", "extdata/"),
     cvalue_active = NULL,
     cvalue_inactive = NULL,
     raw = empty_evaluate,
@@ -258,7 +265,7 @@ mod_data_server <- function(input, output, session) {
   output$dl_html <- downloadHandler(
     filename = "wqg_report.html",
     content = function(file) {
-      path <- system.file("extdata", package = "shinywqg", "report_html.Rmd")
+      path <- file.path(rv$path, "report_html.Rmd")
       temp_report <- file.path(tempdir(), "report_html.Rmd")
       file.copy(path, temp_report, overwrite = TRUE)
       
@@ -279,7 +286,7 @@ mod_data_server <- function(input, output, session) {
   output$dl_pdf <- downloadHandler(
     filename = "wqg_report.pdf",
     content = function(file) {
-      path <- system.file("extdata", package = "shinywqg", "report_pdf.Rmd")
+      path <- file.path(rv$path, "report_pdf.Rmd")
       temp_report <- file.path(tempdir(), "report_pdf.Rmd")
       file.copy(path, temp_report, overwrite = TRUE)
       
@@ -301,7 +308,7 @@ mod_data_server <- function(input, output, session) {
   output$dl_rmd <- downloadHandler(
     filename = "wqg_report.Rmd",
     content = function(file) {
-      file.copy(system.file("extdata", package = "shinywqg", "report_html.Rmd"), file)
+      file.copy(file.path(rv$path, "report_html.Rmd"), file)
     }
   )
 }
