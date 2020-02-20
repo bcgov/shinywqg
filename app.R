@@ -1,3 +1,4 @@
 pkgload::load_all(".")
-shinywqg::run_wqg_app(deploy = TRUE)
+library(shinywqg)
+shinywqg::run_wqg_app()
 
