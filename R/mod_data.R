@@ -283,7 +283,13 @@ mod_data_server <- function(input, output, session) {
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
       notes <- get_footnotes(x)
       gt <- gt_table(x, cvalues, notes)
-      gt::gtsave(gt, file, zoom = 1)
+      tempfile_ <- tempfile(fileext = ".html")
+      gt::gtsave(gt, tempfile_)
+      webshot::webshot(url = paste0("file:///", tempfile_), 
+                       file = file, selector = "table", 
+                       zoom = 1.3, 
+                       expand = 5)
+      
       # 
       # path <- system.file(package = "shinywqg", "extdata/report_pdf.Rmd")
       # temp_report <- file.path(tempdir(), "report_pdf.Rmd")
