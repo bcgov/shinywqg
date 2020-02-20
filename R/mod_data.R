@@ -80,12 +80,20 @@ mod_data_ui <- function(id) {
 mod_data_server <- function(input, output, session) {
   ns <- session$ns
   
-  deploy <- getShinyOption("deploy", NULL)
   observe({
-    if(deploy){
+    config <- Sys.getenv("R_CONFIG_ACTIVE")
+    if(config == "shinyapps"){
       rv$path <- "inst/extdata/"
     }
   })
+  
+  # deploy <- getShinyOption("deploy", NULL)
+  # observe({
+  #   
+  #   if(deploy){
+  #     rv$path <- "inst/extdata/"
+  #   }
+  # })
   
   observe({
     if(input$variable == "" | is.null(input$use)){
