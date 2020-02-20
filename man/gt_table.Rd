@@ -4,7 +4,14 @@
 \alias{gt_table}
 \title{Create gt table}
 \usage{
-gt_table(x, cvalues, cvalues_active, output)
+gt_table(x, cvalues, output = "html")
+}
+\arguments{
+\item{x}{A data.frame with evaluated and cleaned limits data.}
+
+\item{cvalues}{A character string of the parameter names and values used to calculate guideline.}
+
+\item{output}{A character string of either "html" or "pdf" indiacting output type.}
 }
 \description{
 Create gt table

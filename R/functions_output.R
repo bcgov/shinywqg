@@ -1,5 +1,8 @@
 #' Create gt table
 #'
+#' @param x A data.frame with evaluated and cleaned limits data.
+#' @param cvalues A character string of the parameter names and values used to calculate guideline.
+#' @param output A character string of either "html" or "pdf" indiacting output type.
 #' @export
 gt_table <- function(x, cvalues, output = "html"){
   variable <- unique(x$Variable)
