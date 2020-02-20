@@ -25,7 +25,8 @@ Imports:
     dplyr,
     shinyWidgets,
     gt,
-    rmarkdown
+    rmarkdown,
+    webshot
 Suggests: 
     covr,
     testthat (>= 2.1.0),
