@@ -275,7 +275,7 @@ mod_data_server <- function(input, output, session) {
   output$dl_pdf <- downloadHandler(
     filename = "wqg_report.pdf",
     content = function(file) {
-      path <- "ins/extdata/report_pdf.Rmd"
+      path <- "inst/extdata/report_pdf.Rmd"
       temp_report <- file.path(tempdir(), "report_pdf.Rmd")
       file.copy(path, temp_report, overwrite = TRUE)
       
@@ -297,7 +297,7 @@ mod_data_server <- function(input, output, session) {
   output$dl_rmd <- downloadHandler(
     filename = "wqg_report.Rmd",
     content = function(file) {
-      file.copy("./inst/extdata/report_html.Rmd", file)
+      file.copy(system.file(package = "shinywqg", "extdata/report_html.Rmd"), file)
     }
   )
 }
