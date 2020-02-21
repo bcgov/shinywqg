@@ -127,4 +127,3 @@ test_that("last", {
   x <- 1:2
   expect_identical(last(x), 2L)
 })
-
