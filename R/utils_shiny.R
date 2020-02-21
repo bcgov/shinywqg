@@ -27,16 +27,7 @@ select_input_x <- function(..., label = "Select sites:", choices, selected = cho
 }
 
 table_output <- function(...) {
-  wellPanel(DT::DTOutput(...), style = "font-size:87%", class = "wellpanel")
-}
-
-data_table <- function(data) {
-  if(!is.data.frame(data)) return()
-  DT::datatable(data, escape = FALSE, rownames = FALSE,  class = "cell-border compact",
-    options = list(ordering = TRUE,
-      autowidth = TRUE, scrollX = TRUE,
-      columnDefs = list(list(className = "dt-center",
-        targets = "_all"))))
+  wellPanel(gt::gt_output(...), style = "font-size:87%", class = "wellpanel")
 }
 
 hide <- function(id, anim = TRUE) {

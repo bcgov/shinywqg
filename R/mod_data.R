@@ -221,12 +221,12 @@ mod_data_server <- function(input, output, session) {
     gt_table(x, cvalues, notes)
   })
 
-  output$data_raw <- DT::renderDT({
-    data_table(rv$raw)
+  output$data_raw <- gt::render_gt({
+    gt_data(rv$raw)
   })
 
-  output$data_report <- DT::renderDT({
-    data_table(rv$report)
+  output$data_report <- gt::render_gt({
+    gt_data(rv$report)
   })
 
   output$dl_csv_raw <- downloadHandler(
