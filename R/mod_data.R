@@ -106,13 +106,17 @@ mod_data_server <- function(input, output, session) {
     x <- set_names(lapply(x, function(y) {
       input[[y]]
     }), x)
+    x
+  })
+  
+  clean_cvalues <- reactive({
+    x <- cvalues()
     if(!is.na(x["EMS_1107"])) {
       x["EMS_0107"] <- x["EMS_1107"]
     }
     if(is.na(x["EMS_0107"])) {
       x["EMS_0107"] <- x["EMS_1107"]
     }
-    x
   })
 
   wqg_data_evaluate <- reactive({
@@ -127,7 +131,7 @@ mod_data_server <- function(input, output, session) {
       input$type, input$effect, input$statistic)
     if(nrow(x) == 0) return()
     x %>%
-      wqg_evaluate(cvalues = cvalues(), sigfig = input$sigfig)
+      wqg_evaluate(cvalues = clean_cvalues(), sigfig = input$sigfig)
   })
 
   wqg_data_report <- reactive({
