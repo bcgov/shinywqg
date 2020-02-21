@@ -26,4 +26,4 @@ In order to create a new package the user should
 1) Push the changes to the new repository.
 1) Go to the repository GitHub [settings](https://github.com/poissonconsulting/shinywqg/settings) and set the GitHub Pages Source to be the master branch /docs folder.
 1) Edit the GitHub repository [description](https://github.com/poissonconsulting/shinywqg/) and set the website to be <https://poissonconsulting.github.io/shinywqg/>.
-1) If you aren't developing a Shiny app, run  `shinywqg:::cannibalise_shiny(getwd())`  to remove any Shiny-related files (make sure that getwd() points to the correct place!) 
+

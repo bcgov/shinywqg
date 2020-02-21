@@ -55,9 +55,6 @@ choose ‘Use this template’.
 shinywqg includes files used for development of Shiny applications. To
 remove these from the repository, run:
 
-``` r
-shinywqg:::cannibalise_shiny(getwd())
-```
 
 ## Information
 

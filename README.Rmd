@@ -55,9 +55,6 @@ install.packages("shinywqg")
 In order to create a new package the user should go to the shinywqg [GitHub repository](https://github.com/poissonconsulting/shinywqg) and choose 'Use this template'.
 
 shinywqg includes files used for development of Shiny applications. To remove these from the repository, run:
-```{r, eval=FALSE}
-shinywqg:::cannibalise_shiny(getwd())
-```
 
 ## Information
 

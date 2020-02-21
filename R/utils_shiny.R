@@ -3,59 +3,59 @@ txt_input <- function(..., width = "100%") shiny::textInput(..., width = width)
 br2 <- function() tagList(br(), br())
 br3 <- function() tagList(br(), br(), br())
 
-help_text <- function(x){
+help_text <- function(x) {
   tags$p(x, style = "font-size: 11px; color: grey;")
 }
 
-dl_button <- function(..., icon = "download", class = "small-dl"){
+dl_button <- function(..., icon = "download", class = "small-dl") {
   downloadButton(..., icon = icon(icon), class = class)
 }
 
-button <- function(..., icon = NULL, class = "btn-primary"){
+button <- function(..., icon = NULL, class = "btn-primary") {
   actionButton(..., icon = icon(icon), class = class)
 }
 
 select_input_x <- function(..., label = "Select sites:", choices, selected = choices[1]) {
   selectizeInput(..., multiple = TRUE, label = label,
-                 choices = choices,
-                 selected = selected,
-                 options = list(
-                   'plugins' = list('remove_button'),
-                   'create' = TRUE,
-                   'persist' = FALSE,
-                   onInitialize = I('function() { this.setValue(""); }')))
+    choices = choices,
+    selected = selected,
+    options = list(
+      "plugins" = list("remove_button"),
+      "create" = TRUE,
+      "persist" = FALSE,
+      onInitialize = I('function() { this.setValue(""); }')))
 }
 
-table_output <- function(...){
+table_output <- function(...) {
   wellPanel(DT::DTOutput(...), style = "font-size:87%", class = "wellpanel")
 }
 
-data_table <- function(data){
+data_table <- function(data) {
   if(!is.data.frame(data)) return()
-  DT::datatable(data, escape = FALSE, rownames = FALSE,  class = 'cell-border compact',
-                options = list(ordering = TRUE,
-                               autowidth = TRUE, scrollX = TRUE,
-                               columnDefs = list(list(className = 'dt-center',
-                                                      targets = "_all"))))
+  DT::datatable(data, escape = FALSE, rownames = FALSE,  class = "cell-border compact",
+    options = list(ordering = TRUE,
+      autowidth = TRUE, scrollX = TRUE,
+      columnDefs = list(list(className = "dt-center",
+        targets = "_all"))))
 }
 
-hide <- function(id, anim = TRUE){
+hide <- function(id, anim = TRUE) {
   shinyjs::hide(id, anim = anim)
 }
 
-show <- function(id, anim = TRUE){
+show <- function(id, anim = TRUE) {
   shinyjs::show(id, anim = anim)
 }
 
-embed_help <- function(tag, id, ns, help){
+embed_help <- function(tag, id, ns, help) {
   element <- div(shiny::actionLink(ns(id), shiny::icon("info-circle")),
-                 class = "pull-right")
+    class = "pull-right")
   tag$children[[1]] <- tag$children[[1]] %>%
     htmltools::tagAppendChild(element) %>%
     htmltools::tagAppendAttributes(style = "width:100%;")
   tagList(tag,
-          shinyjs::hidden(div(id = ns(paste0("div_", id)),
-                              help_text(help))))
+    shinyjs::hidden(div(id = ns(paste0("div_", id)),
+      help_text(help))))
 }
 
 css_add <- function(x) {
@@ -69,7 +69,7 @@ css_hide_errors <- function() {
 ")
 }
 
-css_button <- function(){
+css_button <- function() {
   css_add(".small-dl{
   padding:4px; font-size:85%;
 }")

@@ -4,7 +4,7 @@ library(dplyr)
 limits <-  readr::read_csv(system.file(package = "shinywqg", "extdata/all_wqgs.csv"))
 limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
 
-# codes <- limits %>% 
+# codes <- limits %>%
 #   dplyr::select(Variable, EMS_Code, Units) %>%
 #   dplyr::group_by(Variable, EMS_Code) %>%
 #   dplyr::arrange(Variable, EMS_Code, Units) %>%
@@ -12,31 +12,31 @@ limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_c
 #   dplyr::ungroup()
 codes <-  read.csv(system.file(package = "shinywqg", "extdata/codes.csv"), stringsAsFactors = FALSE)
 codes <- codes %>% dplyr::rename(EMS_Code = Code,
-                                 Statistic = Average)
+  Statistic = Average)
 
 ### add Calcium Dissolved
 codes <- bind_rows(codes,
-                   tibble(Variable = "Calcium Dissolved",
-                          EMS_Code = "EMS_CA_D",
-                          Units = "mg/L",
-                          Statistic = "mean"))
+  tibble(Variable = "Calcium Dissolved",
+    EMS_Code = "EMS_CA_D",
+    Units = "mg/L",
+    Statistic = "mean"))
 
-extract_codes1 <- function(x){
-  if(is.na(x)){
+extract_codes1 <- function(x) {
+  if(is.na(x)) {
     return(NULL)
   }
   reg <- gregexpr("EMS_", x)[[1]]
-  if(length(reg) < 2){
-    if(reg < 0){
+  if(length(reg) < 2) {
+    if(reg < 0) {
       return(NULL)
     }
   }
-  sapply(reg, function(y){
-    substr(x, y, y+7)
+  sapply(reg, function(y) {
+    substr(x, y, y + 7)
   }) %>% unique()
 }
 
-extract_codes2 <- function(x){
+extract_codes2 <- function(x) {
   unique(unlist(lapply(x, extract_codes1)))
 }
 
@@ -46,22 +46,22 @@ cvalue_codes <- unique(c(limit_codes, condition_codes))
 
 ### for now, remove rows with notes but put back later
 limits <- limits %>%
-  filter(Notes == "" | is.na(Notes)) 
+  filter(Notes == "" | is.na(Notes))
 
 # remove 4 duplicates until issues resolved
 limits <- limits %>%
-  group_by(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, 
-           Condition, ConditionNotes, Direction, Statistic) %>%
+  group_by(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel,
+    Condition, ConditionNotes, Direction, Statistic) %>%
   slice(1) %>%
   ungroup() %>%
-  arrange(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, Condition, ConditionNotes) 
+  arrange(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, Condition, ConditionNotes)
 
 duplicates <- limits %>%
-  group_by(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, 
-           Condition, ConditionNotes, Direction, Statistic) %>%
+  group_by(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel,
+    Condition, ConditionNotes, Direction, Statistic) %>%
   filter(n() > 1) %>%
   ungroup() %>%
-  arrange(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, Condition, ConditionNotes) 
+  arrange(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, Condition, ConditionNotes)
 
 expect_identical(nrow(duplicates), 0L)
 
@@ -69,19 +69,17 @@ missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;
                 2. There is no available equation for that variable/use/term combination."
 
-empty_raw <- limits[0,]
+empty_raw <- limits[0, ]
 empty_evaluate <- limits %>%
   mutate(ConditionPass = NA, Guideline = NA)
-empty_evaluate <- empty_evaluate[0,]
+empty_evaluate <- empty_evaluate[0, ]
 
 empty_report <- empty_evaluate[c("Variable", "Use", "Media", "PredictedEffectLevel",
-                                 "Type", "Statistic", "Guideline", "Reference",
-                                 "Reference Link", "Overview Report Link",
-                                 "Technical Document Link")]
+  "Type", "Statistic", "Guideline", "Reference",
+  "Reference Link", "Overview Report Link",
+  "Technical Document Link")]
 empty_report <- empty_report %>% rename(`Effect Level` = PredictedEffectLevel)
 
-usethis::use_data(limits, codes, cvalue_codes, 
-                  empty_raw, empty_report, empty_evaluate,
-                  missing_help, internal = TRUE, overwrite = TRUE)
-
-
+usethis::use_data(limits, codes, cvalue_codes,
+  empty_raw, empty_report, empty_evaluate,
+  missing_help, internal = TRUE, overwrite = TRUE)
