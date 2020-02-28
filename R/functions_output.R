@@ -19,10 +19,10 @@ gt_table <- function(x, cvalues, note, output = "html") {
         columns = gt::everything()
       ) %>%
       gt::tab_style(
-        style = gt::cell_text(size = gt::px(15)),
+        style = gt::cell_text(size = gt::px(17)),
         locations = list(
           gt::cells_data(
-            columns = gt::vars(Media, Type, Statistic, `Effect Level`, Status))
+            columns = gt::vars(Guideline))
         )
       ) %>%
       gt::tab_style(
@@ -35,7 +35,7 @@ gt_table <- function(x, cvalues, note, output = "html") {
         locations = list(
           gt::cells_group(groups = TRUE))
       ) %>%
-      gt::tab_options(table.font.size = gt::px(17),
+      gt::tab_options(table.font.size = gt::px(15),
         heading.subtitle.font.size = gt::px(16),
         footnotes.font.size = gt::px(13),
         table.width = gt::pct(90),
