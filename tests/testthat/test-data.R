@@ -9,8 +9,8 @@ test_that("data functions work", {
 
   y <- wqg_evaluate(x, cvalues, 2)
   expect_identical(sum(y$ConditionPass), 2L)
-  expect_identical(y$Guideline, c("10% decrease background",
-    "10% increase background"))
+  expect_identical(y$Guideline, c(">= 10% decrease background",
+    "<= 10% increase background"))
 
   # case of multiple EMS_Code only one row output
   x <- wqg_filter("Fluoride Total", "Aquatic Life - Freshwater", "Water",
@@ -56,8 +56,5 @@ test_that("data functions work", {
 
   cvalues <- list(EMS_0004 = 9, EMS_0013 = 10)
   y <- wqg_evaluate(x, cvalues, 2) %>% wqg_clean()
-  expect_identical(nrow(y), 2L)
-  tmp <- gt_table(y, cvalues, c("EMS_0004", "EMS_0013"))
-  expect_is(tmp, "gt_tbl")
-
+  expect_identical(nrow(y), 1L)
 })

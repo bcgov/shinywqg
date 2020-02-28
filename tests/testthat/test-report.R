@@ -12,30 +12,26 @@ test_that("report renders", {
     wqg_clean()
 
   cvalues <- report_cvalues(list(EMS_0107 = 9, EMS_1107 = 5), c("EMS_0107", "EMS_1107"))
-
-  params <- list(data = x,
-    cvalues = cvalues)
-
-  options(tinytex.verbose = TRUE)
-
-  y <- rmarkdown::render(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
-    output_file = file.path(path, "report.html"),
-    params = params, output_format = rmarkdown::html_document(),
-    envir = new.env(parent = globalenv()))
-
-  expect_is(y, "character")
+  note <- get_footnotes(x)
+  
+  # params <- list(data = x,
+  #   cvalues = cvalues)
+  
+  # y <- rmarkdown::render(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
+  #   output_file = file.path(path, "report.html"),
+  #   params = params, output_format = rmarkdown::html_document(),
+  #   envir = new.env(parent = globalenv()))
+  
+  y <- gt_table(x, cvalues, note)
+  expect_is(y, "gt_tbl")
+  y <- gt::gtsave(y, "report.html", path)
   system2("open", args = file.path(path, "report.html"), wait = FALSE)
 
-  params$cvalues <- report_cvalues(list(EMS_0107 = 9, EMS_1107 = 5),
+  cvalues <- report_cvalues(list(EMS_0107 = 9, EMS_1107 = 5),
     c("EMS_0107", "EMS_1107"), "pdf")
 
-  y <- rmarkdown::render(system.file("extdata", package = "shinywqg", "report_pdf.Rmd"),
-    output_file = file.path(path, "report.pdf"),
-    params = params, output_format = rmarkdown::pdf_document(),
-    envir = new.env(parent = globalenv()))
-
+  y <- gt_table(x, cvalues, note)
+  expect_is(y, "gt_tbl")
+  y <- gt::gtsave(y, "report.pdf", path, zoom = 1.3, expand = 5)
   system2("open", args = file.path(path, "report.pdf"), wait = FALSE)
-
-  expect_is(y, "character")
-
 })
