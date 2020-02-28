@@ -178,11 +178,10 @@ mod_data_server <- function(input, output, session) {
 
   output$ui_use <- renderUI({
     uses <- variable_use(input$variable)
-    selectizeInput(ns("use"),
+    select_input_x(ns("use"),
       label = "Select Use(s)",
       choices = uses,
-      selected = uses[1],
-      multiple = TRUE)
+      selected = uses)
   })
 
   output$ui_media <- renderUI({
