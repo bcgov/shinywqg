@@ -8,23 +8,10 @@ get_combinations <- function(variable, use, data = limits) {
   l
 }
 
-extract_codes1 <- function(x) {
-  if(is.na(x)) {
-    return(NULL)
-  }
-  reg <- gregexpr("EMS_", x)[[1]]
-  if(length(reg) < 2) {
-    if(reg < 0) {
-      return(NULL)
-    }
-  }
-  sapply(reg, function(y) {
-    substr(x, y, y + 7)
-  })  %>% unique()
-}
-
-extract_codes2 <- function(x) {
-  unique(unlist(lapply(x, extract_codes1)))
+extract_codes <- function(x) {
+  setdiff(unique(unlist(lapply(x, function(y){
+    stringr::str_extract_all(y, "EMS_[[:alnum:]][[:alnum:]_]{3,3}")
+  }))), NA)
 }
 
 variable_use <- function(variable, x = limits) {

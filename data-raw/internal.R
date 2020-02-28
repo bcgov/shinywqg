@@ -21,27 +21,14 @@ codes <- bind_rows(codes,
     Units = "mg/L",
     Statistic = "mean"))
 
-extract_codes1 <- function(x) {
-  if(is.na(x)) {
-    return(NULL)
-  }
-  reg <- gregexpr("EMS_", x)[[1]]
-  if(length(reg) < 2) {
-    if(reg < 0) {
-      return(NULL)
-    }
-  }
-  sapply(reg, function(y) {
-    substr(x, y, y + 7)
-  }) %>% unique()
+extract_codes <- function(x) {
+  setdiff(unique(unlist(lapply(x, function(y){
+    stringr::str_extract_all(y, "EMS_[[:alnum:]][[:alnum:]_]{3,3}")
+  }))), NA)
 }
 
-extract_codes2 <- function(x) {
-  unique(unlist(lapply(x, extract_codes1)))
-}
-
-limit_codes <- extract_codes2(limits$Limit)
-condition_codes <- extract_codes2(limits$Condition)
+limit_codes <- extract_codes(limits$Limit)
+condition_codes <- extract_codes(limits$Condition)
 cvalue_codes <- unique(c(limit_codes, condition_codes))
 
 ### for now, remove rows with notes but put back later

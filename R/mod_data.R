@@ -171,7 +171,7 @@ mod_data_server <- function(input, output, session) {
 
   observe({
     data <- wqg_data_evaluate()
-    cval <- extract_codes2(data$Condition)
+    cval <- extract_codes(data$Condition)
     rv$cvalue_active <- cval
     rv$cvalue_inactive <- setdiff(cvalue_codes, cval)
   })
