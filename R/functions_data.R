@@ -29,10 +29,11 @@ wqg_evaluate <- function(x, cvalues, sigfig) {
 }
 
 wqg_clean <- function(data) {
-  data %>%
+  data <- data %>%
     dplyr::filter(ConditionPass) %>%
     dplyr::select(Variable, Use, Media, Type, Statistic,
       `Predicted Effect Level` = PredictedEffectLevel,
-      Status, Guideline, Reference:`Technical Document Link`) %>%
+      Status, `Condition Notes` = ConditionNotes, 
+      Guideline, Reference:`Technical Document Link`) %>%
     dplyr::select_if(function(x) !all(is.na(x)))
 }
