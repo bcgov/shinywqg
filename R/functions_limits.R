@@ -17,14 +17,17 @@ calc_limit <- function(x, cvalues) {
 }
 
 evaluate_guideline <- function(limit, note, direction, units, cvalues, sigfig) {
-  if(!length(limit) | !length(note)) return()
-  if(!is.na(note) & is.na(limit))
-    return(note)
-  limit <- signif(calc_limit(limit, cvalues), sigfig)
+  if(!length(limit) | !length(note)) 
+    return()
+  
   prefix <- switch(direction,
-    "Upper Limit" = "<= ",
-    "Lower Limit" = ">= ",
-    ""
-  )
+                   "Upper Limit" = "<= ",
+                   "Lower Limit" = ">= ",
+                   "")
+  
+  if(!is.na(note) & is.na(limit))
+    return(paste0(prefix, note))
+  
+  limit <- signif(calc_limit(limit, cvalues), sigfig)
   paste0(prefix, limit, " (", units, ")")
 }
