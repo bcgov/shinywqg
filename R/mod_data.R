@@ -179,9 +179,9 @@ mod_data_server <- function(input, output, session) {
   output$ui_use <- renderUI({
     uses <- variable_use(input$variable)
     select_input_x(ns("use"),
-      label = "Select Use(s)",
+      label = "Select Value(s)",
       choices = uses,
-      selected = uses)
+      selected = "")
   })
 
   output$ui_media <- renderUI({
