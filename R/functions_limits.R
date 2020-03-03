@@ -16,18 +16,36 @@ calc_limit <- function(x, cvalues) {
   x
 }
 
-evaluate_guideline <- function(limit, note, direction, units, cvalues, sigfig) {
+evaluate_guideline <- function(limit, note, cvalues) {
   if(!length(limit) | !length(note)) 
     return()
+  
+  if(!is.na(note) & is.na(limit))
+    return(note)
+  
+  calc_limit(limit, cvalues)
+  
+  # prefix <- switch(direction,
+  #                  "Upper Limit" = "<= ",
+  #                  "Lower Limit" = ">= ",
+  #                  "")
+  # 
+  # if(!is.na(note) & is.na(limit))
+  #   return(paste0(prefix, note))
+  # 
+  # limit <- signif(calc_limit(limit, cvalues), sigfig)
+  # paste0(prefix, limit, " (", units, ")")
+}
+
+format_guideline <- function(guideline, direction, units, sigfig){
   
   prefix <- switch(direction,
                    "Upper Limit" = "<= ",
                    "Lower Limit" = ">= ",
                    "")
   
-  if(!is.na(note) & is.na(limit))
-    return(paste0(prefix, note))
+  if(is.na(as.numeric(guideline)))
+    return(paste0(prefix, guideline))
   
-  limit <- signif(calc_limit(limit, cvalues), sigfig)
-  paste0(prefix, limit, " (", units, ")")
+  paste0(prefix, signif(guideline, sigfig), " (", units, ")")
 }

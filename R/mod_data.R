@@ -98,7 +98,11 @@ mod_data_server <- function(input, output, session) {
   })
 
   output$ui_sigfig <- renderUI({
-    numericInput(ns("sigfig"), label = "Guideline Significant Figures", value = 2)
+    x <- wqg_data_evaluate()
+    x <- x[x$ConditionPass,]
+    if(any(is.na(as.numeric(x$Limit)))){
+      return(numericInput(ns("sigfig"), label = "Guideline Significant Figures", value = 2))
+    }
   })
 
   cvalues <- reactive({
@@ -116,7 +120,6 @@ mod_data_server <- function(input, output, session) {
   })
 
   wqg_data_evaluate <- reactive({
-    req(input$sigfig)
     req(input$variable)
     req(input$use)
     req(input$media)
@@ -127,15 +130,19 @@ mod_data_server <- function(input, output, session) {
       input$type, input$effect, input$statistic)
     if(nrow(x) == 0) return()
     x %>%
-      wqg_evaluate(cvalues = clean_cvalues(), sigfig = input$sigfig)
+      wqg_evaluate(cvalues = clean_cvalues())
   })
 
   wqg_data_report <- reactive({
     x <-  wqg_data_evaluate()
     if(is.null(x)) return()
     if(nrow(x) == 0) return()
+    sigfig <- 2
+    if(!is.null(input$sigfig)){
+      sigfig <- input$sigfig
+    }
     x %>%
-      wqg_clean()
+      wqg_clean(sigfig)
   })
 
   combinations <- reactive({

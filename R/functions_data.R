@@ -15,22 +15,29 @@ wqg_filter <- function(variable, use, media, type, effect, statistic, x = limits
     dplyr::filter(EMS_Code == ems[1])
 }
 
-wqg_evaluate <- function(x, cvalues, sigfig) {
+wqg_evaluate <- function(x, cvalues) {
   x$ConditionPass <- sapply(x$Condition, test_condition, cvalues, USE.NAMES = FALSE)
   ### assumes that never a LimitNote AND Limit
   x$Guideline <- sapply(1:nrow(x), function(y) {
     evaluate_guideline(x$Limit[y],
       x$LimitNotes[y],
-      x$Direction[y],
-      x$Units[y],
-      cvalues, sigfig)
+      cvalues)
   })
   x
 }
 
-wqg_clean <- function(data) {
+wqg_clean <- function(data, sigfig) {
   data <- data %>%
-    dplyr::filter(ConditionPass) %>%
+    dplyr::filter(ConditionPass)
+  
+  data$Guideline <- sapply(1:nrow(data), function(x) {
+    format_guideline(data$Guideline[x],
+                     data$Direction[x],
+                     data$Units[x],
+                     sigfig)
+  })
+  
+  data %>%
     dplyr::select(Variable, Use, Media, Type, Statistic,
       `Predicted Effect Level` = PredictedEffectLevel,
       Status, `Condition Notes` = ConditionNotes, 
