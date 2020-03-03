@@ -111,12 +111,7 @@ mod_data_server <- function(input, output, session) {
   
   clean_cvalues <- reactive({
     x <- cvalues()
-    if(!is.na(x["EMS_1107"])) {
-      x["EMS_0107"] <- x["EMS_1107"]
-    }
-    if(is.na(x["EMS_0107"])) {
-      x["EMS_0107"] <- x["EMS_1107"]
-    }
+    x$EMS_1107 <- NA
     x
   })
 
@@ -172,6 +167,7 @@ mod_data_server <- function(input, output, session) {
   observe({
     data <- wqg_data_evaluate()
     cval <- extract_codes(data$Condition)
+    cval <- setdiff(cval, "EMS_1107")
     rv$cvalue_active <- cval
     rv$cvalue_inactive <- setdiff(cvalue_codes, cval)
   })

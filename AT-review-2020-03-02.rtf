@@ -1,0 +1,106 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf610
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red68\green114\blue196;}
+{\*\expandedcolortbl;;\csgenericrgb\c26667\c44706\c76863;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid201\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid301\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid4}
+{\list\listtemplateid5\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid401\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid5}
+{\list\listtemplateid6\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid501\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid6}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}{\listoverride\listid6\listoverridecount0\ls6}}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\ri0\partightenfactor0
+
+\f0\b\fs22 \cf0 \ul \ulc0 Glitches and\'a0problems\'a0with how the data are presented:
+\b0 \ulnone \
+\'a0\
+1. In our testing, we also noticed a couple of glitches.\'a0 The first one is in relation to missing values.\'a0 I found that for "Polycyclic aromatic hydrocarbons high molecular weight (HPAH)" there is no value for "Aquatic Life - Freshwater", though this value is given in the spreadsheet (UniqueID 700).\'a0 Is there a test you could do that will determine if all the values will show up in the table or do I need to do further testing manually?\'a0 Also, not all the uses for turbidity and temperature are showing up.\
+\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf2 Sorry I should have mentioned that for use by the app, we have had to remove ~230 rows of the \'91all_wqgs.csv\'92 data with any information in the Notes column. Until this issue with the limits data is resolved (next year), you will notice missing limits.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \
+2. The second glitch is for substances with logical conditions and it can be traced back to the "all_wqgs.csv" sheet.\'a0 It seems we are missing maximum values for some of the parameters.\'a0 For example, for Alkalinity, when calcium dissolved is >8 mg/L then no guideline shows up.\'a0 However, the user needs to know that for water bodies with dissolved calcium >8 mg/L, the guideline is actually >20 mg/L.\'a0 This doesn't fit so well into our table structure.\'a0 I'll pull all the data together and then we can see how best to integrate this with the "all_wqgs.csv" spreadsheet.\
+\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf2 We are simply reading from the \'91all_wqgs.csv\'92 data that was provided. You will need to add a Limit for with Condition \'91EMS_CA_D > 8\'92 have a Limit value 20 mg/Lm with Direction \'91Lower Limit\'92.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \'a0\
+3. Some substances (aluminum, cadmium, copper, iron, organic carbon and sulphate) have both dissolved and total forms.\'a0 We think it may be confusing for the user as they won't know for example, that the guideline for dissolved sulphate is only for livestock and may assume that there are no other guidelines for sulphate.\'a0 I suggest that we strip off the "total" and "dissolved" labels from the substance and put this in a separate column.\'a0 If the substance has no label, then we can assume it is total.\'a0 Within the table then, it will need to be specified if the WQG value is for total or dissolved.\
+\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf2 OK we can make this change to the \'91all_wqgs.csv\'92 data. I have added an issue to wqg_data GitHub repository.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \'a0\
+4. The nickel WQG for aquatic life does not change when the hardness value is changed.\'a0 We have not tested all the substances dependent upon input data.\'a0 Do we need to do this or is there some automatic testing you can do?\
+\'a0\
+\'a0\
+\pard\pardeftab720\ri0\partightenfactor0
+
+\b \cf0 \ul \ulc0 Comments on the app:
+\b0 \ulnone \
+\'a0\
+\pard\pardeftab720\li720\fi-360\ri0\partightenfactor0
+\ls1\ilvl0\cf0 1.	Please remove add a drop down box for the "Selected Uses(s)" box and leave it blank for the user to populate (rather than including a default).\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \
+\pard\pardeftab720\ri0\partightenfactor0
+\cf2 Done.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \'a0\
+\pard\pardeftab720\li720\fi-360\ri0\partightenfactor0
+\ls2\ilvl0\cf0 2.	Please remove the tabs "Report, Report Data, and Raw Data" at the top - these are not necessary.\'a0 Also please give only two buttons at the top, for "Report" and "Report Data".\'a0 Rather than allow the user to download the raw data, could you please provide a link to the data on the DataBC page once it is posted.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf2 The Raw Data download is not the entire limits dataset, but rather just the raw data filtered down from the user\'92s Variable/Use, etc. selection. My reasoning for providing this (as download and table) is so that users can see all of the data - the Limit equation if there is one, and which Conditions have passed or failed (ConditionPass column). It provides a sort of sanity check. \
+\
+However, if you still do feel that it is unnecessary I can remove it. \
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \'a0\
+\pard\pardeftab720\li720\fi-360\ri0\partightenfactor0
+\ls3\ilvl0\cf0 3.	Please remove "Statistic" from the table and from the selection\'a0 menu.\'a0 This information is not necessary for the user.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \
+\pard\pardeftab720\ri0\sb100\sa240\partightenfactor0
+
+\fs21 \cf2 The problem with this is that there are some cases where Statistic is the only column differentiating guidelines. If removed from report then user would be confused why they see two guidelines but all other variables are the same. For example, see \'91pH\'92 \'96 Recreation \'96 has both min and max values and no conditions.\
+\pard\pardeftab720\ri0\partightenfactor0
+
+\fs22 \cf0 \'a0\
+\pard\pardeftab720\li720\fi-360\ri0\partightenfactor0
+\ls4\ilvl0\cf0 4.	Please replace the label of the second drop-down box from "Selected Use(s)" to "Selected Value(s)".\'a0 Aquatic life is a value, not a use.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf2 Done.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \'a0\
+\pard\pardeftab720\li720\fi-360\ri0\partightenfactor0
+\ls5\ilvl0\cf0 5.	Please include a link to the Overview Report and the Technical Report within the table.\'a0 Also, when clicking on these links, please make it so the documents open up in a new tab in the browser software.\
+\pard\pardeftab720\li720\ri0\partightenfactor0
+\cf0 \
+\pard\pardeftab720\ri0\partightenfactor0
+\cf2 My feeling is that providing the whole link in the report will clutter it up too much. The full links can be found in the Report Data and Raw Data tables (although Raw Data may be removed, as discussed above.) A compromise could be to provide the entire links in the footnotes, but it does somewhat decrease the elegance of the report.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \'a0\
+\pard\pardeftab720\li720\fi-360\ri0\partightenfactor0
+\ls6\ilvl0\cf0 6.	Please change the heading "Effect Level" to "Predicted Effect Level".\'a0 I know this is more wordy but it is necessary to constantly communicate to users that these are only predictions.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf2 Done.\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \'a0\
+7. Rather than have two windows for hardness, one for dissolved and one for total hardness, please include only one window; "Hardness (mg/L).\'a0 It will be up to the user to know which form they have entered and the resultant implication.\'a0 It does not change the calculation of the guideline.\
+\'a0\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf2 Done \
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \
+8. Please remove the option "Guideline Significant Figures" for guidelines that are not calculated from input data.\
+\'a0\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf2 Done\
+\pard\pardeftab720\ri0\partightenfactor0
+\cf0 \'a0\
+\pard\pardeftab720\ri0\partightenfactor0
+
+\fs24 \cf0 \
+}

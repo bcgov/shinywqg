@@ -31,6 +31,9 @@ limit_codes <- extract_codes(limits$Limit)
 condition_codes <- extract_codes(limits$Condition)
 cvalue_codes <- unique(c(limit_codes, condition_codes))
 
+# remove EMS_1107 as Hardness just one
+cvalue_codes <- setdiff(cvalue_codes, "EMS_1107")
+
 ### for now, remove rows with notes but put back later
 limits <- limits %>%
   filter(Notes == "" | is.na(Notes))
@@ -70,3 +73,4 @@ empty_report <- empty_report %>% rename(`Effect Level` = PredictedEffectLevel)
 usethis::use_data(limits, codes, cvalue_codes,
   empty_raw, empty_report, empty_evaluate,
   missing_help, internal = TRUE, overwrite = TRUE)
+

@@ -22,6 +22,8 @@ code_to_variable <- function(code, units = TRUE) {
   x <- unique(code)
   variable <- unique(codes$Variable[which(codes$EMS_Code == x)])
   unit <- unique(codes$Units[which(codes$EMS_Code == x)])
+  # replace Hardness Total with Hardness
+  variable[variable == "Hardness Total"] <- "Hardness"
   paste0(variable, " (", unit, ")")
 }
 
