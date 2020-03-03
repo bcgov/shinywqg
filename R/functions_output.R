@@ -4,7 +4,6 @@ gt_table <- function(x, cvalues, note, output = "html") {
   gt <- x %>%
     dplyr::group_by(Use) %>%
     dplyr::select(Use:Guideline) %>%
-    dplyr::rename(`Effect Level` = `Predicted Effect Level`) %>%
     gt::gt()
 
   if(output == "html") {
