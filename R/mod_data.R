@@ -289,7 +289,7 @@ mod_data_server <- function(input, output, session) {
       x <- wqg_data_report()
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
       notes <- get_footnotes(x)
-      gt <- gt_table(x, cvalues, notes)
+      gt <- gt_table(x, cvalues)
       gt::gtsave(gt, file, zoom = 1.3, expand = 5)
       #
       # path <- system.file(package = "shinywqg", "extdata/report_pdf.Rmd")

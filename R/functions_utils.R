@@ -53,7 +53,7 @@ get_links <- function(x){
 }
 
 get_footnotes <- function(x) {
-  y <- as.list(x$Notes)
+  y <- as.list(x$Reference)
   names(y) <- 1:nrow(x)
   y %>%
     remove_nulls() %>%

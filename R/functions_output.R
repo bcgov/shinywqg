@@ -4,18 +4,22 @@
 gt_table <- function(x, cvalues) {
   variable <- unique(x$Variable)
   note <- get_footnotes(x)
-  print(note)
-  x$Notes <- NA
+  x$Reference <- NA
   if(length(note)){
-    x[names(note), "Notes"] <- "See Footnotes"
+    x[names(note), "Reference"] <- "See Footnotes"
   }
   
+  has_notes <- any(!is.na(x$Notes))
+  
   links <- get_links(x)
-
-  x$Links <- links
+  x$Links <- NA
+  has_links <- any(unlist(links) != "")
+  if(has_links){
+    x$Links <- links
+  }
 
   gt <- x %>%
-    dplyr::select(Use:Status, Reference, Links, Guideline, Notes) %>%
+    dplyr::select(Use:Status, Guideline, Notes, Links) %>%
     dplyr::select(-Statistic) %>%
     dplyr::select_if(function(x) !all(is.na(x))) %>%
     dplyr::group_by(Use) %>%
@@ -26,26 +30,25 @@ gt_table <- function(x, cvalues) {
       title = variable,
       subtitle = gt::html(cvalues)
     ) %>%
-    gt::fmt_markdown(columns = gt::vars(Links)) %>%
     gt::fmt_missing(columns = gt::everything()) %>%
     gt::cols_align(
       align = "center",
       columns = gt::everything()
     ) %>%
     gt::tab_style(
-      style = gt::cell_text(size = gt::px(17)),
+      style = gt::cell_text(size = gt::px(15), weight = "bold"),
       locations = list(
         gt::cells_data(
           columns = gt::vars(Guideline))
       )
     ) %>%
-    gt::tab_style(
-      style = gt::cell_text(size = gt::px(12)),
-      locations = list(
-        gt::cells_data(
-          columns = gt::vars(Links, Reference, Notes))
-      )
-    ) %>%
+    # gt::tab_style(
+    #   style = gt::cell_text(size = gt::px(12)),
+    #   locations = list(
+    #     gt::cells_data(
+    #       columns = gt::vars(Reference))
+    #   )
+    # ) %>%
     gt::tab_style(
       style = gt::cell_text(weight = "bold"),
       locations = list(
@@ -58,12 +61,35 @@ gt_table <- function(x, cvalues) {
     ) %>%
     gt::tab_options(table.font.size = gt::px(15),
                     heading.subtitle.font.size = gt::px(16),
-                    footnotes.font.size = gt::px(15),
+                    footnotes.font.size = gt::px(13),
                     table.width = gt::pct(90),
                     row_group.padding = gt::px(15),
                     heading.title.font.size = gt::px(23),
                     column_labels.font.weight = "bold",
                     heading.title.font.weight = "bold")
+  
+  if(has_notes){
+    gt <- gt %>% 
+      gt::tab_style(
+      style = gt::cell_text(size = gt::px(12)),
+      locations = list(
+        gt::cells_data(
+          columns = gt::vars(Notes))
+      )
+    ) 
+  }
+  
+  if(has_links){
+    gt <- gt %>% 
+      gt::tab_style(
+        style = gt::cell_text(size = gt::px(12)),
+        locations = list(
+          gt::cells_data(
+            columns = gt::vars(Links))
+        )
+      ) %>%
+      gt::fmt_markdown(columns = gt::vars(Links)) 
+  }
   
   #### need to make it so only says 'see footnotes' when there is a note
   if(length(note)){
@@ -71,7 +97,7 @@ gt_table <- function(x, cvalues) {
       gt <- gt::tab_footnote(gt,
                              footnote = note[[i]][1],
                              locations = gt::cells_data(
-                               columns = gt::vars(Notes),
+                               columns = gt::vars(Guideline),
                                rows = as.numeric(i)
                              ))
     }
