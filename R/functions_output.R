@@ -62,8 +62,9 @@ gt_table <- function(x, cvalues) {
     gt::tab_options(table.font.size = gt::px(15),
                     heading.subtitle.font.size = gt::px(16),
                     footnotes.font.size = gt::px(13),
+                    footnotes.padding = gt::px(10),
                     table.width = gt::pct(90),
-                    row_group.padding = gt::px(15),
+                    row_group.padding = gt::px(18),
                     heading.title.font.size = gt::px(23),
                     column_labels.font.weight = "bold",
                     heading.title.font.weight = "bold")
