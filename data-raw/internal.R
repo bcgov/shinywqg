@@ -35,16 +35,8 @@ cvalue_codes <- unique(c(limit_codes, condition_codes))
 cvalue_codes <- setdiff(cvalue_codes, "EMS_1107")
 
 ### for now, remove rows with notes but put back later
-limits <- limits %>%
-  filter(Notes == "" | is.na(Notes))
-
-# remove 4 duplicates until issues resolved
-limits <- limits %>%
-  group_by(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel,
-    Condition, ConditionNotes, Direction, Statistic) %>%
-  slice(1) %>%
-  ungroup() %>%
-  arrange(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, Condition, ConditionNotes)
+# limits <- limits %>%
+#   filter(Notes == "" | is.na(Notes))
 
 duplicates <- limits %>%
   group_by(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel,
@@ -53,7 +45,7 @@ duplicates <- limits %>%
   ungroup() %>%
   arrange(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, Condition, ConditionNotes)
 
-expect_identical(nrow(duplicates), 0L)
+# expect_identical(nrow(duplicates), 0L)
 
 missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;

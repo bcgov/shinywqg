@@ -41,6 +41,5 @@ wqg_clean <- function(data, sigfig) {
     dplyr::select(Variable, Use, Media, Type, Statistic,
       `Predicted Effect Level` = PredictedEffectLevel,
       Status, `Condition Notes` = ConditionNotes, 
-      Guideline, Reference:`Technical Document Link`) %>%
-    dplyr::select_if(function(x) !all(is.na(x)))
+      Guideline, Notes, Reference:`Technical Document Link`)
 }

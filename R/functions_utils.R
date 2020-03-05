@@ -33,10 +33,9 @@ tag_a <- function(x, href) {
 }
 
 ## x is clean data
-get_footnotes <- function(x, output = "html") {
+get_links <- function(x){
   links <- lapply(1:nrow(x), function(y) {
     df <- x[y, ]
-    ref <- df[["Reference"]]
     links <- list(
       "Reference" = df[["Reference Link"]],
       "Overview Report" = df[["Overview Report Link"]],
@@ -44,19 +43,21 @@ get_footnotes <- function(x, output = "html") {
     ) %>%
       remove_nulls() %>%
       remove_nas()
-
-    if(output == "html") {
-      links <- lapply(names(links), function(z) {
-        tag_a(z, href = links[z])
-      })
-    } else {
-      links <- lapply(names(links), function(z) {
-        paste(z, links[z], sep = " - ")
-      })
-    }
-
-    paste(ref, paste(links, collapse = ", "), sep = "; ")
+    
+    links <- lapply(names(links), function(z) {
+      tag_a(z, href = links[z])
+    })
+    
+    paste(links, collapse = "; ")
   })
+}
+
+get_footnotes <- function(x) {
+  y <- as.list(x$Notes)
+  names(y) <- 1:nrow(x)
+  y %>%
+    remove_nulls() %>%
+    remove_nas()
 }
 
 as_math <- function(x) {

@@ -224,8 +224,7 @@ mod_data_server <- function(input, output, session) {
     if(is.null(x)) return()
     if(nrow(x) == 0) return()
     cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
-    notes <- get_footnotes(x)
-    gt_table(x, cvalues, notes)
+    gt_table(x, cvalues)
   })
 
   output$data_raw <- gt::render_gt({
@@ -265,8 +264,7 @@ mod_data_server <- function(input, output, session) {
     content = function(file) {
       x <- wqg_data_report()
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
-      notes <- get_footnotes(x)
-      gt <- gt_table(x, cvalues, notes)
+      gt <- gt_table(x, cvalues)
       gt::gtsave(gt, file)
       # path <- system.file(package = "shinywqg", "extdata/report_html.Rmd")
       # temp_report <- file.path(tempdir(), "report_html.Rmd")
