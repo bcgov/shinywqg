@@ -1,10 +1,12 @@
-get_combinations <- function(variable, use, data = limits) {
-  x <- dplyr::filter(data, Variable == variable,
-    Use %in% use)
-  l <- list(media = sort(unique(x$Media)),
+get_combinations <- function(variable, component, use, data = limits) {
+  x <- dplyr::filter(data, 
+                     Variable == variable,
+                     Component == component,
+                     Use %in% use)
+  l <- list(
+    media = sort(unique(x$Media)),
     type = sort(unique(x$Type)),
-    effect = sort(unique(x$PredictedEffectLevel)),
-    statistic = sort(unique(x$Statistic)))
+    effect = sort(unique(x$PredictedEffectLevel)))
   l
 }
 
@@ -14,8 +16,13 @@ extract_codes <- function(x) {
   }))), NA)
 }
 
-variable_use <- function(variable, x = limits) {
-  unique(x[["Use"]][x[["Variable"]] %in% variable])
+variable_use <- function(variable, component, x = limits) {
+  x <- x[x$Variable == variable & x$Component == component,]
+  unique(x[["Use"]][x[["Variable"]] == variable])
+}
+
+variable_component <- function(variable, x = limits) {
+  unique(x[["Component"]][x[["Variable"]] == variable])
 }
 
 code_to_variable <- function(code, units = TRUE) {
@@ -48,11 +55,15 @@ get_links <- function(x){
       tag_a(z, href = links[z])
     })
     
-    paste(links, collapse = "; ")
+    links <- paste(links, collapse = "; ")
+    # if(links == ""){
+    #   links <- NA
+    # }
+    links
   })
 }
 
-get_footnotes <- function(x) {
+get_references <- function(x) {
   y <- as.list(x$Reference)
   names(y) <- 1:nrow(x)
   y %>%

@@ -20,11 +20,12 @@ mod_data_ui <- function(id) {
         choices = c(limits$Variable, ""),
         selected = "",
         multiple = FALSE),
+      uiOutput(ns("ui_component")),
       uiOutput(ns("ui_use")),
       uiOutput(ns("ui_media")),
       uiOutput(ns("ui_type")),
       uiOutput(ns("ui_effect")),
-      uiOutput(ns("ui_statistic")),
+      # uiOutput(ns("ui_statistic")),
       shinyjs::hidden(numeric_inputs(cvalue_codes, ns)),
       uiOutput(ns("ui_sigfig"))
     ),
@@ -121,13 +122,14 @@ mod_data_server <- function(input, output, session) {
 
   wqg_data_evaluate <- reactive({
     req(input$variable)
+    req(input$component)
     req(input$use)
     req(input$media)
     req(input$type)
     req(input$effect)
-    req(input$statistic)
-    x <-  wqg_filter(input$variable, input$use, input$media,
-      input$type, input$effect, input$statistic)
+    x <-  wqg_filter(input$variable, input$component,
+                     input$use, input$media, input$type, 
+                     input$effect)
     if(nrow(x) == 0) return()
     x %>%
       wqg_evaluate(cvalues = clean_cvalues())
@@ -147,8 +149,9 @@ mod_data_server <- function(input, output, session) {
 
   combinations <- reactive({
     req(input$variable)
+    req(input$component)
     req(input$use)
-    get_combinations(input$variable, input$use)
+    get_combinations(input$variable, input$component, input$use)
   })
 
   rv <- reactiveValues(
@@ -180,11 +183,20 @@ mod_data_server <- function(input, output, session) {
   })
 
   output$ui_use <- renderUI({
-    uses <- variable_use(input$variable)
+    uses <- variable_use(input$variable, input$component)
     select_input_x(ns("use"),
       label = "Select Value(s)",
       choices = uses,
       selected = "")
+  })
+  
+  output$ui_component <- renderUI({
+    components <- variable_component(input$variable)
+    selectizeInput(ns("component"),
+                   label = "Select Component",
+                   choices = components,
+                   selected = "",
+                   multiple = FALSE)
   })
 
   output$ui_media <- renderUI({
@@ -211,13 +223,13 @@ mod_data_server <- function(input, output, session) {
       inline = TRUE)
   })
 
-  output$ui_statistic <- renderUI({
-    x <- combinations()$statistic
-    checkboxGroupInput(ns("statistic"), "Select Statistic(s)",
-      choices = x,
-      selected = x,
-      inline = TRUE)
-  })
+  # output$ui_statistic <- renderUI({
+  #   x <- combinations()$statistic
+  #   checkboxGroupInput(ns("statistic"), "Select Statistic(s)",
+  #     choices = x,
+  #     selected = x,
+  #     inline = TRUE)
+  # })
 
   output$table <- gt::render_gt({
     x <- wqg_data_report()
@@ -288,7 +300,6 @@ mod_data_server <- function(input, output, session) {
     content = function(file) {
       x <- wqg_data_report()
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
-      notes <- get_footnotes(x)
       gt <- gt_table(x, cvalues)
       gt::gtsave(gt, file, zoom = 1.3, expand = 5)
       #

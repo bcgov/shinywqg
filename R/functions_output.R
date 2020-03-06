@@ -2,27 +2,34 @@
 #                  equation = c("$$exp(1.6 - 3.327 \\times x^2)$$"))
 # gt::gt(df)
 gt_table <- function(x, cvalues) {
-  variable <- unique(x$Variable)
-  note <- get_footnotes(x)
+  variable <- paste0(unique(x$Variable), " (", unique(x$Component), ")")
+  refs <- get_references(x)
   x$Reference <- NA
-  if(length(note)){
-    x[names(note), "Reference"] <- "See Footnotes"
+  if(length(refs)){
+    x[names(refs), "Reference"] <- "See Footnotes"
   }
   
-  has_notes <- any(!is.na(x$Notes))
+  # has_notes <- any(!is.na(x$Notes))
   
   links <- get_links(x)
+  print(links)
   x$Links <- NA
   has_links <- any(unlist(links) != "")
   if(has_links){
     x$Links <- links
   }
+  
+  ### remove cols if all NA or links but always keep Guideline 
+  keep <- unique(c(names(x)[sapply(x, function(y) !all(is.na(y)))], "Guideline"))
+  keep <- setdiff(keep, c("Reference Link", "Overview Report Link", 
+                          "Technical Document Link", "Reference", 
+                          "Variable", "Component"))
+  x <- x[keep]
+  # all_na <- setdiff(, "Guideline")
+  # print(all_na)
 
   gt <- x %>%
-    dplyr::select(Use:Status, Guideline, Notes, Links) %>%
-    dplyr::select(-Statistic) %>%
-    dplyr::select_if(function(x) !all(is.na(x))) %>%
-    dplyr::group_by(Use) %>%
+    dplyr::group_by(Value) %>%
     gt::gt()
   
   gt <- gt %>%
@@ -59,26 +66,28 @@ gt_table <- function(x, cvalues) {
       locations = list(
         gt::cells_group(groups = TRUE))
     ) %>%
-    gt::tab_options(table.font.size = gt::px(15),
+    gt::tab_options(table.font.size = gt::px(14),
                     heading.subtitle.font.size = gt::px(16),
+                    column_labels.font.size = gt::px(15),
                     footnotes.font.size = gt::px(13),
                     footnotes.padding = gt::px(10),
                     table.width = gt::pct(90),
                     row_group.padding = gt::px(18),
-                    heading.title.font.size = gt::px(23),
+                    row_group.font.size = gt::px(16),
+                    heading.title.font.size = gt::px(21),
                     column_labels.font.weight = "bold",
                     heading.title.font.weight = "bold")
   
-  if(has_notes){
-    gt <- gt %>% 
-      gt::tab_style(
-      style = gt::cell_text(size = gt::px(12)),
-      locations = list(
-        gt::cells_data(
-          columns = gt::vars(Notes))
-      )
-    ) 
-  }
+  # if(has_notes){
+  #   gt <- gt %>% 
+  #     gt::tab_style(
+  #     style = gt::cell_text(size = gt::px(12)),
+  #     locations = list(
+  #       gt::cells_data(
+  #         columns = gt::vars(Notes))
+  #     )
+  #   ) 
+  # }
   
   if(has_links){
     gt <- gt %>% 
@@ -93,10 +102,10 @@ gt_table <- function(x, cvalues) {
   }
   
   #### need to make it so only says 'see footnotes' when there is a note
-  if(length(note)){
-    for(i in names(note)) {
+  if(length(refs)){
+    for(i in names(refs)) {
       gt <- gt::tab_footnote(gt,
-                             footnote = note[[i]][1],
+                             footnote = refs[[i]][1],
                              locations = gt::cells_data(
                                columns = gt::vars(Guideline),
                                rows = as.numeric(i)

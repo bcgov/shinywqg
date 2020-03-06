@@ -1,11 +1,11 @@
-wqg_filter <- function(variable, use, media, type, effect, statistic, x = limits) {
+wqg_filter <- function(variable, component, use, media, type, effect, x = limits) {
   x <- x %>%
     dplyr::filter(Variable == variable,
+                  Component == component,
       Use %in% use,
       Media %in% media,
       Type %in% type,
-      PredictedEffectLevel %in% effect,
-      Statistic %in% statistic)
+      PredictedEffectLevel %in% effect)
   # remove duplicates caused by multiple EMS_Codes
   if(all(is.na(x$EMS_Code))) {
     return(x)
@@ -20,7 +20,7 @@ wqg_evaluate <- function(x, cvalues) {
   ### assumes that never a LimitNote AND Limit
   x$Guideline <- sapply(1:nrow(x), function(y) {
     evaluate_guideline(x$Limit[y],
-      x$LimitNotes[y],
+      # x$NarrativeWQG[y],
       cvalues)
   })
   x
@@ -38,8 +38,10 @@ wqg_clean <- function(data, sigfig) {
   })
   
   data %>%
-    dplyr::select(Variable, Use, Media, Type, Statistic,
+    dplyr::select(Variable, Component, Value = Use, Media, Type, 
       `Predicted Effect Level` = PredictedEffectLevel,
-      Status, `Condition Notes` = ConditionNotes, 
-      Guideline, Notes, Reference:`Technical Document Link`)
+      Status, `Condition Notes` = ConditionNotes,
+      `WQG Narrative` = NarrativeWQG, `Method Notes` = MethodNotes, 
+      `Limit Notes` = LimitNotes,
+      Guideline, Reference:`Technical Document Link`)
 }
