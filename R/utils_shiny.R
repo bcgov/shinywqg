@@ -78,7 +78,7 @@ css_navbar <- function(text_color = "#E0E0E0",
 .navbar.navbar-default.navbar-static-top{
   padding:0;
   margin-bottom: 0px;
-  background: rgba(16,16,16, 0.85);
+  background: ", background_color, "2;
 }
 
 .navbar-default {

@@ -1,7 +1,9 @@
 app_ui <- function() {
   tagList(
     css_hide_errors(),
-    css_navbar(),
+    css_navbar(background_color = bcgov_pal$blue, 
+                           text_color = bcgov_pal$white, 
+                           text_selected_color = bcgov_pal$yellow),
     css_button(),
     waiter::use_butler(),
     shinyjs::useShinyjs(),
