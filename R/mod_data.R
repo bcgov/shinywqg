@@ -101,8 +101,13 @@ mod_data_server <- function(input, output, session) {
   output$ui_sigfig <- renderUI({
     x <- wqg_data_evaluate()
     x <- x[x$ConditionPass,]
-    if(any(is.na(as.numeric(x$Limit)))){
-      return(numericInput(ns("sigfig"), label = "Guideline Significant Figures", value = 2))
+    if(any(is.na(suppressWarnings(as.numeric(x$Limit)))) & all(!is.na(x$Limit))){
+      return(
+        tagList(
+          tags$label("Guideline Significant Figures"),
+          help_text("Only applies to guidelines calculated from equations"),
+          numericInput(ns("sigfig"), label = NULL, value = 2)
+        ))
     }
   })
 
