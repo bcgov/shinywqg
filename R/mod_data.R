@@ -25,52 +25,37 @@ mod_data_ui <- function(id) {
       uiOutput(ns("ui_media")),
       uiOutput(ns("ui_type")),
       uiOutput(ns("ui_effect")),
-      # uiOutput(ns("ui_statistic")),
       shinyjs::hidden(numeric_inputs(cvalue_codes, ns)),
       uiOutput(ns("ui_sigfig"))
     ),
     mainPanel(width = 9,
       tagList(
         shinyWidgets::dropdownButton(status = "primary",
-          label = "Report",
+          label = "Download",
           size = "sm",
           inline = TRUE,
           circle = FALSE,
           icon = icon("download"),
-          dl_button(ns("dl_html"), "HTML"),
-          dl_button(ns("dl_pdf"), "PDF")
-          # dl_button(ns("dl_rmd"), "Rmarkdown")
+          dl_button(ns("dl_html"), "Report HTML"),
+          dl_button(ns("dl_pdf"), "Report PDF"),
+          dl_button(ns("dl_csv"), "Report CSV"),
+          dl_button(ns("dl_xlsx"), "Report XLSX"),
+          dl_button(ns("dl_raw_csv"), "Raw Data CSV"),
+          dl_button(ns("dl_raw_xlsx"), "Raw Data XLSX")
         ),
-
-        shinyWidgets::dropdownButton(status = "primary",
-          label = "Report Data",
-          size = "sm",
-          inline = TRUE,
-          circle = FALSE,
-          icon = icon("download"),
-          dl_button(ns("dl_csv_report"), "CSV"),
-          dl_button(ns("dl_excel_report"), "Excel")),
-        shinyWidgets::dropdownButton(status = "primary",
-          label = "Raw Data",
-          size = "sm",
-          inline = TRUE,
-          circle = FALSE,
-          icon = icon("download"),
-          dl_button(ns("dl_csv_raw"), "CSV"),
-          dl_button(ns("dl_excel_raw"), "Excel"))
-      ),
       br2(),
-      tabsetPanel(
-        tabPanel(title = "Report",
-          br(),
-          gt::gt_output(ns("table"))),
-        tabPanel(title = "Report Data",
-          table_output(ns("data_report"))),
-        tabPanel(title = "Raw Data",
-          table_output(ns("data_raw")))
+      gt::gt_output(ns("table"))
+      # tabsetPanel(
+      #   tabPanel(title = "Report",
+      #     br(),
+      #     ),
+      #   tabPanel(title = "Report Data",
+      #     table_output(ns("data_report"))),
+      #   tabPanel(title = "Raw Data",
+      #     table_output(ns("data_raw")))
+      # )
       )
-    )
-  )
+  ))
 }
 
 # Module Server
@@ -244,33 +229,33 @@ mod_data_server <- function(input, output, session) {
     gt_table(x, cvalues)
   })
 
-  output$data_raw <- gt::render_gt({
-    gt_data(rv$raw)
-  })
+  # output$data_raw <- gt::render_gt({
+  #   gt_data(rv$raw)
+  # })
 
-  output$data_report <- gt::render_gt({
-    gt_data(rv$report)
-  })
+  # output$data_report <- gt::render_gt({
+  #   gt_data(rv$report)
+  # })
 
-  output$dl_csv_raw <- downloadHandler(
+  output$dl_raw_csv <- downloadHandler(
     filename = function() "wqg_data_raw.csv",
     content = function(file) {
       readr::write_csv(rv$raw, file)
     })
 
-  output$dl_excel_raw <- downloadHandler(
+  output$dl_raw_xlsx <- downloadHandler(
     filename = function() "wqg_data_raw.xlsx",
     content = function(file) {
       openxlsx::write.xlsx(rv$raw, file)
     })
 
-  output$dl_csv_report <- downloadHandler(
+  output$dl_csv <- downloadHandler(
     filename = function() "wqg_data_report.csv",
     content = function(file) {
       readr::write_csv(rv$report, file)
     })
 
-  output$dl_excel_report <- downloadHandler(
+  output$dl_xlsx <- downloadHandler(
     filename = function() "wqg_data_report.xlsx",
     content = function(file) {
       openxlsx::write.xlsx(rv$report, file)
