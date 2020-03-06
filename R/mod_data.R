@@ -14,7 +14,7 @@ mod_data_ui <- function(id) {
   ns <- NS(id)
 
   sidebarLayout(
-    sidebarPanel(
+    sidebarPanel(width = 3,
       selectizeInput(ns("variable"),
         label = "Select Variable",
         choices = c(limits$Variable, ""),
@@ -29,7 +29,7 @@ mod_data_ui <- function(id) {
       shinyjs::hidden(numeric_inputs(cvalue_codes, ns)),
       uiOutput(ns("ui_sigfig"))
     ),
-    mainPanel(
+    mainPanel(width = 9,
       tagList(
         shinyWidgets::dropdownButton(status = "primary",
           label = "Report",
