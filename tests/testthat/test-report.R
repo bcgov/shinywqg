@@ -5,14 +5,15 @@ test_that("report renders", {
   unlink(path, recursive = TRUE)
   dir.create(path)
 
+  cvalues <- list(EMS_0107 = 9, EMS_1104 = 10)
   ### test LimitNotes
-  x <- wqg_filter("Chloride Dissolved", "Aquatic Life - Marine", "Water",
-    "Long-term chronic", "No Effect", "mean") %>%
-    wqg_evaluate(cvalues, 2) %>%
-    wqg_clean()
+  x <- wqg_filter("Chloride", "Dissolved", "Aquatic Life - Marine", "Water",
+    "Long-term chronic", "No Effect") %>%
+    wqg_evaluate(cvalues) %>%
+    wqg_clean(2)
 
-  cvalues <- report_cvalues(list(EMS_0107 = 9, EMS_1107 = 5), c("EMS_0107", "EMS_1107"))
-  note <- get_footnotes(x)
+  cvalues <- report_cvalues(cvalues, c("EMS_0107", "EMS_1104"))
+  # note <- get_footnotes(x)
   
   # params <- list(data = x,
   #   cvalues = cvalues)
@@ -22,15 +23,12 @@ test_that("report renders", {
   #   params = params, output_format = rmarkdown::html_document(),
   #   envir = new.env(parent = globalenv()))
   
-  y <- gt_table(x, cvalues, note)
+  y <- gt_table(x, cvalues)
   expect_is(y, "gt_tbl")
   y <- gt::gtsave(y, "report.html", path)
   system2("open", args = file.path(path, "report.html"), wait = FALSE)
 
-  cvalues <- report_cvalues(list(EMS_0107 = 9, EMS_1107 = 5),
-    c("EMS_0107", "EMS_1107"), "pdf")
-
-  y <- gt_table(x, cvalues, note)
+  y <- gt_table(x, cvalues)
   expect_is(y, "gt_tbl")
   y <- gt::gtsave(y, "report.pdf", path, zoom = 1.3, expand = 5)
   system2("open", args = file.path(path, "report.pdf"), wait = FALSE)
