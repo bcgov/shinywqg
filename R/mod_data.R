@@ -47,15 +47,6 @@ mod_data_ui <- function(id) {
         ),
       br3(),
       gt::gt_output(ns("table"))
-      # tabsetPanel(
-      #   tabPanel(title = "Report",
-      #     br(),
-      #     ),
-      #   tabPanel(title = "Report Data",
-      #     table_output(ns("data_report"))),
-      #   tabPanel(title = "Raw Data",
-      #     table_output(ns("data_raw")))
-      # )
       )
   ))
 }
