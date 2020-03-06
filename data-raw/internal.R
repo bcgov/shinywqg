@@ -1,6 +1,13 @@
 library(readr)
 library(dplyr)
 
+bcgov_pal <- list(
+  blue = "#043363",
+  yellow = "#fab933",
+  black = "#303032",
+  white = "#ffffff"
+)
+
 limits <-  readr::read_csv(system.file(package = "shinywqg", "extdata/all_wqgs.csv"))
 limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
 
@@ -63,6 +70,6 @@ empty_report <- empty_evaluate[c("Variable", "Use", "Media", "PredictedEffectLev
 empty_report <- empty_report %>% rename(`Effect Level` = PredictedEffectLevel)
 
 usethis::use_data(limits, codes, cvalue_codes,
-  empty_raw, empty_report, empty_evaluate,
+  empty_raw, empty_report, empty_evaluate, bcgov_pal,
   missing_help, internal = TRUE, overwrite = TRUE)
 
