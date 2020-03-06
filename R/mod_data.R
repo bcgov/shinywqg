@@ -41,7 +41,9 @@ mod_data_ui <- function(id) {
           dl_button(ns("dl_csv"), "Report CSV"),
           dl_button(ns("dl_xlsx"), "Report XLSX"),
           dl_button(ns("dl_raw_csv"), "Raw Data CSV"),
-          dl_button(ns("dl_raw_xlsx"), "Raw Data XLSX")
+          dl_button(ns("dl_raw_xlsx"), "Raw Data XLSX"),
+          dl_button(ns("dl_all_xlsx"), "All Limits XLSX"),
+          dl_button(ns("dl_all_csv"), "All Limits CSV")
         ),
       br3(),
       gt::gt_output(ns("table"))
@@ -259,6 +261,18 @@ mod_data_server <- function(input, output, session) {
     filename = function() "wqg_data_report.xlsx",
     content = function(file) {
       openxlsx::write.xlsx(rv$report, file)
+    })
+  
+  output$dl_all_xlsx <- downloadHandler(
+    filename = function() "all_wqgs.xlsx",
+    content = function(file) {
+      openxlsx::write.xlsx(limits, file)
+    })
+  
+  output$dl_all_csv <- downloadHandler(
+    filename = function() "all_wqgs.csv",
+    content = function(file) {
+      readr::write_csv(limits, file)
     })
 
   output$dl_html <- downloadHandler(
