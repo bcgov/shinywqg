@@ -48,18 +48,14 @@ format_guideline <- function(guideline, direction, units, sigfig){
     return(NA)
   }
   
-  if(is.na(suppressWarnings(as.numeric(guideline)))){
-    return(guideline)
-  }
-  
   prefix <- switch(direction,
                    "Upper Limit" = "<= ",
                    "Lower Limit" = ">= ",
                    "")
 
   ### cases of guideline that are not numeric
-  # if(is.na(as.numeric(guideline)))
-  #   return(paste0(prefix, guideline))
+  if(is.na(suppressWarnings(as.numeric(guideline))))
+    return(paste0(prefix, guideline))
   
   paste0(prefix, signif(guideline, sigfig), " (", units, ")")
 }
