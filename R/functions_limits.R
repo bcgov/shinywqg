@@ -24,7 +24,11 @@ evaluate_guideline <- function(limit, cvalues) {
   if(is.na(limit))
     return(NA)
   
-  calc_limit(limit, cvalues)
+  x <- calc_limit(limit, cvalues)
+  if(is.na(x))
+    return(limit)
+  
+  x
   
   # prefix <- switch(direction,
   #                  "Upper Limit" = "<= ",
@@ -42,6 +46,10 @@ format_guideline <- function(guideline, direction, units, sigfig){
   
   if(is.na(guideline)){
     return(NA)
+  }
+  
+  if(is.na(suppressWarnings(as.numeric(guideline)))){
+    return(guideline)
   }
   
   prefix <- switch(direction,
