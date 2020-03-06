@@ -43,7 +43,7 @@ mod_data_ui <- function(id) {
           dl_button(ns("dl_raw_csv"), "Raw Data CSV"),
           dl_button(ns("dl_raw_xlsx"), "Raw Data XLSX")
         ),
-      br2(),
+      br3(),
       gt::gt_output(ns("table"))
       # tabsetPanel(
       #   tabPanel(title = "Report",

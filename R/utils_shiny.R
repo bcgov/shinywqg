@@ -168,3 +168,9 @@ css_navbar <- function(text_color = "#E0E0E0",
   color: ", text_color, ";
 }"))
 }
+
+css_body <- function (font_family = "Myriad-Pro, Calibri, Arial, 'sans serif'", 
+                      font_weight = "100", font_size_body = "10px", font_size_label = "13px", 
+                      text_color = "#494949") {
+  css_add(paste0("\nbody, label, input, button, select {{ \n  font-family: ", font_family, ";\n  font-weight: ", font_weight, ";\n  color: ", text_color, ";\n    font-size: ", font_size_body, ";\n}}\nlabel {{\n    font-size: ", font_size_label, ";\n}}\nh1, h2, h3, h4 {{font-weight: ", font_weight, ";}}\nbutton {{background-color: #999999;}}\n"))
+}
