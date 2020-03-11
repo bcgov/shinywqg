@@ -8,3 +8,9 @@ numeric_inputs <- function(x, ns) {
   })
   x
 }
+
+waiter_html <- function(x){
+  tagList(waiter::spin_chasing_dots(),
+          br2(),
+          h3(x))
+}

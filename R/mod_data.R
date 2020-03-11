@@ -17,7 +17,7 @@ mod_data_ui <- function(id) {
     sidebarPanel(width = 3,
       selectizeInput(ns("variable"),
         label = "Select Variable",
-        choices = c(limits$Variable, ""),
+        choices = c(unique(rv$limits$Variable), ""),
         selected = "",
         multiple = FALSE),
       uiOutput(ns("ui_component")),
@@ -58,6 +58,11 @@ mod_data_ui <- function(id) {
 
 mod_data_server <- function(input, output, session) {
   ns <- session$ns
+  
+  observe({
+    rv$limits <- get_limits()
+    waiter::waiter_hide()
+  })
 
   observe({
     if(input$variable == "" | is.null(input$use)) {
@@ -112,7 +117,7 @@ mod_data_server <- function(input, output, session) {
     req(input$effect)
     x <-  wqg_filter(input$variable, input$component,
                      input$use, input$media, input$type, 
-                     input$effect)
+                     input$effect, rv$limits)
     if(nrow(x) == 0) return()
     x %>%
       wqg_evaluate(cvalues = clean_cvalues())
@@ -134,10 +139,11 @@ mod_data_server <- function(input, output, session) {
     req(input$variable)
     req(input$component)
     req(input$use)
-    get_combinations(input$variable, input$component, input$use)
+    get_combinations(input$variable, input$component, input$use, rv$limits)
   })
 
   rv <- reactiveValues(
+    limits = NULL,
     path = "inst/extdata/",
     cvalue_active = NULL,
     cvalue_inactive = NULL,
@@ -166,7 +172,7 @@ mod_data_server <- function(input, output, session) {
   })
 
   output$ui_use <- renderUI({
-    uses <- variable_use(input$variable, input$component)
+    uses <- variable_use(input$variable, input$component, rv$limits)
     select_input_x(ns("use"),
       label = "Select Value(s)",
       choices = uses,
@@ -174,7 +180,7 @@ mod_data_server <- function(input, output, session) {
   })
   
   output$ui_component <- renderUI({
-    components <- variable_component(input$variable)
+    components <- variable_component(input$variable, rv$limits)
     selectizeInput(ns("component"),
                    label = "Select Component",
                    choices = components,
@@ -257,13 +263,13 @@ mod_data_server <- function(input, output, session) {
   output$dl_all_xlsx <- downloadHandler(
     filename = function() "all_wqgs.xlsx",
     content = function(file) {
-      openxlsx::write.xlsx(limits, file)
+      openxlsx::write.xlsx(rv$limits, file)
     })
   
   output$dl_all_csv <- downloadHandler(
     filename = function() "all_wqgs.csv",
     content = function(file) {
-      readr::write_csv(limits, file)
+      readr::write_csv(rv$limits, file)
     })
 
   output$dl_html <- downloadHandler(
