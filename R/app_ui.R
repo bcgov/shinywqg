@@ -12,9 +12,6 @@ app_ui <- function() {
       selected = "WQG",
       tabPanel(title = "WQG",
         br(),
-        mod_data_ui("data_ui_1")),
-      tabPanel(title = "About",
-        br(),
-        mod_about_ui("about_ui_1")))
+        mod_data_ui("data_ui_1")))
   )
 }
