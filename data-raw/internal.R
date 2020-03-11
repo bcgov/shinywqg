@@ -8,7 +8,7 @@ bcgov_pal <- list(
   white = "#ffffff"
 )
 
-limits <-  readr::read_csv(system.file(package = "shinywqg", "extdata/all_wqgs.csv"))
+limits <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
 limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
 
 # codes <- limits %>%
@@ -17,7 +17,7 @@ limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_c
 #   dplyr::arrange(Variable, EMS_Code, Units) %>%
 #   dplyr::slice(1) %>%
 #   dplyr::ungroup()
-codes <-  read.csv(system.file(package = "shinywqg", "extdata/codes.csv"), stringsAsFactors = FALSE)
+codes <-  wqbc::codes
 codes <- codes %>% dplyr::rename(EMS_Code = Code,
   Statistic = Average)
 
@@ -69,7 +69,7 @@ empty_report <- empty_evaluate[c("Variable", "Use", "Media", "PredictedEffectLev
   "Technical Document Link")]
 empty_report <- empty_report %>% rename(`Effect Level` = PredictedEffectLevel)
 
-usethis::use_data(limits, codes, cvalue_codes,
+usethis::use_data(codes, cvalue_codes,
   empty_raw, empty_report, empty_evaluate, bcgov_pal,
   missing_help, internal = TRUE, overwrite = TRUE)
 
