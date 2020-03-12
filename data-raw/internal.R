@@ -69,7 +69,7 @@ empty_report <- empty_evaluate[c("Variable", "Use", "Media", "PredictedEffectLev
   "Technical Document Link")]
 empty_report <- empty_report %>% rename(`Effect Level` = PredictedEffectLevel)
 
-usethis::use_data(codes, cvalue_codes,
+usethis::use_data(limits, codes, cvalue_codes,
   empty_raw, empty_report, empty_evaluate, bcgov_pal,
   missing_help, internal = TRUE, overwrite = TRUE)
 
