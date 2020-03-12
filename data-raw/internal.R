@@ -1,5 +1,7 @@
 library(readr)
 library(dplyr)
+library(stringr)
+library(magrittr)
 
 bcgov_pal <- list(
   blue = "#043363",
@@ -11,6 +13,26 @@ bcgov_pal <- list(
 limits <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
 limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
 
+#### start convert background percent to limit notes #####
+
+limits <- mutate(limits, PC = !is.na(Limit) & str_detect(Limit, paste0(
+  "^(\\s*", EMS_Code, "\\s*[*]\\s*\\d[.]\\d+\\s*$)|",
+  "(^\\s*\\d[.]\\d+\\s*[*]\\s*",EMS_Code, "\\s*$)")))
+
+limits$Limit[limits$PC] %<>% str_replace("EMS_[[:alnum:]_]{4,4}", "100")
+
+limits$Limit[limits$PC] %<>% sapply(function(x) eval(parse(text=x)))
+
+limit_notes <- str_c(limits$Limit[limits$PC], "% background")
+limits$Limit[limits$PC] <- NA_character_
+
+limit_notes %<>% str_c(if_else(is.na(limits$LimitNotes[limits$PC]), ".", 
+                       str_c(" (", limits$LimitNotes[limits$PC], ").")))
+
+limits$LimitNotes[limits$PC] <- limit_notes
+limits <- select(limits, -PC)
+#### end convert background percent to limit notes #####
+
 # codes <- limits %>%
 #   dplyr::select(Variable, EMS_Code, Units) %>%
 #   dplyr::group_by(Variable, EMS_Code) %>%
@@ -19,14 +41,14 @@ limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_c
 #   dplyr::ungroup()
 codes <-  wqbc::codes
 codes <- codes %>% dplyr::rename(EMS_Code = Code,
-  Statistic = Average)
+                                 Statistic = Average)
 
 ### add Calcium Dissolved
 codes <- bind_rows(codes,
-  tibble(Variable = "Calcium Dissolved",
-    EMS_Code = "EMS_CA_D",
-    Units = "mg/L",
-    Statistic = "mean"))
+                   tibble(Variable = "Calcium Dissolved",
+                          EMS_Code = "EMS_CA_D",
+                          Units = "mg/L",
+                          Statistic = "mean"))
 
 extract_codes <- function(x) {
   setdiff(unique(unlist(lapply(x, function(y){
@@ -47,7 +69,7 @@ cvalue_codes <- setdiff(cvalue_codes, "EMS_1107")
 
 duplicates <- limits %>%
   group_by(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel,
-    Condition, ConditionNotes, Direction, Statistic) %>%
+           Condition, ConditionNotes, Direction, Statistic) %>%
   filter(n() > 1) %>%
   ungroup() %>%
   arrange(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, Condition, ConditionNotes)
@@ -64,12 +86,12 @@ empty_evaluate <- limits %>%
 empty_evaluate <- empty_evaluate[0, ]
 
 empty_report <- empty_evaluate[c("Variable", "Use", "Media", "PredictedEffectLevel",
-  "Type", "Statistic", "Guideline", "Reference",
-  "Reference Link", "Overview Report Link",
-  "Technical Document Link")]
+                                 "Type", "Statistic", "Guideline", "Reference",
+                                 "Reference Link", "Overview Report Link",
+                                 "Technical Document Link")]
 empty_report <- empty_report %>% rename(`Effect Level` = PredictedEffectLevel)
 
 usethis::use_data(limits, codes, cvalue_codes,
-  empty_raw, empty_report, empty_evaluate, bcgov_pal,
-  missing_help, internal = TRUE, overwrite = TRUE)
+                  empty_raw, empty_report, empty_evaluate, bcgov_pal,
+                  missing_help, internal = TRUE, overwrite = TRUE)
 
