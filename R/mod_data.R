@@ -22,9 +22,9 @@ mod_data_ui <- function(id) {
         multiple = FALSE),
       uiOutput(ns("ui_component")),
       uiOutput(ns("ui_use")),
-      uiOutput(ns("ui_media")),
-      uiOutput(ns("ui_type")),
-      uiOutput(ns("ui_effect")),
+      # uiOutput(ns("ui_media")),
+      # uiOutput(ns("ui_type")),
+      # uiOutput(ns("ui_effect")),
       shinyjs::hidden(numeric_inputs(cvalue_codes, ns)),
       uiOutput(ns("ui_sigfig"))
     ),
@@ -111,12 +111,8 @@ mod_data_server <- function(input, output, session) {
     req(input$variable)
     req(input$component)
     req(input$use)
-    req(input$media)
-    req(input$type)
-    req(input$effect)
     x <-  wqg_filter(input$variable, input$component,
-                     input$use, input$media, input$type, 
-                     input$effect)
+                     input$use)
     if(nrow(x) == 0) return()
     x %>%
       wqg_evaluate(cvalues = clean_cvalues())
@@ -186,29 +182,29 @@ mod_data_server <- function(input, output, session) {
                    multiple = FALSE)
   })
 
-  output$ui_media <- renderUI({
-    x <- combinations()$media
-    checkboxGroupInput(ns("media"), "Select Media",
-      choices = x,
-      selected = x,
-      inline = TRUE)
-  })
-
-  output$ui_type <- renderUI({
-    x <- combinations()$type
-    checkboxGroupInput(ns("type"), "Select Type(s)",
-      choices = x,
-      selected = x,
-      inline = TRUE)
-  })
-
-  output$ui_effect <- renderUI({
-    x <- combinations()$effect
-    checkboxGroupInput(ns("effect"), "Select Effect(s)",
-      choices = x,
-      selected = x,
-      inline = TRUE)
-  })
+  # output$ui_media <- renderUI({
+  #   x <- combinations()$media
+  #   checkboxGroupInput(ns("media"), "Select Media",
+  #     choices = x,
+  #     selected = x,
+  #     inline = TRUE)
+  # })
+  # 
+  # output$ui_type <- renderUI({
+  #   x <- combinations()$type
+  #   checkboxGroupInput(ns("type"), "Select Type(s)",
+  #     choices = x,
+  #     selected = x,
+  #     inline = TRUE)
+  # })
+  # 
+  # output$ui_effect <- renderUI({
+  #   x <- combinations()$effect
+  #   checkboxGroupInput(ns("effect"), "Select Effect(s)",
+  #     choices = x,
+  #     selected = x,
+  #     inline = TRUE)
+  # })
 
   # output$ui_statistic <- renderUI({
   #   x <- combinations()$statistic
