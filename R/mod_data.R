@@ -60,7 +60,7 @@ mod_data_server <- function(input, output, session) {
   ns <- session$ns
   observe({
     # limits <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
-    limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
+    rv$limits <- process_limits(limits)
     waiter::waiter_hide()
   })
   observe({
@@ -81,6 +81,7 @@ mod_data_server <- function(input, output, session) {
   })
 
   output$ui_sigfig <- renderUI({
+    req(wqg_data_evaluate())
     x <- wqg_data_evaluate()
     x <- x[x$ConditionPass,]
     if(any(is.na(suppressWarnings(as.numeric(x$Limit)))) & all(!is.na(x$Limit))){
@@ -103,22 +104,30 @@ mod_data_server <- function(input, output, session) {
   
   clean_cvalues <- reactive({
     x <- cvalues()
-    x$EMS_1107 <- NA
+    x <- x[rv$cvalue_active]
+    # x$EMS_1107 <- NA
     x
   })
-
-  wqg_data_evaluate <- reactive({
+  
+  wqg_data_raw <- reactive({
     req(input$variable)
     req(input$component)
     req(input$use)
-    x <-  wqg_filter(input$variable, input$component,
-                     input$use)
+    wqg_filter(input$variable, input$component,
+               input$use, rv$limits)
+  })
+
+  wqg_data_evaluate <- reactive({
+    req(wqg_data_raw())
+    if(any(is.na(clean_cvalues()))) return()
+    x <-  wqg_data_raw()
     if(nrow(x) == 0) return()
     x %>%
       wqg_evaluate(cvalues = clean_cvalues())
   })
 
   wqg_data_report <- reactive({
+    req(wqg_data_evaluate())
     x <-  wqg_data_evaluate()
     if(is.null(x)) return()
     if(nrow(x) == 0) return()
@@ -134,7 +143,7 @@ mod_data_server <- function(input, output, session) {
     req(input$variable)
     req(input$component)
     req(input$use)
-    get_combinations(input$variable, input$component, input$use)
+    get_combinations(input$variable, input$component, input$use, rv$limits)
   })
 
   rv <- reactiveValues(
@@ -142,7 +151,8 @@ mod_data_server <- function(input, output, session) {
     cvalue_active = NULL,
     cvalue_inactive = NULL,
     raw = empty_evaluate,
-    report = empty_report
+    report = empty_report,
+    limits = NULL
   )
 
   observe({
@@ -150,6 +160,7 @@ mod_data_server <- function(input, output, session) {
       rv$raw <- empty_evaluate
       rv$report <- empty_report
     }
+    req(wqg_data_evaluate())
     data <- wqg_data_evaluate()
     rv$raw <- data
     if(any(data$ConditionPass)) {
@@ -158,15 +169,16 @@ mod_data_server <- function(input, output, session) {
   })
 
   observe({
-    data <- wqg_data_evaluate()
+    req(wqg_data_raw())
+    data <- wqg_data_raw()
     cval <- unique(c(extract_codes(data$Condition), extract_codes(data$Limit)))
-    cval <- setdiff(cval, "EMS_1107")
+    # cval <- setdiff(cval, "EMS_1107")
     rv$cvalue_active <- cval
     rv$cvalue_inactive <- setdiff(cvalue_codes, cval)
   })
 
   output$ui_use <- renderUI({
-    uses <- variable_use(input$variable, input$component)
+    uses <- variable_use(input$variable, input$component, rv$limits)
     select_input_x(ns("use"),
       label = "Select Value(s)",
       choices = uses,
@@ -174,7 +186,7 @@ mod_data_server <- function(input, output, session) {
   })
   
   output$ui_component <- renderUI({
-    components <- variable_component(input$variable)
+    components <- variable_component(input$variable, rv$limits)
     selectizeInput(ns("component"),
                    label = "Select Component",
                    choices = components,
@@ -215,6 +227,7 @@ mod_data_server <- function(input, output, session) {
   # })
 
   output$table <- gt::render_gt({
+    req(wqg_data_report())
     x <- wqg_data_report()
     if(is.null(x)) return()
     if(nrow(x) == 0) return()
@@ -263,7 +276,7 @@ mod_data_server <- function(input, output, session) {
   output$dl_all_csv <- downloadHandler(
     filename = function() "all_wqgs.csv",
     content = function(file) {
-      readr::write_csv(limits, file)
+      readr::write_csv(rv$limits, file)
     })
 
   output$dl_html <- downloadHandler(

@@ -1,3 +1,15 @@
+process_limits <- function(x){
+  x <- x %>%
+    dplyr::mutate(Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
+  
+  ### remove Hardness Dissolved in OR context
+  modified <- x$Condition[which(stringr::str_detect(x$Condition, "EMS_0107"))] %>%
+    stringr::str_split_fixed("\\|", 2)
+  modified <- modified[, 1]
+  x$Condition[which(stringr::str_detect(x$Condition, "EMS_0107"))] <- modified
+  x
+}
+
 wqg_filter <- function(variable, component, use, x = limits) {
   x <- x %>%
     dplyr::filter(Variable == variable,
@@ -24,6 +36,7 @@ wqg_evaluate <- function(x, cvalues) {
 }
 
 wqg_clean <- function(data, sigfig) {
+  
   data <- data %>%
     dplyr::filter(ConditionPass)
   
