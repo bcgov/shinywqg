@@ -58,7 +58,11 @@ mod_data_ui <- function(id) {
 
 mod_data_server <- function(input, output, session) {
   ns <- session$ns
-
+  observe({
+    # limits <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
+    limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
+    waiter::waiter_hide()
+  })
   observe({
     if(input$variable == "" | is.null(input$use)) {
       return({

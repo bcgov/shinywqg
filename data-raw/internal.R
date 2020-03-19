@@ -10,7 +10,10 @@ bcgov_pal <- list(
   white = "#ffffff"
 )
 
-limits <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
+to <- "~/Poisson/Data/shinywqg/all_wqgs.csv"
+limits <- file.copy("~/Code/wqg_data/wqg_data/all_wqgs.csv", to, overwrite = TRUE)
+limits <- readr::read_csv(to)
+# limits <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
 limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
 
 #### start convert background percent to limit notes #####
@@ -40,15 +43,13 @@ limits <- select(limits, -PC)
 #   dplyr::slice(1) %>%
 #   dplyr::ungroup()
 codes <-  wqbc::codes
-codes <- codes %>% dplyr::rename(EMS_Code = Code,
-                                 Statistic = Average)
+codes <- codes %>% dplyr::rename(EMS_Code = Code)
 
 ### add Calcium Dissolved
 codes <- bind_rows(codes,
                    tibble(Variable = "Calcium Dissolved",
                           EMS_Code = "EMS_CA_D",
-                          Units = "mg/L",
-                          Statistic = "mean"))
+                          Units = "mg/L"))
 
 extract_codes <- function(x) {
   setdiff(unique(unlist(lapply(x, function(y){
@@ -69,7 +70,7 @@ cvalue_codes <- setdiff(cvalue_codes, "EMS_1107")
 
 duplicates <- limits %>%
   group_by(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel,
-           Condition, ConditionNotes, Direction, Statistic) %>%
+           Condition, ConditionNotes, Direction, Statistic, Status) %>%
   filter(n() > 1) %>%
   ungroup() %>%
   arrange(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, Condition, ConditionNotes)

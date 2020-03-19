@@ -25,7 +25,8 @@ Imports:
     shinyWidgets,
     gt,
     rmarkdown,
-    webshot
+    webshot,
+    bcdata
 Suggests: 
     covr,
     testthat (>= 2.1.0),
