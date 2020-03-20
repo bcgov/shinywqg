@@ -10,18 +10,18 @@ process_limits <- function(x){
   x
 }
 
-wqg_filter <- function(variable, component, use, x = limits) {
+wqg_filter <- function(variable, use, x = limits) {
   x <- x %>%
-    dplyr::filter(Variable == variable,
-                  Component == component,
-      Use %in% use)
+    dplyr::filter(Variable == variable, Use %in% use)
   # remove duplicates caused by multiple EMS_Codes
   if(all(is.na(x$EMS_Code))) {
     return(x)
   }
-  ems <- sort(unique(x$EMS_Code))
-  x %>%
-    dplyr::filter(EMS_Code == ems[1])
+  
+  x %>% 
+    dplyr::group_by(Variable, Component) %>%
+    dplyr::arrange(EMS_Code) %>%
+    dplyr::filter(EMS_Code == dplyr::first(EMS_Code))
 }
 
 wqg_evaluate <- function(x, cvalues) {

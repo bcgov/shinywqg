@@ -20,7 +20,7 @@ mod_data_ui <- function(id) {
         choices = c(unique(limits$Variable), ""),
         selected = "",
         multiple = FALSE),
-      uiOutput(ns("ui_component")),
+      # uiOutput(ns("ui_component")),
       uiOutput(ns("ui_use")),
       # uiOutput(ns("ui_media")),
       # uiOutput(ns("ui_type")),
@@ -111,9 +111,8 @@ mod_data_server <- function(input, output, session) {
   
   wqg_data_raw <- reactive({
     req(input$variable)
-    req(input$component)
     req(input$use)
-    wqg_filter(input$variable, input$component,
+    wqg_filter(input$variable, 
                input$use, rv$limits)
   })
 
@@ -141,9 +140,8 @@ mod_data_server <- function(input, output, session) {
 
   combinations <- reactive({
     req(input$variable)
-    req(input$component)
     req(input$use)
-    get_combinations(input$variable, input$component, input$use, rv$limits)
+    get_combinations(input$variable, input$use, rv$limits)
   })
 
   rv <- reactiveValues(
@@ -178,21 +176,21 @@ mod_data_server <- function(input, output, session) {
   })
 
   output$ui_use <- renderUI({
-    uses <- variable_use(input$variable, input$component, rv$limits)
+    uses <- variable_use(input$variable, rv$limits)
     select_input_x(ns("use"),
       label = "Select Value(s)",
       choices = uses,
       selected = "")
   })
   
-  output$ui_component <- renderUI({
-    components <- variable_component(input$variable, rv$limits)
-    selectizeInput(ns("component"),
-                   label = "Select Component",
-                   choices = components,
-                   selected = "",
-                   multiple = FALSE)
-  })
+  # output$ui_component <- renderUI({
+  #   components <- variable_component(input$variable, rv$limits)
+  #   selectizeInput(ns("component"),
+  #                  label = "Select Component",
+  #                  choices = components,
+  #                  selected = "",
+  #                  multiple = FALSE)
+  # })
 
   # output$ui_media <- renderUI({
   #   x <- combinations()$media

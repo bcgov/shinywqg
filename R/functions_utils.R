@@ -1,7 +1,6 @@
-get_combinations <- function(variable, component, use, data = limits) {
+get_combinations <- function(variable, use, data = limits) {
   x <- dplyr::filter(data, 
                      Variable == variable,
-                     Component == component,
                      Use %in% use)
   l <- list(
     media = sort(unique(x$Media)),
@@ -17,14 +16,14 @@ extract_codes <- function(x) {
   }))), NA)
 }
 
-variable_use <- function(variable, component, x = limits) {
-  x <- x[x$Variable == variable & x$Component == component,]
+variable_use <- function(variable, x = limits) {
+  x <- x[x$Variable == variable,]
   unique(x[["Use"]][x[["Variable"]] == variable])
 }
 
-variable_component <- function(variable, x = limits) {
-  unique(x[["Component"]][x[["Variable"]] == variable])
-}
+# variable_component <- function(variable, x = limits) {
+#   unique(x[["Component"]][x[["Variable"]] == variable])
+# }
 
 code_to_variable <- function(code, units = TRUE) {
   x <- unique(code)

@@ -2,7 +2,7 @@
 #                  equation = c("$$exp(1.6 - 3.327 \\times x^2)$$"))
 # gt::gt(df)
 gt_table <- function(x, cvalues) {
-  variable <- paste0(unique(x$Variable), " (", unique(x$Component), ")")
+  variable <- unique(x$Variable)
   refs <- get_references(x)
   x$Reference <- NA
   if(length(refs)){
@@ -18,17 +18,19 @@ gt_table <- function(x, cvalues) {
     x$Links <- links
   }
   
+  x <- x %>% mutate(VariableComponent = paste0("(", Variable, " ", Component, ")"))
+  
   ### remove cols if all NA or links but always keep Guideline 
   keep <- unique(c(names(x)[sapply(x, function(y) !all(is.na(y)))], "Guideline"))
   keep <- setdiff(keep, c("Reference Link", "Overview Report Link", 
-                          "Technical Document Link", "Reference", 
+                          "Technical Document Link", "Reference",
                           "Variable", "Component"))
   x <- x[keep]
   # all_na <- setdiff(, "Guideline")
   # print(all_na)
 
   gt <- x %>%
-    dplyr::group_by(Value) %>%
+    dplyr::group_by(Value, VariableComponent) %>%
     gt::gt()
   
   gt <- gt %>%
