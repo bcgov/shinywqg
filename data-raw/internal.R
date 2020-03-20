@@ -10,9 +10,7 @@ bcgov_pal <- list(
   white = "#ffffff"
 )
 
-to <- "~/Poisson/Data/shinywqg/all_wqgs.csv"
-limits <- file.copy("~/Code/wqg_data/wqg_data/all_wqgs.csv", to, overwrite = TRUE)
-limits <- readr::read_csv(to)
+limits <- readr::read_csv("https://raw.githubusercontent.com/bcgov/wqg_data/master/all_wqgs.csv")
 # limits <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
 limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
 
@@ -29,7 +27,7 @@ limits$Limit[limits$PC] %<>% sapply(function(x) eval(parse(text=x)))
 limit_notes <- str_c(limits$Limit[limits$PC], "% background")
 limits$Limit[limits$PC] <- NA_character_
 
-limit_notes %<>% str_c(if_else(is.na(limits$LimitNotes[limits$PC]), ".", 
+limit_notes %<>% str_c(if_else(is.na(limits$LimitNotes[limits$PC]), ".",
                        str_c(" (", limits$LimitNotes[limits$PC], ").")))
 
 limits$LimitNotes[limits$PC] <- limit_notes

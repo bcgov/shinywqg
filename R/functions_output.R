@@ -5,7 +5,7 @@ gt_table <- function(x, cvalues) {
   variable <- unique(x$Variable)
   refs <- get_references(x)
   x$Reference <- NA
-  if(length(refs)){
+  if(length(refs) > 0){
     x[names(refs), "Reference"] <- "See Footnotes"
   }
   

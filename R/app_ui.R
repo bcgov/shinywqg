@@ -10,10 +10,16 @@ app_ui <- function() {
     waiter::use_waiter(),
     waiter::show_waiter_on_load(html = waiter_html("Fetching guideline spreadsheet from BC Data Catalogue")),
     shinyjs::useShinyjs(),
-    navbarPage(title =  "ShinyWqg",
+    navbarPage(title =  "B.C. Ambient Water Quality Guidelines",
       selected = "WQG",
       tabPanel(title = "WQG",
         br(),
-        mod_data_ui("data_ui_1")))
+        mod_data_ui("data_ui_1")),
+      tabPanel(title = "User Guide",
+               br(),
+               mod_guide_ui("guide_ui_1")),
+      tabPanel(title = "About",
+               br(),
+               mod_about_ui("about_ui_1")))
   )
 }

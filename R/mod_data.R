@@ -128,7 +128,6 @@ mod_data_server <- function(input, output, session) {
   wqg_data_report <- reactive({
     req(wqg_data_evaluate())
     x <-  wqg_data_evaluate()
-    if(is.null(x)) return()
     if(nrow(x) == 0) return()
     sigfig <- 2
     if(!is.null(input$sigfig)){
