@@ -18,7 +18,7 @@ gt_table <- function(x, cvalues) {
     x$Links <- links
   }
   
-  x <- x %>% mutate(VariableComponent = paste0("(", Variable, " ", Component, ")"))
+  x <- x %>% dplyr::mutate(VariableComponent = paste0("(", Variable, " ", Component, ")"))
   
   ### remove cols if all NA or links but always keep Guideline 
   keep <- unique(c(names(x)[sapply(x, function(y) !all(is.na(y)))], "Guideline"))
