@@ -1,2 +1,2 @@
 rsconnect::deployApp(appDir = ".", account = "poissonconsulting", 
-                     appName = "shinywqg", forceUpdate = TRUE)
+                     appName = "shinywqg2", forceUpdate = TRUE)
