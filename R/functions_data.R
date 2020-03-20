@@ -48,10 +48,10 @@ wqg_clean <- function(data, sigfig) {
   })
   
   data %>%
+    dplyr::mutate(Notes = gsub("NA", "", paste(LimitNotes, MethodNotes))) %>%
     dplyr::select(Variable, Component, Value = Use, Media, Type, 
       `Predicted Effect Level` = PredictedEffectLevel,
       Status, `Condition Notes` = ConditionNotes,
-      `WQG Narrative` = NarrativeWQG, `Method Notes` = MethodNotes, 
-      `Limit Notes` = LimitNotes,
+      `WQG Narrative` = NarrativeWQG, Notes,
       Guideline, Reference:`Technical Document Link`)
 }
