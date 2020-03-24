@@ -22,7 +22,7 @@ mod_data_ui <- function(id) {
         multiple = FALSE),
       # uiOutput(ns("ui_component")),
       uiOutput(ns("ui_use")),
-      # uiOutput(ns("ui_media")),
+      uiOutput(ns("ui_media")),
       # uiOutput(ns("ui_type")),
       # uiOutput(ns("ui_effect")),
       shinyjs::hidden(numeric_inputs(cvalue_codes, ns)),
@@ -113,7 +113,7 @@ mod_data_server <- function(input, output, session) {
     req(input$variable)
     req(input$use)
     wqg_filter(input$variable, 
-               input$use, rv$limits)
+               input$use, input$media, rv$limits)
   })
 
   wqg_data_evaluate <- reactive({
@@ -191,14 +191,14 @@ mod_data_server <- function(input, output, session) {
   #                  multiple = FALSE)
   # })
 
-  # output$ui_media <- renderUI({
-  #   x <- combinations()$media
-  #   checkboxGroupInput(ns("media"), "Select Media",
-  #     choices = x,
-  #     selected = x,
-  #     inline = TRUE)
-  # })
-  # 
+  output$ui_media <- renderUI({
+    x <- combinations()$media
+    checkboxGroupInput(ns("media"), "Select Media",
+      choices = x,
+      selected = x,
+      inline = TRUE)
+  })
+
   # output$ui_type <- renderUI({
   #   x <- combinations()$type
   #   checkboxGroupInput(ns("type"), "Select Type(s)",

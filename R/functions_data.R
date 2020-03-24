@@ -10,9 +10,9 @@ process_limits <- function(x){
   x
 }
 
-wqg_filter <- function(variable, use, x = limits) {
+wqg_filter <- function(variable, use, media, x = limits) {
   x <- x %>%
-    dplyr::filter(Variable == variable, Use %in% use)
+    dplyr::filter(Variable == variable, Use %in% use, Media %in% media)
   # remove duplicates caused by multiple EMS_Codes
   if(all(is.na(x$EMS_Code))) {
     return(x)

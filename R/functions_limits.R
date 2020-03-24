@@ -1,8 +1,3 @@
-get_limits <- function(){
-  limits <- bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
-  dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
-}
-
 test_condition <- function(x, cvalues) {
   if(is.na(x))
     return (TRUE)
