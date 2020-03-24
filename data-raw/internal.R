@@ -12,34 +12,7 @@ bcgov_pal <- list(
 
 limits <- readr::read_csv("https://raw.githubusercontent.com/bcgov/wqg_data/master/all_wqgs.csv")
 # limits <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
-limits <- dplyr::mutate(limits, Condition = dplyr::if_else(Condition == "", NA_character_, Condition))
 
-#### start convert background percent to limit notes #####
-
-limits <- mutate(limits, PC = !is.na(Limit) & str_detect(Limit, paste0(
-  "^(\\s*", EMS_Code, "\\s*[*]\\s*\\d[.]\\d+\\s*$)|",
-  "(^\\s*\\d[.]\\d+\\s*[*]\\s*",EMS_Code, "\\s*$)")))
-
-limits$Limit[limits$PC] %<>% str_replace("EMS_[[:alnum:]_]{4,4}", "100")
-
-limits$Limit[limits$PC] %<>% sapply(function(x) eval(parse(text=x)))
-
-limit_notes <- str_c(limits$Limit[limits$PC], "% background")
-limits$Limit[limits$PC] <- NA_character_
-
-limit_notes %<>% str_c(if_else(is.na(limits$LimitNotes[limits$PC]), ".",
-                       str_c(" (", limits$LimitNotes[limits$PC], ").")))
-
-limits$LimitNotes[limits$PC] <- limit_notes
-limits <- select(limits, -PC)
-#### end convert background percent to limit notes #####
-
-# codes <- limits %>%
-#   dplyr::select(Variable, EMS_Code, Units) %>%
-#   dplyr::group_by(Variable, EMS_Code) %>%
-#   dplyr::arrange(Variable, EMS_Code, Units) %>%
-#   dplyr::slice(1) %>%
-#   dplyr::ungroup()
 codes <-  wqbc::codes
 codes <- codes %>% dplyr::rename(EMS_Code = Code)
 
@@ -61,19 +34,6 @@ cvalue_codes <- unique(c(limit_codes, condition_codes))
 
 # remove EMS_1107 as Hardness just one
 cvalue_codes <- setdiff(cvalue_codes, "EMS_1107")
-
-### for now, remove rows with notes but put back later
-# limits <- limits %>%
-#   filter(Notes == "" | is.na(Notes))
-
-duplicates <- limits %>%
-  group_by(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel,
-           Condition, ConditionNotes, Direction, Statistic, Status) %>%
-  filter(n() > 1) %>%
-  ungroup() %>%
-  arrange(Variable, EMS_Code, Use, Media, Type, PredictedEffectLevel, Condition, ConditionNotes)
-
-# expect_identical(nrow(duplicates), 0L)
 
 missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;
