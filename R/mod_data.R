@@ -61,7 +61,6 @@ mod_data_server <- function(input, output, session) {
     
     # if guidelines aren't valid, fall back on internal data
     limits_bcdc <- try(check_guidelines(limits_bcdc), silent = TRUE)
-    print(limits_bcdc)
     if(is_try_error(limits_bcdc)){
       waiter::waiter_update(html = waiter_html("Guidelines on BC Data Catalogue are not valid. 
                                                Using guidelines from March 24, 2020."))
