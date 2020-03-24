@@ -1,6 +1,4 @@
-# df <- data.frame(key = 1, 
-#                  equation = c("$$exp(1.6 - 3.327 \\times x^2)$$"))
-# gt::gt(df)
+
 gt_table <- function(x, cvalues) {
   variable <- unique(x$Variable)
   refs <- get_references(x)
@@ -8,8 +6,6 @@ gt_table <- function(x, cvalues) {
   if(length(refs) > 0){
     x[names(refs), "Reference"] <- "See Footnotes"
   }
-  
-  # has_notes <- any(!is.na(x$Notes))
   
   links <- get_links(x)
   x$Links <- NA
@@ -26,8 +22,6 @@ gt_table <- function(x, cvalues) {
                           "Technical Document Link", "Reference",
                           "Variable", "Component"))
   x <- x[keep]
-  # all_na <- setdiff(, "Guideline")
-  # print(all_na)
 
   gt <- x %>%
     dplyr::group_by(Value, VariableComponent) %>%

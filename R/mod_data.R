@@ -20,10 +20,8 @@ mod_data_ui <- function(id) {
         choices = c(unique(limits$Variable), ""),
         selected = "",
         multiple = FALSE),
-      # uiOutput(ns("ui_component")),
       uiOutput(ns("ui_use")),
       uiOutput(ns("ui_media")),
-      # uiOutput(ns("ui_type")),
       # uiOutput(ns("ui_effect")),
       shinyjs::hidden(numeric_inputs(cvalue_codes, ns)),
       uiOutput(ns("ui_sigfig"))
@@ -194,15 +192,6 @@ mod_data_server <- function(input, output, session) {
       choices = uses,
       selected = "")
   })
-  
-  # output$ui_component <- renderUI({
-  #   components <- variable_component(input$variable, rv$limits)
-  #   selectizeInput(ns("component"),
-  #                  label = "Select Component",
-  #                  choices = components,
-  #                  selected = "",
-  #                  multiple = FALSE)
-  # })
 
   output$ui_media <- renderUI({
     x <- combinations()$media
@@ -212,25 +201,9 @@ mod_data_server <- function(input, output, session) {
       inline = TRUE)
   })
 
-  # output$ui_type <- renderUI({
-  #   x <- combinations()$type
-  #   checkboxGroupInput(ns("type"), "Select Type(s)",
-  #     choices = x,
-  #     selected = x,
-  #     inline = TRUE)
-  # })
-  # 
   # output$ui_effect <- renderUI({
   #   x <- combinations()$effect
   #   checkboxGroupInput(ns("effect"), "Select Effect(s)",
-  #     choices = x,
-  #     selected = x,
-  #     inline = TRUE)
-  # })
-
-  # output$ui_statistic <- renderUI({
-  #   x <- combinations()$statistic
-  #   checkboxGroupInput(ns("statistic"), "Select Statistic(s)",
   #     choices = x,
   #     selected = x,
   #     inline = TRUE)
@@ -244,14 +217,6 @@ mod_data_server <- function(input, output, session) {
     cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
     gt_table(x, cvalues)
   })
-
-  # output$data_raw <- gt::render_gt({
-  #   gt_data(rv$raw)
-  # })
-
-  # output$data_report <- gt::render_gt({
-  #   gt_data(rv$report)
-  # })
 
   output$dl_raw_csv <- downloadHandler(
     filename = function() "wqg_data_raw.csv",

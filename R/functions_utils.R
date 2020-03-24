@@ -21,10 +21,6 @@ variable_use <- function(variable, x = limits) {
   unique(x[["Use"]][x[["Variable"]] == variable])
 }
 
-# variable_component <- function(variable, x = limits) {
-#   unique(x[["Component"]][x[["Variable"]] == variable])
-# }
-
 code_to_variable <- function(code, units = TRUE) {
   x <- unique(code)
   variable <- unique(codes$Variable[which(codes$EMS_Code == x)])
@@ -78,7 +74,6 @@ as_math <- function(x) {
 report_cvalues <- function(x, active, output = "html") {
   x <- x[active]
   names(x) <- sapply(names(x), code_to_variable)
-  # x <- remove_nulls(x)
   cvalues <- ""
   if(length(x))
     if(output == "html") {
