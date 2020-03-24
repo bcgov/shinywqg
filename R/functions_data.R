@@ -9,22 +9,22 @@ process_limits <- function(limits){
   limits$Condition[which(stringr::str_detect(limits$Condition, "EMS_0107"))] <- modified
   
   #### start convert background percent to limit notes #####
-  limits <- mutate(limits, PC = !is.na(Limit) & str_detect(Limit, paste0(
+  limits <- dplyr::mutate(limits, PC = !is.na(Limit) & stringr::str_detect(Limit, paste0(
     "^(\\s*", EMS_Code, "\\s*[*]\\s*\\d[.]\\d+\\s*$)|",
     "(^\\s*\\d[.]\\d+\\s*[*]\\s*",EMS_Code, "\\s*$)")))
   
-  limits$Limit[limits$PC] %<>% str_replace("EMS_[[:alnum:]_]{4,4}", "100")
+  limits$Limit[limits$PC] %<>% stringr::str_replace("EMS_[[:alnum:]_]{4,4}", "100")
   
   limits$Limit[limits$PC] %<>% sapply(function(x) eval(parse(text=x)))
   
-  limit_notes <- str_c(limits$Limit[limits$PC], "% background")
+  limit_notes <- stringr::str_c(limits$Limit[limits$PC], "% background")
   limits$Limit[limits$PC] <- NA_character_
   
-  limit_notes %<>% str_c(if_else(is.na(limits$LimitNotes[limits$PC]), ".",
-                                 str_c(" (", limits$LimitNotes[limits$PC], ").")))
+  limit_notes %<>% stringr::str_c(dplyr::if_else(is.na(limits$LimitNotes[limits$PC]), ".",
+                                 stringr::str_c(" (", limits$LimitNotes[limits$PC], ").")))
   
   limits$LimitNotes[limits$PC] <- limit_notes
-  limits <- select(limits, -PC)
+  limits <- dplyr::select(limits, -PC)
   limits
 }
 

@@ -63,9 +63,11 @@ mod_data_server <- function(input, output, session) {
     
     # if guidelines aren't valid, fall back on internal data
     limits_bcdc <- try(check_guidelines(limits_bcdc), silent = TRUE)
+    print(limits_bcdc)
     if(is_try_error(limits_bcdc)){
-      waiter::waiter_update(waiter_html("Guidelines on DataBC are not valid. Using guidelines from March 24, 2020."))
-      Sys.sleep(2)
+      waiter::waiter_update(html = waiter_html("Guidelines on BC Data Catalogue are not valid. 
+                                               Using guidelines from March 24, 2020."))
+      Sys.sleep(3)
       limits <- limits
     } else {
       limits <- limits_bcdc
@@ -278,7 +280,7 @@ mod_data_server <- function(input, output, session) {
   output$dl_all_xlsx <- downloadHandler(
     filename = function() "all_wqgs.xlsx",
     content = function(file) {
-      openxlsx::write.xlsx(iimits, file)
+      openxlsx::write.xlsx(rv$iimits, file)
     })
   
   output$dl_all_csv <- downloadHandler(

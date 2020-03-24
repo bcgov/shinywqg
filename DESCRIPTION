@@ -26,7 +26,8 @@ Imports:
     gt,
     rmarkdown,
     webshot,
-    bcdata
+    bcdata,
+    magrittr
 Suggests: 
     covr,
     testthat (>= 2.1.0),
