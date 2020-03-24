@@ -21,41 +21,24 @@ evaluate_guideline <- function(limit, cvalues) {
   if(!length(limit)) 
     return()
   
-  if(is.na(limit))
-    return(NA)
-  
-  x <- calc_limit(limit, cvalues)
-  if(is.na(x))
-    return(limit)
-  
-  x
-  
-  # prefix <- switch(direction,
-  #                  "Upper Limit" = "<= ",
-  #                  "Lower Limit" = ">= ",
-  #                  "")
-  # 
-  # if(!is.na(note) & is.na(limit))
-  #   return(paste0(prefix, note))
-  # 
-  # limit <- signif(calc_limit(limit, cvalues), sigfig)
-  # paste0(prefix, limit, " (", units, ")")
+  calc_limit(limit, cvalues)
 }
 
-format_guideline <- function(guideline, direction, units, sigfig){
+format_guideline <- function(guideline, direction, units, limitnote, sigfig){
   
-  if(is.na(guideline)){
+  if(is.na(guideline) & is.na(limitnote))
     return(NA)
-  }
+  
+  if(is.na(guideline) & !is.na(limitnote))
+    return(limitnote)
+  
+  if(is.na(limitnote))
+    limitnote <- ""
   
   prefix <- switch(direction,
                    "Upper Limit" = "<= ",
                    "Lower Limit" = ">= ",
                    "")
-
-  ### cases of guideline that are not numeric
-  if(is.na(suppressWarnings(as.numeric(guideline))))
-    return(paste0(prefix, guideline))
   
-  paste0(prefix, signif(guideline, sigfig), " (", units, ")")
+  paste0(prefix, signif(guideline, sigfig), " (", units, ") ", limitnote)
 }
