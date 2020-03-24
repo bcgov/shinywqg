@@ -1,12 +1,6 @@
 app_ui <- function() {
   tagList(
     css_hide_errors(),
-    # css_navbar(background_color = bcgov_pal$blue, 
-    #                        text_color = bcgov_pal$white, 
-    #                        text_selected_color = bcgov_pal$yellow),
-    # css_button(),
-    # css_body(text_color = bcgov_pal$black),
-    # includeCSS("bcgov.css"),
     add_external_resources(),
     waiter::use_butler(),
     waiter::use_waiter(),
