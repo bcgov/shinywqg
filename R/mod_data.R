@@ -30,7 +30,7 @@ mod_data_ui <- function(id) {
       tagList(
         shinyWidgets::dropdownButton(status = "primary",
           label = "Download",
-          size = "sm",
+          # size = "sm",
           inline = TRUE,
           circle = FALSE,
           icon = icon("download"),
