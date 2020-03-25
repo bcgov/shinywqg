@@ -57,7 +57,7 @@ mod_data_server <- function(input, output, session) {
   ns <- session$ns
   observe({
     limits_bcdc <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
-    # limits_bcdc <- limits
+    
     # if guidelines aren't valid, fall back on internal data
     limits_bcdc <- try(check_guidelines(limits_bcdc), silent = TRUE)
     if(is_try_error(limits_bcdc)){
@@ -258,11 +258,7 @@ mod_data_server <- function(input, output, session) {
       x <- wqg_data_report()
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
       gt <- gt_table(x, cvalues)
-      temp_file <- file.path(tempdir(), "report.html")
-      gt::gtsave(gt, temp_file)
-      webshot::webshot(url = paste0("file:///", temp_file), 
-                       file = file, selector = "table", zoom = 1.3, 
-                       expand = 3)
+      gt::gtsave(gt, file, zoom = 1.3, expand = 5)
     }
   )
 
