@@ -17,7 +17,6 @@ Imports:
     shiny,
     shinyjs,
     htmltools,
-    wqbc,
     waiter,
     readr,
     openxlsx,
@@ -33,8 +32,7 @@ Suggests:
     testthat (>= 2.1.0),
     knitr
 Remotes: 
-    poissonconsulting/chk,
-    bcgov/wqbc
+    poissonconsulting/chk
 URL: https://github.com/poissonconsulting/shinywqg
 BugReports: https://github.com/poissonconsulting/shinywqg/issues
 Encoding: UTF-8
