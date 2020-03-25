@@ -1,5 +1,6 @@
 
 gt_table <- function(x, cvalues) {
+  print(cvalues)
   variable <- unique(x$Variable)
   refs <- get_references(x)
   x$Reference <- NA
@@ -14,7 +15,7 @@ gt_table <- function(x, cvalues) {
     x$Links <- links
   }
   
-  x <- x %>% dplyr::mutate(VariableComponent = paste0("(", Variable, " ", Component, ")"))
+  x <- x %>% dplyr::mutate(VariableComponent = paste0("(", .data$Variable, " ", .data$Component, ")"))
   
   ### remove cols if all NA or links but always keep Guideline 
   keep <- unique(c(names(x)[sapply(x, function(y) !all(is.na(y)))], "Guideline"))
@@ -24,7 +25,7 @@ gt_table <- function(x, cvalues) {
   x <- x[keep]
 
   gt <- x %>%
-    dplyr::group_by(Value, VariableComponent) %>%
+    dplyr::group_by(.data$Value, .data$VariableComponent) %>%
     gt::gt()
   
   gt <- gt %>%

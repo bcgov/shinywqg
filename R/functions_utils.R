@@ -1,7 +1,7 @@
 get_combinations <- function(variable, use, data = limits) {
   x <- dplyr::filter(data, 
-                     Variable == variable,
-                     Use %in% use)
+                     .data$Variable == variable,
+                     .data$Use %in% use)
   l <- list(
     media = sort(unique(x$Media)),
     type = sort(unique(x$Type)),

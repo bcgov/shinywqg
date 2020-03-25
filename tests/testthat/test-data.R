@@ -63,7 +63,7 @@ test_that("data functions work", {
   expect_identical(x$Guideline[1], "Calculate using specialized software on BC's WQG webpage.")
   
   ### check NarrativeWQG
-  var <- dplyr::filter(limits, !is.na(NarrativeWQG))
+  var <- dplyr::filter(limits, !is.na(.data$NarrativeWQG))
   x <- wqg_filter("Colour True", 
                   "Aquatic Life - Freshwater",
                   "Water") %>%
