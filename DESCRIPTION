@@ -9,8 +9,7 @@ Authors@R: c(
 Description: User interface to calculate water quality guidelines.
 License: MIT + file LICENSE
 Depends: 
-    R (>= 3.4.0),
-    webshot
+    R (>= 3.4.0)
 Imports:
     stats,
     chk,
@@ -27,7 +26,8 @@ Imports:
     magrittr,
     bcdata,
     rlang,
-    stringr
+    stringr,
+    webshot
 Suggests: 
     covr,
     testthat (>= 2.1.0),
