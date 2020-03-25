@@ -9,13 +9,10 @@ app_ui <- function() {
     navbarPage(title =  "B.C. Ambient Water Quality Guidelines",
       selected = "WQG",
       tabPanel(title = "WQG",
-        br(),
         mod_data_ui("data_ui_1")),
       tabPanel(title = "User Guide",
-               br(),
                mod_guide_ui("guide_ui_1")),
       tabPanel(title = "About",
-               br(),
                mod_about_ui("about_ui_1"))),
     div(class = "footer",
         includeHTML("www/footer.html")
