@@ -258,7 +258,11 @@ mod_data_server <- function(input, output, session) {
       x <- wqg_data_report()
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
       gt <- gt_table(x, cvalues)
-      gt::gtsave(gt, file, zoom = 1.3, expand = 5)
+      temp_file <- file.path(tempdir(), "report.html")
+      gt::gtsave(gt, temp_file)
+      webshot::webshot(url = paste0("file:///", temp_file), 
+                       file = file, selector = "table", zoom = 1.3, 
+                       expand = 3)
     }
   )
 

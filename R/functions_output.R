@@ -1,6 +1,5 @@
 
 gt_table <- function(x, cvalues) {
-  print(cvalues)
   variable <- unique(x$Variable)
   refs <- get_references(x)
   x$Reference <- NA
