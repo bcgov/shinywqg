@@ -23,9 +23,7 @@ Imports:
     dplyr,
     shinyWidgets,
     gt,
-    rmarkdown,
     webshot,
-    bcdata,
     magrittr,
     rlang,
     stringr
