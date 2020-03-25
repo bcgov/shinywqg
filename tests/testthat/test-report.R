@@ -7,8 +7,7 @@ test_that("report renders", {
 
   cvalues <- list(EMS_0107 = 9, EMS_1104 = 10)
   ### test LimitNotes
-  x <- wqg_filter("Chloride", "Dissolved", "Aquatic Life - Marine", "Water",
-    "Long-term chronic", "No Effect") %>%
+  x <- wqg_filter("Chloride", "Aquatic Life - Marine", "Water") %>%
     wqg_evaluate(cvalues) %>%
     wqg_clean(2)
 

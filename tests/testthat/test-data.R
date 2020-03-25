@@ -2,8 +2,7 @@ test_that("data functions work", {
 
   cvalues <- list(EMS_0107 = 9, EMS_1107 = 5, EMS_1104 = 10)
   ### test LimitNotes
-  x <- wqg_filter("Chloride", "Dissolved", "Aquatic Life - Marine", "Water",
-    "Long-term chronic", "No Effect")
+  x <- wqg_filter("Chloride", "Aquatic Life - Marine", "Water")
   expect_identical(nrow(x), 2L)
   expect_length(unique(x$EMS_Code), 1L)
 
@@ -12,8 +11,7 @@ test_that("data functions work", {
   expect_identical(y$Guideline, c(9, 11))
 
   # case of multiple EMS_Code only one row output
-  x <- wqg_filter("Fluoride", "Total", "Aquatic Life - Freshwater", "Water",
-    "Short-term acute", "No Effect")
+  x <- wqg_filter("Fluoride", "Aquatic Life - Freshwater", "Water")
   expect_identical(nrow(x), 2L)
   expect_length(unique(x$EMS_Code), 1L)
 
@@ -25,35 +23,64 @@ test_that("data functions work", {
   expect_identical(sum(y$ConditionPass), 1L)
   
   z <- wqg_clean(y, 2)
-  expect_identical(z$Guideline, c("<= 0.4 (mg/L)"))
+  expect_identical(z$Guideline, c("<= 0.4 (mg/L) "))
   
   # check cvalue = NA
   y <- wqg_evaluate(x, list(EMS_0107 = 9, EMS_1107 = NA))
   expect_identical(sum(y$ConditionPass), 1L)
   
   z <- wqg_clean(y, 2)
-  expect_identical(z$Guideline, c("<= 0.4 (mg/L)"))
+  expect_identical(z$Guideline, c("<= 0.4 (mg/L) "))
 
   ### check sigfig
   y <- wqg_evaluate(x, list(EMS_0107 = 11, EMS_1107 = NA))
   z <- wqg_clean(y, 3)
-  expect_identical(z$Guideline, c("<= 0.447 (mg/L)"))
+  expect_identical(z$Guideline, c("<= 0.447 (mg/L) "))
 
   ### case of missing EMS_Code
-  x <- wqg_filter("Linear alkylbenzene sulphonates (LAS)", "Total",
+  x <- wqg_filter("Linear alkylbenzene sulphonates (LAS)", 
     "Aquatic Life - Freshwater",
-    "Water", "Long-term chronic",
-    "No Effect")
+    "Water")
   expect_true(is.na(x$EMS_Code))
   expect_identical(nrow(x), 1L)
 
   ### egt_table works
-  x <- wqg_filter("Ammonia", "Total",
+  x <- wqg_filter("Ammonia", 
     "Aquatic Life - Freshwater",
-    "Water", c("Long-term chronic"),
-    "No Effect")
+    "Water")
 
   cvalues <- list(EMS_0004 = 9, EMS_0013 = 10)
   y <- wqg_evaluate(x, cvalues) %>% wqg_clean(2)
-  expect_identical(nrow(y), 1L)
+  expect_identical(nrow(y), 2L)
+  
+  ### check missing Limit and LimitNote
+  x <- wqg_filter("Copper", 
+                  "Aquatic Life - Freshwater",
+                  "Water") %>%
+    wqg_evaluate(cvalues) %>%
+    wqg_clean()
+  expect_true(all(is.na(x$Notes)))
+  expect_identical(x$Guideline[1], "Calculate using specialized software on BC's WQG webpage.")
+  
+  ### check NarrativeWQG
+  var <- dplyr::filter(limits, !is.na(NarrativeWQG))
+  x <- wqg_filter("Colour True", 
+                  "Aquatic Life - Freshwater",
+                  "Water") %>%
+    wqg_evaluate(cvalues) %>%
+    wqg_clean()
+  expect_true(all(is.na(x$Notes)))
+  expect_identical(x$Guideline[1], NA)
+  expect_identical(x$`WQG Narrative`, "30-day average true colour in filtered water samples should not exceed background levels by more than 5 mg/L Pt in clear water systems or 20% in coloured water systems.")
+  
+  ### check ConditionNotes and missing limits/narrative/limitnotes
+  cvalues$EMS_0004 <- 4
+  x <- wqg_filter("Resin acids", 
+                  "Aquatic Life - Freshwater",
+                  "Water") %>%
+    wqg_evaluate(cvalues) %>%
+    wqg_clean(2)
+  expect_true(is.na(x$Guideline))
+  expect_identical(x$Notes, "No WQG value for pH < 5, site assessment may be necessary. ")
+  
 })
