@@ -87,17 +87,3 @@ gt_table <- function(x, cvalues) {
   }
   gt
 }
-
-gt_data <- function(x){
-  gt <- x %>%
-    gt::gt() %>%
-    gt::cols_align(
-      align = "center",
-      columns = gt::everything()
-    ) %>%
-    gt::tab_options(table.font.size = gt::px(12),
-                    table.width = gt::pct(100),
-                    column_labels.font.weight = "bold")
-  gt
-  
-}

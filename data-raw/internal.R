@@ -2,6 +2,7 @@ library(readr)
 library(dplyr)
 library(stringr)
 library(magrittr)
+library(wqbc)
 
 bcgov_pal <- list(
   blue = "#043363",

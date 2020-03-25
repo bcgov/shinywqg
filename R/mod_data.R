@@ -22,7 +22,6 @@ mod_data_ui <- function(id) {
         multiple = FALSE),
       uiOutput(ns("ui_use")),
       uiOutput(ns("ui_media")),
-      # uiOutput(ns("ui_effect")),
       shinyjs::hidden(numeric_inputs(cvalue_codes, ns)),
       uiOutput(ns("ui_sigfig"))
     ),
@@ -115,7 +114,6 @@ mod_data_server <- function(input, output, session) {
   clean_cvalues <- reactive({
     x <- cvalues()
     x <- x[rv$cvalue_active]
-    # x$EMS_1107 <- NA
     x
   })
   
@@ -179,7 +177,6 @@ mod_data_server <- function(input, output, session) {
     req(wqg_data_raw())
     data <- wqg_data_raw()
     cval <- unique(c(extract_codes(data$Condition), extract_codes(data$Limit)))
-    # cval <- setdiff(cval, "EMS_1107")
     rv$cvalue_active <- cval
     rv$cvalue_inactive <- setdiff(cvalue_codes, cval)
   })
@@ -199,14 +196,6 @@ mod_data_server <- function(input, output, session) {
       selected = x,
       inline = TRUE)
   })
-
-  # output$ui_effect <- renderUI({
-  #   x <- combinations()$effect
-  #   checkboxGroupInput(ns("effect"), "Select Effect(s)",
-  #     choices = x,
-  #     selected = x,
-  #     inline = TRUE)
-  # })
 
   output$table <- gt::render_gt({
     req(wqg_data_report())
@@ -260,20 +249,6 @@ mod_data_server <- function(input, output, session) {
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
       gt <- gt_table(x, cvalues)
       gt::gtsave(gt, file)
-      # path <- system.file(package = "shinywqg", "extdata/report_html.Rmd")
-      # temp_report <- file.path(tempdir(), "report_html.Rmd")
-      # file.copy(path, temp_report, overwrite = TRUE)
-      #
-      # cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
-      # data <- rv$report
-      # notes <- get_footnotes(data)
-      # params <- list(data = data,
-      #                cvalues = cvalues,
-      #                notes = notes)
-      # rmarkdown::render(temp_report,
-      #                   output_file = file,
-      #                   params = params,
-      #                   envir = new.env(parent = globalenv()))
     }
   )
 
@@ -284,21 +259,6 @@ mod_data_server <- function(input, output, session) {
       cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
       gt <- gt_table(x, cvalues)
       gt::gtsave(gt, file, zoom = 1.3, expand = 5)
-      #
-      # path <- system.file(package = "shinywqg", "extdata/report_pdf.Rmd")
-      # temp_report <- file.path(tempdir(), "report_pdf.Rmd")
-      # file.copy(path, temp_report, overwrite = TRUE)
-      #
-      # cvalues <- report_cvalues(cvalues(), rv$cvalue_active, "pdf")
-      # data <- rv$report
-      # notes <- get_footnotes(data, "pdf")
-      # params <- list(data = data,
-      #                cvalues = cvalues,
-      #                notes = notes)
-      # rmarkdown::render(temp_report,
-      #                   output_file = file,
-      #                   params = params,
-      #                   envir = new.env(parent = globalenv()))
     }
   )
 

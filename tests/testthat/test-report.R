@@ -13,15 +13,6 @@ test_that("report renders", {
     wqg_clean(2)
 
   cvalues <- report_cvalues(cvalues, c("EMS_0107", "EMS_1104"))
-  # note <- get_footnotes(x)
-  
-  # params <- list(data = x,
-  #   cvalues = cvalues)
-  
-  # y <- rmarkdown::render(system.file("extdata", package = "shinywqg", "report_html.Rmd"),
-  #   output_file = file.path(path, "report.html"),
-  #   params = params, output_format = rmarkdown::html_document(),
-  #   envir = new.env(parent = globalenv()))
   
   y <- gt_table(x, cvalues)
   expect_is(y, "gt_tbl")
