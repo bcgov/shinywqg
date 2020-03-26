@@ -18,7 +18,7 @@ extract_codes <- function(x) {
 
 variable_use <- function(variable, x = limits) {
   x <- x[x$Variable == variable,]
-  unique(x[["Use"]][x[["Variable"]] == variable])
+  sort(unique(x[["Use"]][x[["Variable"]] == variable]))
 }
 
 code_to_variable <- function(code, units = TRUE) {
