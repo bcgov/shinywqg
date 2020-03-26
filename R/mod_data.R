@@ -57,18 +57,18 @@ mod_data_server <- function(input, output, session) {
   ns <- session$ns
   observe({
     limits_bcdc <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
-    
+    limits_bcdc <- process_limits(limits_bcdc)
     # if guidelines aren't valid, fall back on internal data
     limits_bcdc <- try(check_guidelines(limits_bcdc), silent = TRUE)
     if(is_try_error(limits_bcdc)){
       waiter::waiter_update(html = waiter_html("Guidelines on BC Data Catalogue are not valid. 
                                                Using guidelines from March 24, 2020."))
       Sys.sleep(3)
-      limits <- limits
+      limits <- process_limits(limits)
     } else {
       limits <- limits_bcdc
     }
-    rv$limits <- process_limits(limits)
+    rv$limits <- limits
     waiter::waiter_hide()
   })
   

@@ -25,6 +25,13 @@ process_limits <- function(limits){
   
   limits$LimitNotes[limits$PC] <- limit_notes
   limits <- dplyr::select(limits, -.data$PC)
+  
+  #### end convert background percent
+  
+  ### filter if all missing values
+  limits <- limits %>%
+    dplyr::filter_all(dplyr::any_vars(!is.na(.)))
+  
   limits
 }
 
