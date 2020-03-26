@@ -32,7 +32,8 @@ Suggests:
     testthat (>= 2.1.0),
     knitr
 Remotes: 
-    poissonconsulting/chk
+    poissonconsulting/chk,
+    rstudio/gt
 URL: https://github.com/poissonconsulting/shinywqg
 BugReports: https://github.com/poissonconsulting/shinywqg/issues
 Encoding: UTF-8
