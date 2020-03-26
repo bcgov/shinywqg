@@ -9,6 +9,10 @@ check_guidelines <- function(x){
   
   chk::check_names(x, names(limits))
   
+  chk_not_any_na(x$Variable)
+  chk_not_any_na(x$Use)
+  chk_not_any_na(x$Media)
+  
   limit_codes <- extract_codes(x$Limit)
   condition_codes <- extract_codes(x$Condition)
   cvalue_codes <- unique(c(limit_codes, condition_codes))
