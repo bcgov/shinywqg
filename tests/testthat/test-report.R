@@ -15,11 +15,11 @@ test_that("report renders", {
   
   y <- gt_table(x, cvalues)
   expect_is(y, "gt_tbl")
-  y <- gt::gtsave(y, "report.html", path)
-  system2("open", args = file.path(path, "report.html"), wait = FALSE)
+  # y <- gt::gtsave(y, "report.html", path)
+  # system2("open", args = file.path(path, "report.html"), wait = FALSE)
 
   y <- gt_table(x, cvalues)
   expect_is(y, "gt_tbl")
-  y <- gt::gtsave(y, "report.pdf", path, zoom = 1.3, expand = 5)
-  system2("open", args = file.path(path, "report.pdf"), wait = FALSE)
+  # y <- gt::gtsave(y, "report.pdf", path, zoom = 1.3, expand = 5)
+  # system2("open", args = file.path(path, "report.pdf"), wait = FALSE)
 })
