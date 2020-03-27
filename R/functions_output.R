@@ -41,7 +41,7 @@ gt_table <- function(x, cvalues) {
       style = gt::cell_text(size = gt::px(15), weight = "bold"),
       locations = list(
         gt::cells_data(
-          columns = gt::vars(Guideline))
+          columns = "Guideline")
       )
     ) %>%
     gt::tab_style(
@@ -80,7 +80,7 @@ gt_table <- function(x, cvalues) {
       gt <- gt::tab_footnote(gt,
                              footnote = refs[[i]][1],
                              locations = gt::cells_data(
-                               columns = gt::vars(Guideline),
+                               columns = "Guideline",
                                rows = as.numeric(i)
                              ))
     }

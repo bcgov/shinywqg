@@ -1,3 +1,5 @@
+utils::globalVariables(c("."))
+
 process_limits <- function(limits){
   limits <- limits %>%
     dplyr::mutate(Condition = dplyr::if_else(.data$Condition == "", NA_character_, .data$Condition))
