@@ -18,3 +18,4 @@ addons:
   apt:
     packages:
       - libudunits2-dev
+      - sf-dev
