@@ -40,14 +40,14 @@ gt_table <- function(x, cvalues) {
     gt::tab_style(
       style = gt::cell_text(size = gt::px(15), weight = "bold"),
       locations = list(
-        gt::cells_data(
+        gt::cells_body(
           columns = "Guideline")
       )
     ) %>%
     gt::tab_style(
       style = gt::cell_text(size = gt::px(12)),
       locations = list(
-        gt::cells_data(
+        gt::cells_body(
           columns = gt::matches("Notes|Links|Narrative"))
       )
     ) %>%
@@ -60,7 +60,7 @@ gt_table <- function(x, cvalues) {
     gt::tab_style(
       style = gt::cell_text(style = "italic"),
       locations = list(
-        gt::cells_group(groups = TRUE))
+        gt::cells_row_groups(groups = TRUE))
     ) %>%
     gt::tab_options(table.font.size = gt::px(14),
                     heading.subtitle.font.size = gt::px(16),
@@ -79,7 +79,7 @@ gt_table <- function(x, cvalues) {
     for(i in names(refs)) {
       gt <- gt::tab_footnote(gt,
                              footnote = refs[[i]][1],
-                             locations = gt::cells_data(
+                             locations = gt::cells_body(
                                columns = "Guideline",
                                rows = as.numeric(i)
                              ))
