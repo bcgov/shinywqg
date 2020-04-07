@@ -31,8 +31,8 @@ Imports:
 Suggests: 
     testthat (>= 2.1.0),
     knitr
-URL: https://github.com/poissonconsulting/shinywqg
-BugReports: https://github.com/poissonconsulting/shinywqg/issues
+URL: https://github.com/bcgov/shinywqg
+BugReports: https://github.com/bcgov/shinywqg/issues
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0

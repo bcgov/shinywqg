@@ -10,7 +10,7 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 [![Apache
 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Travis build
-status](https://travis-ci.com/poissonconsulting/shinywqg.svg?branch=master)](https://travis-ci.com/poissonconsulting/shinywqg)
+status](https://travis-ci.com/bcgov/shinywqg.svg?branch=master)](https://travis-ci.com/bcgov/shinywqg)
 <!-- badges: end -->
 
 shinywqg is an R package to run the ‘B.C. Ambient Water Quality
@@ -24,7 +24,6 @@ To install the developmental version from
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("poissonconsulting/chk")
 remotes::install_github("bcgov/shinywqg")
 ```
 
