@@ -15,14 +15,10 @@ mod_data_ui <- function(id) {
 
   sidebarLayout(
     sidebarPanel(width = 3,
-      selectizeInput(ns("variable"),
-        label = "Select Variable",
-        choices = c(unique(limits$Variable), ""),
-        selected = "",
-        multiple = FALSE),
+      uiOutput(ns("ui_variable")),
       uiOutput(ns("ui_use")),
       uiOutput(ns("ui_media")),
-      shinyjs::hidden(numeric_inputs(cvalue_codes, ns)),
+      uiOutput(ns("ui_cvalue")),
       uiOutput(ns("ui_sigfig"))
     ),
     mainPanel(width = 9,
@@ -68,11 +64,17 @@ mod_data_server <- function(input, output, session) {
     } else {
       limits <- limits_bcdc
     }
+
+    cvalue_codes <<- unique(c(extract_codes(limits$Limit),
+                             extract_codes(limits$Condition))) %>%
+      setdiff("EMS_1107")
+    
     rv$limits <- limits
     waiter::waiter_hide()
   })
   
   observe({
+    req(input$variable)
     if(input$variable == "" | is.null(input$use)) {
       return({
         for(i in cvalue_codes) {
@@ -161,6 +163,7 @@ mod_data_server <- function(input, output, session) {
   )
 
   observe({
+    req(input$variable)
     if(is.null(input$use) | input$variable == "") {
       rv$raw <- empty_evaluate
       rv$report <- empty_report
@@ -180,8 +183,21 @@ mod_data_server <- function(input, output, session) {
     rv$cvalue_active <- cval
     rv$cvalue_inactive <- setdiff(cvalue_codes, cval)
   })
+  
+  output$ui_variable <- renderUI({
+    selectizeInput(ns("variable"),
+                   label = "Select Variable",
+                   choices = c(unique(rv$limits$Variable), ""),
+                   selected = "",
+                   multiple = FALSE)
+  })
+  
+  output$ui_cvalue <- renderUI({
+    shinyjs::hidden(numeric_inputs(cvalue_codes, ns))
+  })
 
   output$ui_use <- renderUI({
+    req(input$variable)
     uses <- variable_use(input$variable, rv$limits)
     select_input_x(ns("use"),
       label = "Select Value(s)",

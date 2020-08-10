@@ -42,3 +42,9 @@ format_guideline <- function(guideline, direction, units, limitnote, sigfig){
   
   paste0(prefix, signif(guideline, sigfig), " (", units, ") ", limitnote)
 }
+
+extract_codes <- function(x) {
+  setdiff(unique(unlist(lapply(x, function(y){
+    stringr::str_extract_all(y, "EMS_[[:alnum:]][[:alnum:]_]{3,3}")
+  }))), NA)
+}
