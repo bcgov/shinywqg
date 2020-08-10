@@ -16,18 +16,6 @@ codes <- bind_rows(codes,
                           EMS_Code = "EMS_CA_D",
                           Units = "mg/L"))
 
-extract_codes <- function(x) {
-  setdiff(unique(unlist(lapply(x, function(y){
-    stringr::str_extract_all(y, "EMS_[[:alnum:]][[:alnum:]_]{3,3}")
-  }))), NA)
-}
-
-limit_codes <- extract_codes(limits$Limit)
-condition_codes <- extract_codes(limits$Condition)
-cvalue_codes <- unique(c(limit_codes, condition_codes))
-
-# remove EMS_1107 as Hardness just one
-cvalue_codes <- setdiff(cvalue_codes, "EMS_1107")
 
 missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;
@@ -44,7 +32,6 @@ empty_report <- empty_evaluate[c("Variable", "Use", "Media", "PredictedEffectLev
                                  "Technical Document Link")]
 empty_report <- empty_report %>% rename(`Effect Level` = PredictedEffectLevel)
 
-usethis::use_data(limits, codes, cvalue_codes,
-                  empty_raw, empty_report, empty_evaluate, 
+usethis::use_data(limits, codes, empty_raw, empty_report, empty_evaluate, 
                   missing_help, internal = TRUE, overwrite = TRUE)
 

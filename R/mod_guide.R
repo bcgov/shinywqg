@@ -11,8 +11,6 @@
 #' @rdname mod_guide
 #'
 #' @keywords internal
-#' @export 
-#' @importFrom shiny NS tagList 
 mod_guide_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -25,7 +23,6 @@ mod_guide_ui <- function(id){
 # Module Server
     
 #' @rdname mod_guide
-#' @export
 #' @keywords internal
     
 mod_guide_server <- function(input, output, session){
