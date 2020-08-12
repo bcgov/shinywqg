@@ -122,8 +122,9 @@ mod_data_server <- function(input, output, session) {
   wqg_data_raw <- reactive({
     req(input$variable)
     req(input$use)
-    wqg_filter(input$variable, 
+    x <- wqg_filter(input$variable, 
                input$use, input$media, rv$limits)
+    x
   })
 
   wqg_data_evaluate <- reactive({
