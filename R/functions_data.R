@@ -44,11 +44,11 @@ wqg_filter <- function(variable, use, media, x = limits) {
   if(all(is.na(x$EMS_Code))) {
     return(x)
   }
-  
+
   x %>% 
     dplyr::group_by(.data$Variable, .data$Component) %>%
     dplyr::arrange(.data$EMS_Code) %>%
-    dplyr::filter(.data$EMS_Code == dplyr::first(.data$EMS_Code))
+    dplyr::filter(.data$EMS_Code == dplyr::first(.data$EMS_Code) | is.na(.data$EMS_Code))
 }
 
 wqg_evaluate <- function(x, cvalues) {
