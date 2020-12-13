@@ -26,7 +26,7 @@ lookups <- function(lookup_table, cvalues){
   lookup_table <- readr::read_csv(file_path)
   
   limit_row <- which(rowSums(lookup_table[names(cvalues)] == cvalues) == length(cvalues))
-  lookup_table[[limit_row,ncol(lookup_table)]]
+  lookup_table$Limit[[limit_row]]
 }
 
 evaluate_guideline <- function(limit, cvalues) {
