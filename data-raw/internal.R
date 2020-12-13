@@ -16,6 +16,8 @@ codes <- bind_rows(codes,
                           EMS_Code = "EMS_CA_D",
                           Units = "mg/L"))
 
+# Change Organic Carbon Dissolved to Dissolved Organic Carbon
+codes$Variable[codes$EMS_Code == "EMS_1126"] <- "Dissolved Organic Carbon"
 
 missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;
