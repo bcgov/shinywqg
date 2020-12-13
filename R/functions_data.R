@@ -56,7 +56,6 @@ wqg_evaluate <- function(x, cvalues) {
   ### assumes that never a LimitNote AND Limit
   x$Guideline <- sapply(1:nrow(x), function(y) {
     evaluate_guideline(x$Limit[y],
-      # x$NarrativeWQG[y],
       cvalues)
   })
   x
