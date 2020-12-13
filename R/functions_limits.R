@@ -1,6 +1,9 @@
 test_condition <- function(x, cvalues) {
   if(is.na(x))
     return (TRUE)
+  # pass condition for look-up values
+  if(!str_detect(x, "[>|<|=]"))
+    return(TRUE)
   x <- try(eval(parse(text = x), envir = cvalues), silent = TRUE)
   if(class(x) != "logical")
     return (FALSE)
@@ -21,7 +24,17 @@ evaluate_guideline <- function(limit, cvalues) {
   if(!length(limit)) 
     return()
   
+  # if limit has .csv present do lookup
+  if(str_detect(limit, "\\.csv$")){
+    if (!length(cvalues)) {
+      return(NA)
+    }
+    lookups(limit, cvalues)
+  }
+  # otherwise evaluate the functions as normal
+  else {
   calc_limit(limit, cvalues)
+  }
 }
 
 format_guideline <- function(guideline, direction, units, limitnote, sigfig){
