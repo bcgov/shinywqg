@@ -16,11 +16,11 @@ cu_add_codes <- function(x){
   x$Limit[x$Variable == "Copper" &
               x$Use == "Aquatic Life - Freshwater" &
               x$Media == "Water" &
-              x$Type == "Short-term acute"] <- "cu_dissolved_aquatic_fresh_acute_lookup.csv"
+              x$Type == "Short-term acute"] <- "EMS_CU-D_water_aquatic_fresh_acute_lookup.csv"
   x$Limit[x$Variable == "Copper" &
             x$Use == "Aquatic Life - Freshwater" &
             x$Media == "Water" &
-            x$Type == "Long-term chronic"] <- "cu_dissolved_aquatic_fresh_chronic_lookup.csv"
+            x$Type == "Long-term chronic"] <- "EMS_CU-D_water_aquatic_fresh_chronic_lookup.csv"
 
   return(x)
 }
