@@ -103,7 +103,7 @@ mod_data_server <- function(input, output, session) {
         tagList(
           tags$label("Guideline Significant Figures"),
           help_text("Only applies to guidelines calculated from equations"),
-          numericInput(ns("sigfig"), label = NULL, value = 2)
+          numericInput(ns("sigfig"), label = NULL, value = 3)
         ))
     }
   })
@@ -143,7 +143,7 @@ mod_data_server <- function(input, output, session) {
     req(wqg_data_evaluate())
     x <-  wqg_data_evaluate()
     if(nrow(x) == 0) return()
-    sigfig <- 2
+    sigfig <- 3
     if(!is.null(input$sigfig)){
       sigfig <- input$sigfig
     }
