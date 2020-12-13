@@ -34,16 +34,15 @@ evaluate_guideline <- function(limit, cvalues) {
   if(!length(limit)) 
     return()
   
-  # if limit has .csv present do lookup
-  if(str_detect(limit, "\\.csv$")){
+  if(!str_detect(limit, "\\.csv$")){
+    calc_limit(limit, cvalues)
+  }
+  # if limit has .csv present do look-up
+  else {
     if (!length(cvalues)) {
       return(NA)
     }
     lookups(limit, cvalues)
-  }
-  # otherwise evaluate the functions as normal
-  else {
-  calc_limit(limit, cvalues)
   }
 }
 
@@ -64,10 +63,4 @@ format_guideline <- function(guideline, direction, units, limitnote, sigfig){
                    "")
   
   paste0(prefix, signif(guideline, sigfig), " (", units, ") ", limitnote)
-}
-
-extract_codes <- function(x) {
-  setdiff(unique(unlist(lapply(x, function(y){
-    stringr::str_extract_all(y, "EMS_[[:alnum:]][[:alnum:]_]{3,3}")
-  }))), NA)
 }
