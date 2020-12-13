@@ -19,6 +19,16 @@ calc_limit <- function(x, cvalues) {
   x
 }
 
+lookups <- function(lookup_table, cvalues){
+  # read's in look-up table 
+  # this will need to be adjusted once we get them uploaded to BC Data Cat
+  file_path <- paste0("../../data-raw/", lookup_table)
+  lookup_table <- readr::read_csv(file_path)
+  
+  limit_row <- which(rowSums(lookup_table[names(cvalues)] == cvalues) == length(cvalues))
+  lookup_table[[limit_row,ncol(lookup_table)]]
+}
+
 evaluate_guideline <- function(limit, cvalues) {
   ### deals with one limit at a time
   if(!length(limit)) 
