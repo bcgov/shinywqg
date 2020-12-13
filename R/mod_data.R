@@ -64,7 +64,10 @@ mod_data_server <- function(input, output, session) {
     } else {
       limits <- limits_bcdc
     }
-
+    # fix rows in copper, some of this may be done in the spread sheet
+    # might be better to do in process limits then here as well
+    limits <- cu_add_codes(limits)
+    
     cvalue_codes <<- unique(c(extract_codes(limits$Limit),
                              extract_codes(limits$Condition))) %>%
       setdiff("EMS_1107")
