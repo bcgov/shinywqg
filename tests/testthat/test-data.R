@@ -76,24 +76,17 @@ test_that("data functions work", {
 
   ### check Look-up
   # cvalues <- list(EMS_0004 = 4.8, EMS_1126 = 0.05, EMS_0107 = 8)
-  # x <- wqg_filter("Copper", 
+  # x <- cu_add_codes(limits) 
+  # x <- wqg_filter("Copper",
   #                 "Aquatic Life - Freshwater",
-  #                 "Water", 
-  #                 x = limits) 
+  #                 "Water",
+  #                 x = x)
   # # issue with file path location, this will be fixed once data is uploaded to BC Data Cat
-  # # fix to your machine until data is uploaded 
+  # # fix to your machine until data is uploaded
   # setwd("~/Code/shinywqg/inst/app")
-  # y <- wqg_evaluate(x, cvalues) 
-  #   wqg_clean()
+  # y <- wqg_evaluate(x, cvalues)
   # expect_identical(y$Condition[1], "EMS_0004 EMS_1126 EMS_0107 ")
   # expect_identical(y$Guideline[1], 0.2)
-  # expect_identical(y$ConditionPass[1], 0.2)
+  # expect_identical(y$ConditionPass[1], TRUE)
   
-  
-  
-  
-  
-  
-  
-    
 })
