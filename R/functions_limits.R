@@ -33,17 +33,17 @@ evaluate_guideline <- function(limit, cvalues) {
   ### deals with one limit at a time
   if(!length(limit)) 
     return()
-  
-  if(!stringr::str_detect(limit, "\\.csv$")){
-    calc_limit(limit, cvalues)
+  # if csv present in limit do lookup otherwise calc as per normal
+  if(!is.na(limit)){
+    print("you got here didn't you")
+    if(stringr::str_detect(limit, "\\.csv$")){
+      if (!length(cvalues)) {
+        return(NA)
+      }
+    return(lookups(limit, cvalues))
+   }
   }
-  # if limit has .csv present do look-up
-  else {
-    if (!length(cvalues)) {
-      return(NA)
-    }
-    lookups(limit, cvalues)
-  }
+  calc_limit(limit, cvalues)
 }
 
 format_guideline <- function(guideline, direction, units, limitnote, sigfig){
@@ -61,6 +61,5 @@ format_guideline <- function(guideline, direction, units, limitnote, sigfig){
                    "Upper Limit" = "<= ",
                    "Lower Limit" = ">= ",
                    "")
-  
   paste0(prefix, signif(guideline, sigfig), " (", units, ") ", limitnote)
 }
