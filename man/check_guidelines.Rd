@@ -4,10 +4,10 @@
 \alias{check_guidelines}
 \title{Check guidelines}
 \usage{
-check_guidelines(x)
+check_guidelines(x = NULL)
 }
 \arguments{
-\item{x}{A data.frame of the guidelines.}
+\item{x}{A data.frame of the guidelines. IF NULL, pull from BC Data Catalogue.}
 }
 \value{
 A invisible copy of the data.frame of the guidelines.

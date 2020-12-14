@@ -99,7 +99,7 @@ mod_data_server <- function(input, output, session) {
     x <- wqg_data_evaluate()
     x <- x[x$ConditionPass,]
     if(any(is.na(suppressWarnings(as.numeric(x$Limit)))) & all(!is.na(x$Limit))){
-      if(any(str_detect(x$Limit, "\\.csv$"))) {
+      if(any(stringr::str_detect(x$Limit, "\\.csv$"))) {
         return()
       }
       return(
