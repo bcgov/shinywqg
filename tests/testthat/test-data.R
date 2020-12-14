@@ -53,15 +53,6 @@ test_that("data functions work", {
   y <- wqg_evaluate(x, cvalues) %>% wqg_clean(2)
   expect_identical(nrow(y), 2L)
   
-  ### check missing Limit and LimitNote
-  x <- wqg_filter("Copper", 
-                  "Aquatic Life - Freshwater",
-                  "Water") %>%
-    wqg_evaluate(cvalues) %>%
-    wqg_clean()
-  expect_true(all(is.na(x$Notes)))
-  expect_identical(x$Guideline[1], "Calculate using specialized software on BC's WQG webpage.")
-  
   ### check NarrativeWQG
   var <- dplyr::filter(limits, !is.na(.data$NarrativeWQG))
   x <- wqg_filter("Colour True", 
@@ -82,5 +73,27 @@ test_that("data functions work", {
     wqg_clean(2)
   expect_true(is.na(x$Guideline))
   expect_identical(x$Notes, "No WQG value for pH < 5, site assessment may be necessary. ")
+
+  ### check Look-up
+  # cvalues <- list(EMS_0004 = 4.8, EMS_1126 = 0.05, EMS_0107 = 8)
+  # x <- wqg_filter("Copper", 
+  #                 "Aquatic Life - Freshwater",
+  #                 "Water", 
+  #                 x = limits) 
+  # # issue with file path location, this will be fixed once data is uploaded to BC Data Cat
+  # # fix to your machine until data is uploaded 
+  # setwd("~/Code/shinywqg/inst/app")
+  # y <- wqg_evaluate(x, cvalues) 
+  #   wqg_clean()
+  # expect_identical(y$Condition[1], "EMS_0004 EMS_1126 EMS_0107 ")
+  # expect_identical(y$Guideline[1], 0.2)
+  # expect_identical(y$ConditionPass[1], 0.2)
   
+  
+  
+  
+  
+  
+  
+    
 })
