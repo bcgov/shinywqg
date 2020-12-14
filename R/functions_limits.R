@@ -2,7 +2,7 @@ test_condition <- function(x, cvalues) {
   if(is.na(x))
     return (TRUE)
   # pass condition for look-up values
-  if(!str_detect(x, "[>|<|=]"))
+  if(!stringr::str_detect(x, "[>|<|=]"))
     return(TRUE)
   x <- try(eval(parse(text = x), envir = cvalues), silent = TRUE)
   if(class(x) != "logical")
@@ -34,7 +34,7 @@ evaluate_guideline <- function(limit, cvalues) {
   if(!length(limit)) 
     return()
   
-  if(!str_detect(limit, "\\.csv$")){
+  if(!stringr::str_detect(limit, "\\.csv$")){
     calc_limit(limit, cvalues)
   }
   # if limit has .csv present do look-up
