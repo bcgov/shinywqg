@@ -9,7 +9,7 @@ Authors@R: c(
 Description: User interface to calculate water quality guidelines.
 License: MIT + file LICENSE
 Depends: 
-    R (>= 3.4.0)
+    R (>= 3.5)
 Imports:
     stats,
     chk,
@@ -29,7 +29,7 @@ Imports:
     stringr,
     webshot
 Suggests: 
-    testthat (>= 2.1.0),
+    testthat,
     knitr
 URL: https://github.com/bcgov/shinywqg
 BugReports: https://github.com/bcgov/shinywqg/issues
