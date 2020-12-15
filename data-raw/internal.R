@@ -7,14 +7,13 @@ library(wqbc)
 limits <- readr::read_csv("https://raw.githubusercontent.com/bcgov/wqg_data/master/all_wqgs.csv")
 # limits <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
 
+## modify limits to be what databc should be
+## also add lookups to internal as well.
+## switch off code to read from databc therefore uses internals.
+## once working then update databc with new limits and lookups.
+
 codes <-  wqbc::codes
 codes <- codes %>% dplyr::rename(EMS_Code = Code)
-
-### add Calcium Dissolved
-codes <- bind_rows(codes,
-                   tibble(Variable = "Calcium Dissolved",
-                          EMS_Code = "EMS_CA_D",
-                          Units = "mg/L"))
 
 # Change Organic Carbon Dissolved to Dissolved Organic Carbon
 codes$Variable[codes$EMS_Code == "EMS_1126"] <- "Dissolved Organic Carbon"
