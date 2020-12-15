@@ -14,8 +14,11 @@ license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://op
 <!-- badges: end -->
 
 shinywqg is an R package to run the ‘B.C. Ambient Water Quality
-Guidelines’ Shiny application. Guidelines are read directly from the BC
-Data Catalogue.
+Guidelines’ Shiny application. Guidelines are determined based on
+information from the BC Data Catalogue.
+
+The shiny application is also available at
+<https://bcgov-env.shinyapps.io/bc_wqg/>.
 
 ## Installation
 
