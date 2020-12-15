@@ -83,3 +83,15 @@ wqg_clean <- function(data, sigfig) {
       .data$Guideline, .data$Reference, .data$`Reference Link`, 
       .data$`Overview Report Link`, .data$`Technical Document Link`)
 }
+
+#Function to add missing info to Cu Dissolved Aquatic Life - Freshwater in wqg master
+#some of this may already be done by updating the data
+cu_add_codes <- function(x){
+  
+  cu_codes <- c("EMS_0004 EMS_1126 EMS_0107 ")
+  
+  x$Condition[x$Variable == "Copper" & x$Component == "Dissolved"] <- cu_codes
+  
+  
+  return(x)
+}
