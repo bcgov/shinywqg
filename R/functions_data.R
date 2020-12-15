@@ -84,14 +84,22 @@ wqg_clean <- function(data, sigfig) {
       .data$`Overview Report Link`, .data$`Technical Document Link`)
 }
 
-#Function to add missing info to Cu Dissolved Aquatic Life - Freshwater in wqg master
-#some of this may already be done by updating the data
-cu_add_codes <- function(x){
-  
-  cu_codes <- c("EMS_0004 EMS_1126 EMS_0107 ")
-  
-  x$Condition[x$Variable == "Copper" & x$Component == "Dissolved"] <- cu_codes
-  
-  
+add_lookup_condition <- function(x){
+  x$Condition <- mapply(get_lookup_codes, x$Limit, x$Condition)
   return(x)
+}
+
+get_lookup_codes <- function(Limit, Condition) {
+  
+  if(!is.na(Limit)){
+    if (stringr::str_detect(Limit, "[.]csv")) {
+      file_path <- paste0("../../data-raw/", Limit)
+      lookup_table <- readr::read_csv(file_path)
+      col_names <-  paste0(colnames(lookup_table), collapse = " ")
+      lookup_parameters <- stringr::str_match_all(col_names, "EMS_.{4}")
+      Condition <- paste0(lookup_parameters[[1]], sep = " ", collapse = "")
+      return(Condition)
+    }
+  }
+  return(Condition)
 }
