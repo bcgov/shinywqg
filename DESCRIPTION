@@ -1,42 +1,65 @@
 Package: shinywqg
 Title: Water Quality Guideline Shiny App
 Version: 0.0.1
-Authors@R: c(
-    person("Sebastian", "Dalgarno", , "seb@poissonconsulting.ca", c("aut", "cre"), comment = c(ORCID = "0000-0002-3658-4517")),
-    person("Joe", "Thorley", , "joe@poissonconsulting.ca", "ctb", comment = c(ORCID = "0000-0002-7683-4592")),
-    person("Province of British Columbia", role = c("cph", "fnd"))
-    )
-Description: User interface to calculate water quality guidelines.
+Authors@R: 
+    c(person(given = "Sebastian",
+             family = "Dalgarno",
+             role = c("aut", "cre"),
+             email = "seb@northbeachconsulting.ca",
+             comment = c(ORCID = "0000-0002-3658-4517")),
+      person(given = "Ayla",
+             family = "Pearson",
+             role = "ctb",
+             email = "ayla@poissonconsulting.ca"),
+      person(given = "Joe",
+             family = "Thorley",
+             role = "ctb",
+             email = "joe@poissonconsulting.ca",
+             comment = c(ORCID = "0000-0002-7683-4592")),
+      person(given = "Angeline",
+             family = "Tillmans",
+             role = "ctb",
+             email = "Angeline.Tillmanns@gov.bc.ca"), 
+      person(given = "Heather",
+             family = "Thompson",
+             role = "ctb",
+             email = "Heather.C.Thompson@gov.bc.ca"),      
+      person(given = "Province of British Columbia",
+             role = c("cph", "fnd")))
+Description: User interface to calculate water quality
+    guidelines.
 License: MIT + file LICENSE
+URL: https://github.com/bcgov/shinywqg
+BugReports: https://github.com/bcgov/shinywqg/issues
 Depends: 
     R (>= 3.5)
 Imports:
-    stats,
+    bcdata,
     chk,
+    dplyr,
+    gt,
+    htmltools,
     lifecycle,
+    magrittr,
+    openxlsx,
+    readr,
+    rlang,
     shiny,
     shinyjs,
-    htmltools,
-    waiter,
-    readr,
-    openxlsx,
-    dplyr,
     shinyWidgets,
-    gt,
-    magrittr,
-    bcdata,
-    rlang,
+    stats,
     stringr,
+    waiter,
     webshot
 Suggests: 
-    testthat,
+    knitr,
+    testthat
+VignetteBuilder: 
     knitr
-URL: https://github.com/bcgov/shinywqg
-BugReports: https://github.com/bcgov/shinywqg/issues
+RdMacros: 
+    lifecycle
 Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.1.1
-RdMacros: lifecycle
 Language: en-US
-VignetteBuilder: knitr
+LazyData: true
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
