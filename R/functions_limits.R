@@ -35,7 +35,7 @@ evaluate_guideline <- function(limit, cvalues) {
     return()
   # if csv present in limit do lookup otherwise calc as per normal
   if(!is.na(limit)){
-    if(stringr::str_detect(limit, "\\.csv$")){
+    if(stringr::str_detect(limit, "[.]csv$")){
       if (!length(cvalues)) {
         return(NA)
       }
