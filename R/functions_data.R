@@ -55,7 +55,7 @@ wqg_evaluate <- function(x, cvalues) {
   x$ConditionPass <- sapply(x$Condition, test_condition, cvalues, USE.NAMES = FALSE)
   ### assumes that never a LimitNote AND Limit
   x$Guideline <- sapply(1:nrow(x), function(y) {
-    evaluate_guideline(x$Limit[y],
+    evaluate_guideline(x$Limit[y], x$lookup[y],
       cvalues)
   })
   x
@@ -88,7 +88,6 @@ wqg_clean <- function(data, sigfig) {
 add_lookup_table <- function(x) {
   
   x$lookup <- list(rep(NULL, nrow(x)))
-  
   x$lookup <- sapply(x$Limit, function(y){
     if(!is.na(y)) {
       if(stringr::str_detect(y, "[.]csv")){
@@ -99,7 +98,6 @@ add_lookup_table <- function(x) {
     }
     return(NULL)
   })
-  
   x
 }
 
@@ -127,4 +125,11 @@ get_lookup_codes <- function(Limit, lookup, Condition) {
       return(Condition)
   }
   return(Condition)
+}
+
+process_lookups <- function(limits){
+  # Example of how to access: limits$lookup[280][[1]]["EMS_0004"]
+  limits$lookup <- list(rep(NULL, nrow(limits)))
+  limits[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "[.]csv"),] %<>% add_lookup()
+  limits <- add_lookup_condition(limits)
 }

@@ -20,27 +20,20 @@ calc_limit <- function(x, cvalues) {
 }
 
 lookups <- function(lookup_table, cvalues){
-  # read's in look-up table 
-  # this will need to be adjusted once we get them uploaded to BC Data Cat
-  file_path <- paste0("../../data-raw/", lookup_table)
-  lookup_table <- readr::read_csv(file_path)
-  
   limit_row <- which(rowSums(lookup_table[names(cvalues)] == cvalues) == length(cvalues))
   lookup_table$Limit[[limit_row]]
 }
 
-evaluate_guideline <- function(limit, cvalues) {
+evaluate_guideline <- function(limit, lookup, cvalues) {
   ### deals with one limit at a time
   if(!length(limit)) 
     return()
-  # if csv present in limit do lookup otherwise calc as per normal
-  if(!is.na(limit)){
-    if(stringr::str_detect(limit, "[.]csv$")){
+  # if lookup table present do lookup otherwise calc as per normal
+  if(!is.null(lookup[[1]])){
       if (!length(cvalues)) {
         return(NA)
       }
-    return(lookups(limit, cvalues))
-   }
+    return(lookups(lookup[[1]], cvalues))
   }
   calc_limit(limit, cvalues)
 }
