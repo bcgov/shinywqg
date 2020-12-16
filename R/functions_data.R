@@ -115,21 +115,16 @@ add_lookup <- function(x) {
 }
 
 add_lookup_condition <- function(x){
-  x$Condition <- mapply(get_lookup_codes, x$Limit, x$Condition)
+  x$Condition <- mapply(get_lookup_codes,x$Limit, x$lookup, x$Condition)
   return(x)
 }
 
-get_lookup_codes <- function(Limit, Condition) {
-  
-  if(!is.na(Limit)){
-    if (stringr::str_detect(Limit, "[.]csv")) {
-      file_path <- paste0("../../data-raw/", Limit)
-      lookup_table <- readr::read_csv(file_path)
-      col_names <-  paste0(colnames(lookup_table), collapse = " ")
+get_lookup_codes <- function(Limit, lookup, Condition) {
+  if(!is.null(lookup)){
+      col_names <-  paste0(colnames(lookup), collapse = " ")
       lookup_parameters <- stringr::str_match_all(col_names, "EMS_.{4}")
       Condition <- paste0(lookup_parameters[[1]], sep = " ", collapse = "")
       return(Condition)
-    }
   }
   return(Condition)
 }
