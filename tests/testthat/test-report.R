@@ -7,7 +7,8 @@ test_that("report renders", {
 
   cvalues <- list(EMS_0107 = 9, EMS_1104 = 10)
   ### test LimitNotes
-  x <- wqg_filter("Chloride", "Aquatic Life - Marine", "Water") %>%
+  limits$lookup <- list(rep(NULL, nrow(limits)))
+  x <- wqg_filter("Chloride", "Aquatic Life - Marine", "Water", limits) %>%
     wqg_evaluate(cvalues) %>%
     wqg_clean(2)
 
