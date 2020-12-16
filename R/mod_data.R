@@ -206,10 +206,21 @@ mod_data_server <- function(input, output, session) {
   observe({
     req(input$EMS_0004)
     print(input$EMS_0004)
+    req(input$EMS_1126)
+    print(input$EMS_1126)
+    req(input$EMS_0107)
+    print(input$EMS_0107)
   })
   
   output$ui_cvalue <- renderUI({
+    req(input$variable)
+    if (input$variable == "Copper"){
+      
+      shinyjs::hidden(dropdown_inputs_1(ns))
+      
+    } else {
     shinyjs::hidden(numeric_inputs(rv$cvalue_codes, ns))
+    }
   })
 
   output$ui_use <- renderUI({
