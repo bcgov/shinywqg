@@ -84,6 +84,36 @@ wqg_clean <- function(data, sigfig) {
       .data$`Overview Report Link`, .data$`Technical Document Link`)
 }
 
+
+add_lookup_table <- function(x) {
+  
+  x$lookup <- list(rep(NULL, nrow(x)))
+  
+  x$lookup <- sapply(x$Limit, function(y){
+    if(!is.na(y)) {
+      if(stringr::str_detect(y, "[.]csv")){
+        file_path <- paste0("../../data-raw/", y)
+        lookup_table <- readr::read_csv(file_path)
+        return(lookup_table) 
+      }
+    }
+    return(NULL)
+  })
+  
+  x
+}
+
+get_lookup <- function(file_name) {
+  file_path <- paste0("../../data-raw/", file_name)
+  lookup_table <- readr::read_csv(file_path)
+  lookup_table
+}
+
+add_lookup <- function(x) {
+  x$lookup <- lapply(x$Limit, get_lookup)
+  x
+}
+
 add_lookup_condition <- function(x){
   x$Condition <- mapply(get_lookup_codes, x$Limit, x$Condition)
   return(x)

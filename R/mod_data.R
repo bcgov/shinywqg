@@ -65,6 +65,9 @@ mod_data_server <- function(input, output, session) {
     } else {
       limits <- limits_bcdc
     }
+    # Example of how to access: limits$lookup[280][[1]]["EMS_0004"]
+    limits$lookup <- list(rep(NULL, nrow(limits)))
+    limits[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "[.]csv"),] %<>% add_lookup()
     # fix rows in copper, some of this may be done in the spread sheet
     # might be better to do in process limits then here as well
     limits <- add_lookup_condition(limits)
