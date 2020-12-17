@@ -21,7 +21,11 @@ calc_limit <- function(x, cvalues) {
 
 lookups <- function(lookup_table, cvalues){
   limit_row <- which(rowSums(lookup_table[names(cvalues)] == cvalues) == length(cvalues))
-  lookup_table$Limit[[limit_row]]
+  guideline <- try(lookup_table$Limit[[limit_row]], silent = TRUE)
+  if(is_try_error(guideline)){
+    guideline <- NA
+  }
+  guideline
 }
 
 evaluate_guideline <- function(limit, lookup, cvalues) {
