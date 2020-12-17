@@ -1,8 +1,10 @@
 test_that("data functions work", {
 
   cvalues <- list(EMS_0107 = 9, EMS_1107 = 5, EMS_1104 = 10)
+  limits$lookup <- list(rep(NULL, nrow(limits)))
+  limits$LookupNotes <- c(rep(NA, nrow(limits)))
   ### test LimitNotes
-  x <- wqg_filter("Chloride", "Aquatic Life - Marine", "Water")
+  x <- wqg_filter("Chloride", "Aquatic Life - Marine", "Water", limits)
   expect_identical(nrow(x), 2L)
   expect_length(unique(x$EMS_Code), 1L)
 
@@ -11,7 +13,7 @@ test_that("data functions work", {
   expect_identical(y$Guideline, c(9, 11))
 
   # case of multiple EMS_Code only one row output
-  x <- wqg_filter("Fluoride", "Aquatic Life - Freshwater", "Water")
+  x <- wqg_filter("Fluoride", "Aquatic Life - Freshwater", "Water", limits)
   expect_identical(nrow(x), 2L)
   expect_length(unique(x$EMS_Code), 1L)
 
@@ -40,14 +42,15 @@ test_that("data functions work", {
   ### case of missing EMS_Code
   x <- wqg_filter("Linear alkylbenzene sulphonates (LAS)", 
     "Aquatic Life - Freshwater",
-    "Water")
+    "Water",
+    limits)
   expect_true(is.na(x$EMS_Code))
   expect_identical(nrow(x), 1L)
 
   ### egt_table works
   x <- wqg_filter("Ammonia", 
     "Aquatic Life - Freshwater",
-    "Water")
+    "Water", limits)
 
   cvalues <- list(EMS_0004 = 9, EMS_0013 = 10)
   y <- wqg_evaluate(x, cvalues) %>% wqg_clean(2)
@@ -57,7 +60,7 @@ test_that("data functions work", {
   var <- dplyr::filter(limits, !is.na(.data$NarrativeWQG))
   x <- wqg_filter("Colour True", 
                   "Aquatic Life - Freshwater",
-                  "Water") %>%
+                  "Water", limits) %>%
     wqg_evaluate(cvalues) %>%
     wqg_clean()
   expect_true(all(is.na(x$Notes)))
@@ -68,7 +71,8 @@ test_that("data functions work", {
   cvalues$EMS_0004 <- 4
   x <- wqg_filter("Resin acids", 
                   "Aquatic Life - Freshwater",
-                  "Water") %>%
+                  "Water", 
+                  limits) %>%
     wqg_evaluate(cvalues) %>%
     wqg_clean(2)
   expect_true(is.na(x$Guideline))
