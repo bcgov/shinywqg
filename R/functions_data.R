@@ -71,6 +71,7 @@ wqg_clean <- function(data, sigfig) {
                      data$Direction[x],
                      data$Units[x],
                      data$LimitNotes[x],
+                     data$LookupNotes[x],
                      sigfig)
   })
   
@@ -110,9 +111,25 @@ get_lookup_codes <- function(Limit, lookup, Condition) {
   return(Condition)
 }
 
+add_lookupnotes <- function(x){
+  x$LookupNotes <- c(rep(NA, nrow(x)))
+  x$LookupNotes <- sapply(x$lookup, get_note)
+  x
+}
+
+get_note <- function(lookup){
+  if (!is.null(lookup[[1]])){
+    LimitNote <- "Guideline not available for this pH, Hardness and 
+    Dissolved Organic Carbon combination"
+  } else {
+    return(NA)
+  }
+}
+
 process_lookups <- function(limits){
   # Example of how to access: limits$lookup[280][[1]]["EMS_0004"]
   limits$lookup <- list(rep(NULL, nrow(limits)))
   limits[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "[.]csv"),] %<>% add_lookup()
   limits <- add_lookup_condition(limits)
+  limits <- add_lookupnotes(limits)
 }

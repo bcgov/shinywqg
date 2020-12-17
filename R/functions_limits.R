@@ -42,7 +42,10 @@ evaluate_guideline <- function(limit, lookup, cvalues) {
   calc_limit(limit, cvalues)
 }
 
-format_guideline <- function(guideline, direction, units, limitnote, sigfig){
+format_guideline <- function(guideline, direction, units, limitnote, lookupnotes, sigfig){
+  
+  if(is.na(guideline) & !is.na(lookupnotes))
+    return(lookupnotes)
   
   if(is.na(guideline) & is.na(limitnote))
     return(NA)
