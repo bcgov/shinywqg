@@ -201,14 +201,16 @@ mod_data_server <- function(input, output, session) {
                    multiple = FALSE)
   })
   
-  observe({
-    req(input$EMS_0004)
-    print(input$EMS_0004)
-    req(input$EMS_1126)
-    print(input$EMS_1126)
-    req(input$EMS_0107)
-    print(input$EMS_0107)
-  })
+  # observe({
+  #   req(input$EMS_0004)
+  #   print(input$EMS_0004)
+  #   req(input$EMS_1126)
+  #   print(input$EMS_1126)
+  #   req(input$EMS_0107)
+  #   print(input$EMS_0107)
+  #   print(rv$cvalue)
+  #   
+  # })
   
   output$ui_cvalue <- renderUI({
     req(input$variable)

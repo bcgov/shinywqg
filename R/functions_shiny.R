@@ -1,7 +1,6 @@
 numeric_inputs <- function(x, ns) {
   x <- lapply(x, function(y) {
     value <- NULL
-    print(y)
     numericInput(inputId = ns(y), label = code_to_variable(y), value = value)
   })
   x
