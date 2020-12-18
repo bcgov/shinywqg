@@ -12,31 +12,41 @@ waiter_html <- function(x){
           h3(x))
 }
 
-dropdown_inputs_1 <- function(ns) {
+dropdown_inputs <- function(codes, ns, data){
   
-  a <- selectInput(inputId = ns("EMS_0004"),
-              label = code_to_variable("EMS_0004"),
-              choices = sort(unique(cu_h20_aq_fresh_acute_lookup$EMS_0004))
-              )
-
+  print(data)
+  print(data$lookup)
   
-  b <- selectInput(inputId = ns("EMS_1126"),
-              label = code_to_variable("EMS_1126"),
-              choices = sort(unique(cu_h20_aq_fresh_acute_lookup$EMS_1126))
-              )
-
-  d <- selectInput(inputId = ns("EMS_0107"),
-              label = code_to_variable("EMS_0107"),
-              choices = sort(unique(cu_h20_aq_fresh_acute_lookup$EMS_0107))
-              )
-  
-  tag_names <- list(a, b, d)
-  return(tag_names)
-  
+  x <- lapply(codes, function(y){
+   selectInput(inputId = ns(y),
+               label = code_to_variable(y),
+               choices = NULL) 
+  })
+  x
 }
 
 
 
 
-
-
+# dropdown_inputs_1 <- function(ns) {
+#   
+#   a <- selectInput(inputId = ns("EMS_0004"),
+#               label = code_to_variable("EMS_0004"),
+#               choices = sort(unique(cu_h20_aq_fresh_acute_lookup$EMS_0004))
+#               )
+# 
+#   
+#   b <- selectInput(inputId = ns("EMS_1126"),
+#               label = code_to_variable("EMS_1126"),
+#               choices = sort(unique(cu_h20_aq_fresh_acute_lookup$EMS_1126))
+#               )
+# 
+#   d <- selectInput(inputId = ns("EMS_0107"),
+#               label = code_to_variable("EMS_0107"),
+#               choices = sort(unique(cu_h20_aq_fresh_acute_lookup$EMS_0107))
+#               )
+#   
+#   tag_names <- list(a, b, d)
+#   return(tag_names)
+#   
+# }

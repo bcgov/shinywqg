@@ -168,7 +168,8 @@ mod_data_server <- function(input, output, session) {
     raw = empty_evaluate,
     report = empty_report,
     limits = NULL,
-    cvalue_codes = NULL
+    cvalue_codes = NULL,
+    filtered = NULL
   )
 
   observe({
@@ -212,12 +213,17 @@ mod_data_server <- function(input, output, session) {
   #   
   # })
   
+  observe({
+    filtered_data <- wqg_data_evaluate()
+    rv$filtered <- filtered_data
+  })
+  
+  
+  
   output$ui_cvalue <- renderUI({
     req(input$variable)
     if (input$variable == "Copper"){
-      
-      shinyjs::hidden(dropdown_inputs_1(ns))
-      
+      dropdown_inputs(rv$cvalue_active, ns, isolate(rv$filtered))
     } else {
     shinyjs::hidden(numeric_inputs(rv$cvalue_codes, ns))
     }
