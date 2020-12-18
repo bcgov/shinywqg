@@ -66,6 +66,8 @@ wqg_clean <- function(data, sigfig) {
   data <- data %>%
     dplyr::filter(.data$ConditionPass)
   
+  if (nrow(data) == 0) return()
+    
   data$Guideline <- sapply(1:nrow(data), function(x) {
     format_guideline(data$Guideline[x],
                      data$Direction[x],
