@@ -13,14 +13,19 @@ waiter_html <- function(x){
 }
 
 dropdown_inputs <- function(codes, ns, data){
-  
- # print("--------")
-#  print(data)
-  
+  print(data)
   x <- lapply(codes, function(y){
-   selectInput(inputId = ns(y),
+    if(nrow(data) != 0){
+      print("actual choices")
+    selectInput(inputId = ns(y),
                label = code_to_variable(y),
-               choices = NULL) 
+               choices = unique(data[y])) 
+    } else{
+      print("null output")
+      selectInput(inputId = ns(y),
+                  label = code_to_variable(y),
+                  choices = NULL) 
+    }
   })
   x
 }
@@ -28,25 +33,26 @@ dropdown_inputs <- function(codes, ns, data){
 
 
 
-# dropdown_inputs_1 <- function(ns) {
-#   
-#   a <- selectInput(inputId = ns("EMS_0004"),
-#               label = code_to_variable("EMS_0004"),
-#               choices = sort(unique(cu_h20_aq_fresh_acute_lookup$EMS_0004))
-#               )
+# library(tidyverse)
 # 
-#   
-#   b <- selectInput(inputId = ns("EMS_1126"),
-#               label = code_to_variable("EMS_1126"),
-#               choices = sort(unique(cu_h20_aq_fresh_acute_lookup$EMS_1126))
-#               )
+# x <- limits %>% 
+#   filter(Variable == "Copper") %>% 
+#   filter(Media == "Water")
 # 
-#   d <- selectInput(inputId = ns("EMS_0107"),
-#               label = code_to_variable("EMS_0107"),
-#               choices = sort(unique(cu_h20_aq_fresh_acute_lookup$EMS_0107))
-#               )
-#   
-#   tag_names <- list(a, b, d)
-#   return(tag_names)
-#   
+# x <- process_lookups(x)
+# 
+# # create df, of all options 
+# z <- tibble::tibble()
+# for (i in x$lookup){
+#   z <- bind_rows(z, i)
+# }
+# 
+# z %<>% select(-Limit) %>% 
+#   distinct()
+# 
+# inactive_codes <- c("EMS_CA_D", "EMS_0220")
+# 
+# for (i in inactive_codes){
+#   print(i)
+#   z[i] <- NA
 # }

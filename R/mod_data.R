@@ -204,20 +204,35 @@ mod_data_server <- function(input, output, session) {
   })
   
   observe({
-    filtered_data <- wqg_data_evaluate()
-    rv$filtered <- filtered_data
+    rv$lookup_vars <- lookup_variables(rv$limits)
+  })
+  
+  observe({
     
+    filtered_data <- wqg_data_evaluate()
+    
+   # print(filtered_data)
+    drop_choices <- tibble::tibble()
+    for (i in filtered_data$lookup){
+      drop_choices <- dplyr::bind_rows(drop_choices, i)
+    }
+    
+    # drop_choices %<>% 
+    #   dplyr::select(-Limit) %>% 
+    #   dplyr::distinct()
+    
+    for (codes in rv$cvalue_inactive){
+      drop_choices[codes] <- NA
+    }
+    
+    rv$filtered <- drop_choices
   })
 
-observe({
-  rv$lookup_vars <- lookup_variables(rv$limits)
-})
-  
   
   output$ui_cvalue <- renderUI({
     req(input$variable)
     if(input$variable %in% rv$lookup_vars){
-      shinyjs::hidden(dropdown_inputs(rv$cvalue_codes, ns, rv$filtered))
+      dropdown_inputs(rv$cvalue_codes, ns, rv$filtered)
     } else {
       shinyjs::hidden(numeric_inputs(rv$cvalue_codes, ns))
     }
