@@ -13,46 +13,14 @@ waiter_html <- function(x){
 }
 
 dropdown_inputs <- function(codes, ns, data){
-  print(data)
   x <- lapply(codes, function(y){
-    if(nrow(data) != 0){
-      print("actual choices")
+    choices <- try(sort(unique(data[[y]])))
+    if(is_try_error(choices)){
+      choices <- NULL
+    }
     selectInput(inputId = ns(y),
                label = code_to_variable(y),
-               choices = unique(data[y])) 
-    } else{
-      print("null output")
-      selectInput(inputId = ns(y),
-                  label = code_to_variable(y),
-                  choices = NULL) 
-    }
+               choices = choices)
   })
   x
 }
-
-
-
-
-# library(tidyverse)
-# 
-# x <- limits %>% 
-#   filter(Variable == "Copper") %>% 
-#   filter(Media == "Water")
-# 
-# x <- process_lookups(x)
-# 
-# # create df, of all options 
-# z <- tibble::tibble()
-# for (i in x$lookup){
-#   z <- bind_rows(z, i)
-# }
-# 
-# z %<>% select(-Limit) %>% 
-#   distinct()
-# 
-# inactive_codes <- c("EMS_CA_D", "EMS_0220")
-# 
-# for (i in inactive_codes){
-#   print(i)
-#   z[i] <- NA
-# }
