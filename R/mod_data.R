@@ -207,8 +207,15 @@ mod_data_server <- function(input, output, session) {
     rv$lookup_vars <- lookup_variables(rv$limits)
   })
   
+  wqg_data_raw2 <- reactive({
+    req(input$variable)
+    x <- wqg_filter2(input$variable, rv$limits)
+    x
+  })
+  
   observe({
-    filtered_data <- wqg_data_evaluate()
+    req(input$variable)
+    filtered_data <- wqg_data_raw2()
 
     drop_choices <- tibble::tibble()
     for (i in filtered_data$lookup){
@@ -218,19 +225,20 @@ mod_data_server <- function(input, output, session) {
     drop_choices %<>%
       dplyr::select(contains("EMS_")) %>% 
       dplyr::distinct() 
+    
+    cvals_active <- colnames(drop_choices)
+    cvals_inactive <- setdiff(rv$cvalue_codes, cvals_active)
       
-    for (codes in rv$cvalue_inactive){
+    for (codes in cvals_inactive){
       drop_choices[codes] <- NA
     }
-    
     rv$filtered <- drop_choices
   })
-
   
   output$ui_cvalue <- renderUI({
     req(input$variable)
     if(input$variable %in% rv$lookup_vars){
-      dropdown_inputs(rv$cvalue_active, ns, rv$filtered)
+      shinyjs::hidden(dropdown_inputs(rv$cvalue_codes, ns, rv$filtered))
     } else {
       shinyjs::hidden(numeric_inputs(rv$cvalue_codes, ns))
     }

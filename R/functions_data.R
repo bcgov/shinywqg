@@ -149,3 +149,21 @@ lookup_variables <- function(limits){
   variables_clean <- unique(variables)
   variables_clean[!is.na(variables_clean)]
 }
+
+wqg_filter2 <- function(variable, x = limits) {
+  x <- x %>%
+    dplyr::filter(.data$Variable == variable)
+  # remove duplicates caused by multiple EMS_Codes
+  if(all(is.na(x$EMS_Code))) {
+    return(x)
+  }
+  
+  x %>% 
+    dplyr::group_by(.data$Variable, .data$Component) %>%
+    dplyr::arrange(.data$EMS_Code) %>%
+    dplyr::filter(.data$EMS_Code == dplyr::first(.data$EMS_Code) | is.na(.data$EMS_Code))
+}
+
+
+
+
