@@ -171,5 +171,3 @@ lookup_choices <- function(data, cvalue_codes){
   }
   drop_choices
 }
-
-
