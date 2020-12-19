@@ -207,15 +207,15 @@ mod_data_server <- function(input, output, session) {
     rv$lookup_vars <- lookup_variables(rv$limits)
   })
   
-  wqg_data_raw2 <- reactive({
+  wqg_data_variable <- reactive({
     req(input$variable)
-    x <- wqg_filter2(input$variable, rv$limits)
+    x <- wqg_filter_variable(input$variable, rv$limits)
     x
   })
   
   observe({
     req(input$variable)
-    filtered_data <- wqg_data_raw2()
+    filtered_data <-   wqg_data_variable()
 
     drop_choices <- dplyr::tibble()
     for (i in filtered_data$lookup){
