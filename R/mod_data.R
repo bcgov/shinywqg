@@ -217,13 +217,13 @@ mod_data_server <- function(input, output, session) {
     req(input$variable)
     filtered_data <- wqg_data_raw2()
 
-    drop_choices <- tibble::tibble()
+    drop_choices <- dplyr::tibble()
     for (i in filtered_data$lookup){
       drop_choices <- dplyr::bind_rows(drop_choices, i)
     }
     
     drop_choices %<>%
-      dplyr::select(contains("EMS_")) %>% 
+      dplyr::select(dplyr::contains("EMS_")) %>% 
       dplyr::distinct() 
     
     cvals_active <- colnames(drop_choices)
