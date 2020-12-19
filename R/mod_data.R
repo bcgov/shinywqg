@@ -208,19 +208,17 @@ mod_data_server <- function(input, output, session) {
   })
   
   observe({
-    
     filtered_data <- wqg_data_evaluate()
-    
-   # print(filtered_data)
+
     drop_choices <- tibble::tibble()
     for (i in filtered_data$lookup){
       drop_choices <- dplyr::bind_rows(drop_choices, i)
     }
     
-    # drop_choices %<>% 
-    #   dplyr::select(-Limit) %>% 
-    #   dplyr::distinct()
-    
+    drop_choices %<>%
+      dplyr::select(contains("EMS_")) %>% 
+      dplyr::distinct() 
+      
     for (codes in rv$cvalue_inactive){
       drop_choices[codes] <- NA
     }
