@@ -223,7 +223,7 @@ mod_data_server <- function(input, output, session) {
   output$ui_cvalue <- renderUI({
     req(input$variable)
     if (input$variable == "Copper"){
-      dropdown_inputs(rv$cvalue_active, ns, isolate(rv$filtered))
+      dropdown_inputs(rv$cvalue_active, ns, rv$filtered)
     } else {
     shinyjs::hidden(numeric_inputs(rv$cvalue_codes, ns))
     }

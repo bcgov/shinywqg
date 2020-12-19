@@ -14,8 +14,8 @@ waiter_html <- function(x){
 
 dropdown_inputs <- function(codes, ns, data){
   
-  print(data)
-  print(data$lookup)
+ # print("--------")
+#  print(data)
   
   x <- lapply(codes, function(y){
    selectInput(inputId = ns(y),
