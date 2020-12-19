@@ -216,23 +216,7 @@ mod_data_server <- function(input, output, session) {
   observe({
     req(input$variable)
     filtered_data <-   wqg_data_variable()
-
-    drop_choices <- dplyr::tibble()
-    for (i in filtered_data$lookup){
-      drop_choices <- dplyr::bind_rows(drop_choices, i)
-    }
-    
-    drop_choices %<>%
-      dplyr::select(dplyr::contains("EMS_")) %>% 
-      dplyr::distinct() 
-    
-    cvals_active <- colnames(drop_choices)
-    cvals_inactive <- setdiff(rv$cvalue_codes, cvals_active)
-      
-    for (codes in cvals_inactive){
-      drop_choices[codes] <- NA
-    }
-    rv$filtered <- drop_choices
+    rv$filtered <- lookup_choices(filtered_data, rv$cvalue_codes)
   })
   
   output$ui_cvalue <- renderUI({

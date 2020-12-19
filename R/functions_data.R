@@ -154,3 +154,22 @@ wqg_filter_variable <- function(variable, x = limits) {
   x <- x %>%
     dplyr::filter(.data$Variable == variable)
 }
+
+lookup_choices <- function(data, cvalue_codes){
+  drop_choices <- dplyr::tibble()
+  for (i in data$lookup){
+    drop_choices <- dplyr::bind_rows(drop_choices, i)
+  }
+  drop_choices %<>%
+    dplyr::select(dplyr::contains("EMS_")) %>% 
+    dplyr::distinct() 
+  cvals_active <- colnames(drop_choices)
+  cvals_inactive <- setdiff(cvalue_codes, cvals_active)
+  
+  for (codes in cvals_inactive){
+    drop_choices[codes] <- NA
+  }
+  drop_choices
+}
+
+
