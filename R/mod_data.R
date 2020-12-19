@@ -169,7 +169,8 @@ mod_data_server <- function(input, output, session) {
     report = empty_report,
     limits = NULL,
     cvalue_codes = NULL,
-    filtered = NULL
+    filtered = NULL,
+    lookup_vars = NULL
   )
 
   observe({
@@ -205,17 +206,22 @@ mod_data_server <- function(input, output, session) {
   observe({
     filtered_data <- wqg_data_evaluate()
     rv$filtered <- filtered_data
+    
   })
+
+observe({
+  rv$lookup_vars <- lookup_variables(rv$limits)
+})
+  
   
   output$ui_cvalue <- renderUI({
     req(input$variable)
-    
-    if(any(!is.na(isolate(rv$filtered["LookupNotes"])))){
+    if(input$variable %in% rv$lookup_vars){
       print("dropdown")
       dropdown_inputs(rv$cvalue_active, ns, rv$filtered)
     } else {
       print("input")
-      numeric_inputs(rv$cvalue_codes, ns)
+      shinyjs::hidden(numeric_inputs(rv$cvalue_codes, ns))
     }
   })
 

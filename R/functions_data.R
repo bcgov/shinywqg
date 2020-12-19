@@ -135,3 +135,17 @@ process_lookups <- function(limits){
   limits <- add_lookup_condition(limits)
   limits <- add_lookupnotes(limits)
 }
+
+
+lookup_variables <- function(limits){
+  variables <- sapply(1:nrow(limits), function(i){
+  row <- limits[i,]
+  if (!is.na(row$LookupNotes)){
+    return(row$Variable)
+  } else{
+    return(NA)
+  }
+})
+  variables_clean <- unique(variables)
+  variables_clean[!is.na(variables_clean)]
+}
