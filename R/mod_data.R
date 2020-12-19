@@ -217,10 +217,8 @@ observe({
   output$ui_cvalue <- renderUI({
     req(input$variable)
     if(input$variable %in% rv$lookup_vars){
-      print("dropdown")
       dropdown_inputs(rv$cvalue_active, ns, rv$filtered)
     } else {
-      print("input")
       shinyjs::hidden(numeric_inputs(rv$cvalue_codes, ns))
     }
   })
