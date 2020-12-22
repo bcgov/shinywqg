@@ -23,7 +23,7 @@ lookups <- function(lookup_table, cvalues){
   limit_row <- which(rowSums(lookup_table[names(cvalues)] == cvalues) == length(cvalues))
   guideline <- try(lookup_table$Limit[[limit_row]], silent = TRUE)
   if(is_try_error(guideline)){
-    guideline <- NA
+    guideline <- NA_real_
   }
   guideline
 }

@@ -3,7 +3,6 @@ utils::globalVariables(c("."))
 process_limits <- function(limits){
   limits <- limits %>%
     dplyr::mutate(Condition = dplyr::if_else(.data$Condition == "", NA_character_, .data$Condition))
-  
   ### remove Hardness Dissolved in OR context
   modified <- limits$Condition[which(stringr::str_detect(limits$Condition, "EMS_0107"))] %>%
     stringr::str_split_fixed("\\|", 2)
@@ -52,12 +51,12 @@ wqg_filter <- function(variable, use, media, x = limits) {
 }
 
 wqg_evaluate <- function(x, cvalues) {
-  x$ConditionPass <- sapply(x$Condition, test_condition, cvalues, USE.NAMES = FALSE)
+  x$ConditionPass <- vapply(x$Condition, test_condition, cvalues, FUN.VALUE = logical(1) , USE.NAMES = FALSE)
   ### assumes that never a LimitNote AND Limit
-  x$Guideline <- sapply(1:nrow(x), function(y) {
+  x$Guideline <- vapply(1:nrow(x), function(y) {
     evaluate_guideline(x$Limit[y], x$lookup[y],
       cvalues)
-  })
+  }, FUN.VALUE = numeric(1))
   x
 }
 
@@ -68,14 +67,14 @@ wqg_clean <- function(data, sigfig) {
   
   if (nrow(data) == 0) return()
     
-  data$Guideline <- sapply(1:nrow(data), function(x) {
+  data$Guideline <- vapply(1:nrow(data), function(x) {
     format_guideline(data$Guideline[x],
                      data$Direction[x],
                      data$Units[x],
                      data$LimitNotes[x],
                      data$LookupNotes[x],
                      sigfig)
-  })
+  }, FUN.VALUE = character(1))
   
   data %>%
     dplyr::mutate(Notes = gsub("NA", "", paste(.data$ConditionNotes, .data$MethodNotes))) %>%
@@ -87,14 +86,8 @@ wqg_clean <- function(data, sigfig) {
       .data$`Overview Report Link`, .data$`Technical Document Link`)
 }
 
-get_lookup <- function(file_name) {
-  file_path <- paste0("../../data-raw/", file_name)
-  lookup_table <- readr::read_csv(file_path)
-  lookup_table
-}
-
 add_lookup <- function(x) {
-  x$lookup <- lapply(x$Limit, get_lookup)
+  x$lookup <- lapply(x$Limit, get_data)
   x
 }
 
@@ -115,7 +108,7 @@ get_lookup_codes <- function(Limit, lookup, Condition) {
 
 add_lookupnotes <- function(x){
   x$LookupNotes <- c(rep(NA, nrow(x)))
-  x$LookupNotes <- sapply(x$lookup, get_note)
+  x$LookupNotes <- unlist(lapply(x$lookup, get_note))
   x
 }
 
@@ -134,25 +127,25 @@ process_lookups <- function(limits){
   limits[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "[.]csv"),] %<>% add_lookup()
   limits <- add_lookup_condition(limits)
   limits <- add_lookupnotes(limits)
+  limits
 }
 
 
 lookup_variables <- function(limits){
-  variables <- sapply(1:nrow(limits), function(i){
+  variables <- unlist(lapply(1:nrow(limits), function(i){
   row <- limits[i,]
   if (!is.na(row$LookupNotes)){
     return(row$Variable)
   } else{
-    return(NA)
+    return(NA_character_)
   }
-})
+}))
   variables_clean <- unique(variables)
   variables_clean[!is.na(variables_clean)]
 }
 
 wqg_filter_variable <- function(variable, x = limits) {
-  x <- x %>%
-    dplyr::filter(.data$Variable == variable)
+    dplyr::filter(x, .data$Variable == variable)
 }
 
 lookup_choices <- function(data, cvalue_codes){
@@ -171,3 +164,16 @@ lookup_choices <- function(data, cvalue_codes){
   }
   drop_choices
 }
+
+get_data <- function(file_name){
+  data <- try(bcdata::bcdc_get_data(record = file_name), silent = TRUE)
+  if (is_try_error(data)){
+    i <- file_name
+    internal_data <- internal_tables[[i]]
+    data <- internal_data
+  } else {
+    data <- data
+  }
+  data
+}
+
