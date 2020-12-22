@@ -150,9 +150,8 @@ wqg_filter_variable <- function(variable, x = limits) {
 
 lookup_choices <- function(data, cvalue_codes){
   drop_choices <- dplyr::tibble()
-  for (i in data$lookup){
-    drop_choices <- dplyr::bind_rows(drop_choices, i)
-  }
+  drop_choices %<>% 
+    dplyr::bind_rows(data$lookup)
   drop_choices %<>%
     dplyr::select(dplyr::contains("EMS_")) %>% 
     dplyr::distinct() 
