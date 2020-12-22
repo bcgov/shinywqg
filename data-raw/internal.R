@@ -4,8 +4,8 @@ library(stringr)
 library(magrittr)
 library(wqbc)
 
-limits <- readr::read_csv("https://raw.githubusercontent.com/bcgov/wqg_data/master/all_wqgs.csv")
-# limits <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
+hash_limits <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
+limits <-  bcdata::bcdc_get_data(record = hash_limits)
 
 ## modify limits to be what databc should be
 ## switch off code to read from databc therefore uses internals.
@@ -22,17 +22,21 @@ limits$Limit[limits$Variable == "Copper" &
           limits$Type == "Long-term chronic"] <- "EMS_CU-D_water_aquatic_fresh_chronic_lookup.csv"
 limits$LimitNotes[limits$Variable == "Copper" & limits$Component == "Dissolved"] <- NA
 
-## also add lookups to internal as well.
-## will need to change to bcgov repo once they have been uploaded there
-cu_h20_aq_fresh_acute_lookup <- readr::read_csv("data-raw/EMS_CU-D_water_aquatic_fresh_acute_lookup.csv")
-cu_h20_aq_fresh_chronic_lookup <- readr::read_csv("data-raw/EMS_CU-D_water_aquatic_fresh_chronic_lookup.csv")
-  
+internal_tables <- list(limits)
+#### need to fix hash to be correct - missing last 2 digits 
+names(internal_tables) <- "85d3990a-ec0a-4436-8ebd-150de3ba07"
+lookup_hash <- limits$Limit[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "[.]csv$")]
+#### will need to change to once data has been uploaded to data catalogue 
+for (file in lookup_hash) {
+  #### uncomment once uploaded to bcdata catalogue 
+  # lookup <- bcdata::bcdc_get_data(record = file)
+  lookup <- readr::read_csv(file.path("data-raw", file))
+  internal_tables[[paste0(file)]] <- lookup
+}
+
 
 codes <-  wqbc::codes
 codes <- codes %>% dplyr::rename(EMS_Code = Code)
-
-# Change Organic Carbon Dissolved to Dissolved Organic Carbon
-codes$Variable[codes$EMS_Code == "EMS_1126"] <- "Dissolved Organic Carbon"
 
 missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;
@@ -49,7 +53,5 @@ empty_report <- empty_evaluate[c("Variable", "Use", "Media", "PredictedEffectLev
                                  "Technical Document Link")]
 empty_report <- empty_report %>% rename(`Effect Level` = PredictedEffectLevel)
 
-usethis::use_data(limits, cu_h20_aq_fresh_acute_lookup, cu_h20_aq_fresh_chronic_lookup,
-                  codes, empty_raw, empty_report, empty_evaluate, missing_help, 
-                  internal = TRUE, overwrite = TRUE)
-
+usethis::use_data(limits, internal_tables, codes, empty_raw, empty_report, 
+                  empty_evaluate, missing_help, internal = TRUE, overwrite = TRUE)
