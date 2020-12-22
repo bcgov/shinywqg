@@ -65,9 +65,16 @@ mod_data_server <- function(input, output, session) {
     # } else {
     #   limits <- limits_bcdc
     # }
-    limits <- get_data("85d3990a-ec0a-4436-8ebd-150de3ba07")
-    #### need to build in error handling 
-    limits <- process_limits(limits)
+    file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba07"
+    limits <- get_data(file_name)
+
+    limits <- try(process_limits(limits))
+    if (is_try_error(limits)) {
+      internal_data <- internal_tables[[file_name]]
+    } else {
+      limits <- limits
+    }
+    
     limits <- process_lookups(limits)
     
     cvalue_codes <- unique(c(extract_codes(limits$Limit),
