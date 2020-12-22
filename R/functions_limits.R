@@ -35,7 +35,7 @@ evaluate_guideline <- function(limit, lookup, cvalues) {
   # if lookup table present do lookup otherwise calc as per normal
   if(!is.null(lookup[[1]])){
       if (!length(cvalues)) {
-        return(NA)
+        return(NA_real_)
       }
     return(lookups(lookup[[1]], cvalues))
   }
