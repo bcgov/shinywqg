@@ -53,10 +53,10 @@ wqg_filter <- function(variable, use, media, x = limits) {
 wqg_evaluate <- function(x, cvalues) {
   x$ConditionPass <- vapply(x$Condition, test_condition, cvalues, FUN.VALUE = logical(1) , USE.NAMES = FALSE)
   ### assumes that never a LimitNote AND Limit
-  x$Guideline <- vapply(1:nrow(x), function(y) {
+  x$Guideline <- unlist(lapply(1:nrow(x), function(y) {
     evaluate_guideline(x$Limit[y], x$lookup[y],
       cvalues)
-  }, FUN.VALUE = numeric(1))
+  }))
   x
 }
 
@@ -67,14 +67,14 @@ wqg_clean <- function(data, sigfig) {
   
   if (nrow(data) == 0) return()
     
-  data$Guideline <- vapply(1:nrow(data), function(x) {
+  data$Guideline <- unlist(lapply(1:nrow(data), function(x) {
     format_guideline(data$Guideline[x],
                      data$Direction[x],
                      data$Units[x],
                      data$LimitNotes[x],
                      data$LookupNotes[x],
                      sigfig)
-  }, FUN.VALUE = character(1))
+  }))
   
   data %>%
     dplyr::mutate(Notes = gsub("NA", "", paste(.data$ConditionNotes, .data$MethodNotes))) %>%
@@ -176,4 +176,3 @@ get_data <- function(file_name){
   }
   data
 }
-
