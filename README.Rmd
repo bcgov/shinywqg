@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 # shinywqg
 
 <!-- badges: start -->
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Apache license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Travis build status](https://travis-ci.com/bcgov/shinywqg.svg?branch=master)](https://travis-ci.com/bcgov/shinywqg)
 <!-- badges: end -->
