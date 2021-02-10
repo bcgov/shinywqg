@@ -7,6 +7,9 @@ library(wqbc)
 hash_limits <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
 limits <-  bcdata::bcdc_get_data(record = hash_limits)
 
+hash_acute <- "23ada5c3-67a6-4703-9369-c8d690b092e1"
+hash_chronic <- "a35c7d13-76dd-4c23-aab8-7b32b0310e2f"
+
 ## modify limits to be what databc should be
 ## switch off code to read from databc therefore uses internals.
 ## once working then update databc with new limits and lookups.
@@ -25,12 +28,10 @@ limits$LimitNotes[limits$Variable == "Copper" & limits$Component == "Dissolved"]
 internal_tables <- list(limits)
 #### need to fix hash to be correct - missing last 2 digits 
 names(internal_tables) <- "85d3990a-ec0a-4436-8ebd-150de3ba07"
-lookup_hash <- limits$Limit[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "[.]csv$")]
-#### will need to change to once data has been uploaded to data catalogue 
+
+lookup_hash <- c(hash_chronic, hash_acute)
 for (file in lookup_hash) {
-  #### uncomment once uploaded to bcdata catalogue 
-  # lookup <- bcdata::bcdc_get_data(record = file)
-  lookup <- readr::read_csv(file.path("data-raw", file))
+  lookup <- bcdata::bcdc_get_data(record = file)
   internal_tables[[paste0(file)]] <- lookup
 }
 
