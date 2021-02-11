@@ -124,7 +124,7 @@ get_note <- function(lookup){
 process_lookups <- function(limits){
   # Example of how to access: limits$lookup[280][[1]]["EMS_0004"]
   limits$lookup <- list(rep(NULL, nrow(limits)))
-  limits[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "[.]csv"),] %<>% add_lookup()
+  limits[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$"),] %<>% add_lookup()
   limits <- add_lookup_condition(limits)
   limits <- add_lookupnotes(limits)
   limits
