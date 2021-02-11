@@ -18,11 +18,11 @@ limits$Direction[limits$Variable == "Copper" & limits$Component == "Dissolved"] 
 limits$Limit[limits$Variable == "Copper" &
           limits$Use == "Aquatic Life - Freshwater" &
           limits$Media == "Water" &
-          limits$Type == "Short-term acute"] <- "EMS_CU-D_water_aquatic_fresh_acute_lookup.csv"
+          limits$Type == "Short-term acute"] <- hash_acute
 limits$Limit[limits$Variable == "Copper" &
           limits$Use == "Aquatic Life - Freshwater" &
           limits$Media == "Water" &
-          limits$Type == "Long-term chronic"] <- "EMS_CU-D_water_aquatic_fresh_chronic_lookup.csv"
+          limits$Type == "Long-term chronic"] <- hash_chronic
 limits$LimitNotes[limits$Variable == "Copper" & limits$Component == "Dissolved"] <- NA
 
 internal_tables <- list(limits)
