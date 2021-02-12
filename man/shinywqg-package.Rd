@@ -14,7 +14,7 @@ User interface to calculate water quality
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/bcgov/shinywqg}
+  \item \url{https://github.com/poissonconsulting/shinywqg}
   \item Report bugs at \url{https://github.com/bcgov/shinywqg/issues}
 }
 

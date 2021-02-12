@@ -30,7 +30,7 @@ Authors@R:
 Description: User interface to calculate water quality
     guidelines.
 License: MIT + file LICENSE
-URL: https://github.com/bcgov/shinywqg
+URL: https://github.com/poissonconsulting/shinywqg
 BugReports: https://github.com/bcgov/shinywqg/issues
 Depends: 
     R (>= 3.5)
