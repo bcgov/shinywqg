@@ -29,6 +29,9 @@ check_guidelines <- function(x = NULL){
   check_valid_expression <- function(x, cvalues, colname) {
     for(i in 1:length(x)){
       limit <- x[i]
+      if(!is.na(limit) & stringr::str_detect(limit, "^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$")){
+        limit <- TRUE
+      }
       if(is.na(limit))
         next
       y <- try(eval(parse(text = limit), envir = cvalues), silent = TRUE)
