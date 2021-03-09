@@ -53,8 +53,8 @@ mod_data_server <- function(input, output, session) {
   ns <- session$ns
   observe({
     
-    #### correct_file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
-    file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba07"
+    file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
+    #file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba07"
     limits <- get_data(file_name)
 
     limits <- try(process_limits(limits))
@@ -63,9 +63,7 @@ mod_data_server <- function(input, output, session) {
     } else {
       limits <- limits
     }
-    
     limits <- process_lookups(limits)
-    
     cvalue_codes <- unique(c(extract_codes(limits$Limit),
                              extract_codes(limits$Condition))) %>%
       setdiff("EMS_1107")
