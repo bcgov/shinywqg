@@ -2,7 +2,6 @@ app_ui <- function() {
   tagList(
     css_hide_errors(),
     add_external_resources(),
-    waiter::use_butler(),
     waiter::use_waiter(),
     waiter::waiter_show_on_load(html = waiter_html("Fetching guideline spreadsheet from BC Data Catalogue")),
     shinyjs::useShinyjs(),
