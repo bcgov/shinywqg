@@ -18,7 +18,6 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Apache license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Travis build status](https://travis-ci.com/bcgov/shinywqg.svg?branch=master)](https://travis-ci.com/bcgov/shinywqg)
 <!-- badges: end -->
 
 shinywqg is a repository to run the 'B.C. Ambient Water Quality Guidelines' Shiny application. Guidelines are read directly from the BC Data Catalogue.
