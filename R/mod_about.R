@@ -1,29 +1,15 @@
 # Module UI
-  
-#' @title   mod_about_ui and mod_about_server
-#' @description  A shiny Module.
-#'
-#' @param id shiny id
-#' @param input internal
-#' @param output internal
-#' @param session internal
-#'
-#' @rdname mod_about
-#'
-#' @keywords internal
-mod_about_ui <- function(id){
+
+mod_about_ui <- function(id, label = "Mod_about"){
   ns <- NS(id)
   tagList(
     wellPanel(
-      includeMarkdown(system.file(package = "shinywqg", "extdata/about.md"))
+      includeMarkdown("extdata/about.md")
     )
   )
 }
     
 # Module Server
-    
-#' @rdname mod_about
-#' @keywords internal
     
 mod_about_server <- function(input, output, session){
   ns <- session$ns
