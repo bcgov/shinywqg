@@ -1,10 +1,4 @@
-#' Check guidelines
-#'
-#' Check that updated DataBC guidelines are valid
-#' 
-#' @param x A data.frame of the guidelines. IF NULL, pull from BC Data Catalogue.
-#' @return A invisible copy of the data.frame of the guidelines.
-#' @export
+# Check guidelines
 check_guidelines <- function(x = NULL){
   
   if(is.null(x)){
@@ -29,6 +23,9 @@ check_guidelines <- function(x = NULL){
   check_valid_expression <- function(x, cvalues, colname) {
     for(i in 1:length(x)){
       limit <- x[i]
+      if(!is.na(limit) & stringr::str_detect(limit, "^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$")){
+        limit <- TRUE
+      }
       if(is.na(limit))
         next
       y <- try(eval(parse(text = limit), envir = cvalues), silent = TRUE)
