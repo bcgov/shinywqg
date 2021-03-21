@@ -1,4 +1,6 @@
-library(testthat)
-library(shinywqg)
+# need to manually run the test since it is not a package anymore
+# run this script then you can run each script in testthat
 
-test_check("shinywqg")
+library(testthat)
+
+load("R/sysdata.rda", envir=.GlobalEnv)
