@@ -6,16 +6,15 @@
 <!-- badges: start -->
 
 [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
-[![R-CMD-check](https://github.com/poissonconsulting/dbflobr/workflows/R-CMD-check/badge.svg)](https://github.com/poissonconsulting/dbflobr/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/poissonconsulting/dbflobr/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/dbflobr?branch=master)
 [![Apache
 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 <!-- badges: end -->
 
-shinywqg is an R package to run the ‘B.C. Ambient Water Quality
-Guidelines’ Shiny application. Guidelines are determined based on
-information from the BC Data Catalogue.
+shinywqg is Shiny application to run the ’B.C. Ambient Water Quality
+Guidelines. Guidelines are determined based on information from the BC
+Data Catalogue.
 
 The shiny application is also available at
 <https://bcgov-env.shinyapps.io/bc_wqg/>.
@@ -33,23 +32,25 @@ remotes::install_github("bcgov/shinywqg")
 ## Demonstration
 
 ``` r
-shinywqg::run_wqg_app()
+# install.packages("shiny")
+shiny::shinyAppDir(".")
 ```
 
 ## How to Test Changes to Water Quality Guidelines Data
 
-If you would like to test changes of the guidelines on the app before
-deploying. You can make minor modifications in the `R/mod_data.R` script
-to read in the new data. Then run the app locally to ensure it is
-working before deploying. You will need to add the new csv to `inst/app`
-folder.
+When you make changes to the water guidelines you can check that they
+don’t break the app before you upload the new version to the BC Data
+Catalogue. To do this make minor modifications in the `R/mod_data.R`
+script to read in the new data. Then run the app locally to ensure it is
+working before deploying. You will need to add the new data to the
+`inst/app` folder.
 
 ``` r
 mod_data_server <- function(input, output, session) {
   ns <- session$ns
   observe({
     
-    ### comment out the line before
+    ### comment out these lines
     # file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
     # limits <- get_data(file_name)
     
@@ -63,8 +64,9 @@ mod_data_server <- function(input, output, session) {
 ## To Test Changes to the App
 
 Make the required changes to the scripts in the `R` folder (like
-described above). Open the `app.R` script in the root folder, and run
-the code. This should launch the app with your changes implemented.
+described above). Then open the `app.R` script which is located in the
+root folder and run. This should launch the app with your changes
+implemented.
 
 ## How to Update the Internal Backups
 
@@ -77,13 +79,14 @@ Catalogue you will need to update the internal backup data.
 
 ## How to Add New Lookup Tables
 
-Obtain the unique hash for the new lookup once it has been added to the
-BC Data Catalogue. Add this hash to the Limit column of the Water
-Quality Guidelines. The app should automatically add a lookup function
-for that chemical/use/media.
+Obtain the unique ID for downloading the data from the BC Data Catalogue
+once it has been added to the BC Data Catalogue. Add this ID to the
+Limit column of the Water Quality Guidelines. The app should
+automatically add a lookup function for that chemical/use/media.
 
 You will need to manually add it to the internal backup data. Open
-`data-raw/internal.R` add a line to the script for the new lookup.
+`data-raw/internal.R` add one line assigning the ID to a variable and
+then add that variable to the lookup hash vector.
 
 ``` r
 # example
@@ -93,7 +96,7 @@ hash_ni_chronic <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
 lookup_hash <- c(hash_cu_chronic, hash_cu_acute, hash_ni_chronic)
 ```
 
-### How to Find Unique Hash for Item on BC Data Cataloguee
+### How to Find Unique Hash/ID for an Item on the BC Data Catalogue
 
 There is more then one way to find the unique hash. Here are few ways.
 
@@ -116,7 +119,7 @@ bcdc_list()
 # find the name of the file and put it in the `bcdc_browse` function 
 bcdc_search("water-quality-guidelines-of-b-c-")
 
-# the ID listed is the unique hash you need 
+# read the output to get the ID for the record
 ```
 
 ## Contribution
