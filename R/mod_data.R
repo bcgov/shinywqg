@@ -47,7 +47,7 @@ mod_data_server <- function(input, output, session) {
     if (is_try_error(limits)) {
       waiter::waiter_update(html = waiter_html("Issue with Guidelines from BC Data Catalogue.
                                                Using internal guidelines which may not be most recent version."))
-      Sys.sleep(3)
+      Sys.sleep(5)
       internal_data <- internal_tables[[file_name]]
     } else {
       limits <- limits
