@@ -1,5 +1,8 @@
-rsconnect::deployApp(appDir = ".", 
-                     account = "poissonconsulting",
-                     appName = "bc_wqg_test2", forceUpdate = TRUE)
+#run the test first
+rsconnect::deployApp(appDir = ".", account = "bcgov-env",
+                     appName = "bc_wqg_test", forceUpdate = TRUE)
 
-#account = "bcgov-env", 
+
+#live site
+rsconnect::deployApp(appDir = ".", account = "bcgov-env",
+                     appName = "bc_wqg", forceUpdate = TRUE)
