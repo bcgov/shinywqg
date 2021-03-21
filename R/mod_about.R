@@ -1,6 +1,6 @@
 # Module UI
 
-mod_guide_ui <- function(id, label = "mod_guide"){
+mod_about_ui <- function(id, label = "Mod_about"){
   ns <- NS(id)
   tagList(
     wellPanel(
