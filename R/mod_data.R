@@ -41,11 +41,13 @@ mod_data_server <- function(input, output, session) {
   observe({
     
     file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
-    #file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba07"
     limits <- get_data(file_name)
 
     limits <- try(process_limits(limits))
     if (is_try_error(limits)) {
+      waiter::waiter_update(html = waiter_html("Issue with Guidelines from BC Data Catalogue.
+                                               Using internal guidelines which may not be most recent version."))
+      Sys.sleep(3)
       internal_data <- internal_tables[[file_name]]
     } else {
       limits <- limits
