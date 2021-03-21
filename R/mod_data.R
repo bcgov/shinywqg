@@ -297,7 +297,7 @@ mod_data_server <- function(input, output, session) {
   output$dl_rmd <- downloadHandler(
     filename = "wqg_report.Rmd",
     content = function(file) {
-      file.copy(system.file(package = "shinywqg", "extdata/report_html.Rmd"), file)
+      file.copy("extdata/report_html.Rmd", file)
     }
   )
 }

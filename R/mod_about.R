@@ -4,7 +4,7 @@ mod_about_ui <- function(id){
   ns <- NS(id)
   tagList(
     wellPanel(
-      includeMarkdown(system.file(package = "shinywqg", "extdata/about.md"))
+      includeMarkdown("extdata/about.md")
     )
   )
 }

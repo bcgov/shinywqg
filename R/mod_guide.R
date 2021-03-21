@@ -4,7 +4,7 @@ mod_guide_ui <- function(id){
   ns <- NS(id)
   tagList(
     wellPanel(
-      includeMarkdown(system.file(package = "shinywqg", "extdata/guide.md"))
+      includeMarkdown("extdata/guide.md")
     )
   )
 }
