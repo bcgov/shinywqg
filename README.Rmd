@@ -104,7 +104,9 @@ bcdc_search("water-quality-guidelines-of-b-c-")
 # read the output to get the ID for the record
 ```
 
+### Deployment 
 
+Run the deploy.R script. To check that everything is fully working run the test version first and then the public one. Then push the rsconnect to GitHub. 
 
 ## Contribution
 
