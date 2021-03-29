@@ -4,10 +4,11 @@ test_that("report renders", {
   path <- file.path(tempdir(), "shinywqg")
   unlink(path, recursive = TRUE)
   dir.create(path)
-
   cvalues <- list(EMS_0107 = 9, EMS_1104 = 10)
   ### test LimitNotes
-  x <- wqg_filter("Chloride", "Aquatic Life - Marine", "Water") %>%
+  limits$lookup <- list(rep(NULL, nrow(limits)))
+  limits$LookupNotes <- c(rep(NA, nrow(limits)))
+  x <- wqg_filter("Chloride", "Aquatic Life - Marine", "Water", limits) %>%
     wqg_evaluate(cvalues) %>%
     wqg_clean(2)
 

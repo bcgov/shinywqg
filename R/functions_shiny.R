@@ -11,3 +11,16 @@ waiter_html <- function(x){
           br2(),
           h3(x))
 }
+
+dropdown_inputs <- function(codes, ns, data){
+  x <- lapply(codes, function(y){
+    choices <- try(sort(unique(data[[y]])))
+    if(is_try_error(choices)){
+      choices <- NULL
+    }
+    selectInput(inputId = ns(y),
+               label = code_to_variable(y),
+               choices = choices)
+  })
+  x
+}

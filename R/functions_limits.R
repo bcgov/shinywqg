@@ -1,6 +1,9 @@
 test_condition <- function(x, cvalues) {
   if(is.na(x))
     return (TRUE)
+  # pass condition for look-up values
+  if(!stringr::str_detect(x, "[>|<|=]"))
+    return(TRUE)
   x <- try(eval(parse(text = x), envir = cvalues), silent = TRUE)
   if(class(x) != "logical")
     return (FALSE)
@@ -16,15 +19,33 @@ calc_limit <- function(x, cvalues) {
   x
 }
 
-evaluate_guideline <- function(limit, cvalues) {
+lookups <- function(lookup_table, cvalues){
+  limit_row <- which(rowSums(lookup_table[names(cvalues)] == cvalues) == length(cvalues))
+  guideline <- try(lookup_table$Limit[[limit_row]], silent = TRUE)
+  if(is_try_error(guideline)){
+    guideline <- NA_real_
+  }
+  guideline
+}
+
+evaluate_guideline <- function(limit, lookup, cvalues) {
   ### deals with one limit at a time
   if(!length(limit)) 
     return()
-  
+  # if lookup table present do lookup otherwise calc as per normal
+  if(!is.null(lookup[[1]])){
+      if (!length(cvalues)) {
+        return(NA_real_)
+      }
+    return(lookups(lookup[[1]], cvalues))
+  }
   calc_limit(limit, cvalues)
 }
 
-format_guideline <- function(guideline, direction, units, limitnote, sigfig){
+format_guideline <- function(guideline, direction, units, limitnote, lookupnotes, sigfig){
+  
+  if(is.na(guideline) & !is.na(lookupnotes))
+    return(lookupnotes)
   
   if(is.na(guideline) & is.na(limitnote))
     return(NA)
@@ -39,12 +60,5 @@ format_guideline <- function(guideline, direction, units, limitnote, sigfig){
                    "Upper Limit" = "<= ",
                    "Lower Limit" = ">= ",
                    "")
-  
   paste0(prefix, signif(guideline, sigfig), " (", units, ") ", limitnote)
-}
-
-extract_codes <- function(x) {
-  setdiff(unique(unlist(lapply(x, function(y){
-    stringr::str_extract_all(y, "EMS_[[:alnum:]][[:alnum:]_]{3,3}")
-  }))), NA)
 }

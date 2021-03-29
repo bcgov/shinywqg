@@ -3,7 +3,6 @@ utils::globalVariables(c("."))
 process_limits <- function(limits){
   limits <- limits %>%
     dplyr::mutate(Condition = dplyr::if_else(.data$Condition == "", NA_character_, .data$Condition))
-  
   ### remove Hardness Dissolved in OR context
   modified <- limits$Condition[which(stringr::str_detect(limits$Condition, "EMS_0107"))] %>%
     stringr::str_split_fixed("\\|", 2)
@@ -52,13 +51,12 @@ wqg_filter <- function(variable, use, media, x = limits) {
 }
 
 wqg_evaluate <- function(x, cvalues) {
-  x$ConditionPass <- sapply(x$Condition, test_condition, cvalues, USE.NAMES = FALSE)
+  x$ConditionPass <- vapply(x$Condition, test_condition, cvalues, FUN.VALUE = logical(1) , USE.NAMES = FALSE)
   ### assumes that never a LimitNote AND Limit
-  x$Guideline <- sapply(1:nrow(x), function(y) {
-    evaluate_guideline(x$Limit[y],
-      # x$NarrativeWQG[y],
+  x$Guideline <- unlist(lapply(1:nrow(x), function(y) {
+    evaluate_guideline(x$Limit[y], x$lookup[y],
       cvalues)
-  })
+  }))
   x
 }
 
@@ -67,13 +65,16 @@ wqg_clean <- function(data, sigfig) {
   data <- data %>%
     dplyr::filter(.data$ConditionPass)
   
-  data$Guideline <- sapply(1:nrow(data), function(x) {
+  if (nrow(data) == 0) return()
+    
+  data$Guideline <- unlist(lapply(1:nrow(data), function(x) {
     format_guideline(data$Guideline[x],
                      data$Direction[x],
                      data$Units[x],
                      data$LimitNotes[x],
+                     data$LookupNotes[x],
                      sigfig)
-  })
+  }))
   
   data %>%
     dplyr::mutate(Notes = gsub("NA", "", paste(.data$ConditionNotes, .data$MethodNotes))) %>%
@@ -83,4 +84,94 @@ wqg_clean <- function(data, sigfig) {
       .data$Status, `WQG Narrative` = .data$NarrativeWQG, .data$Notes,
       .data$Guideline, .data$Reference, .data$`Reference Link`, 
       .data$`Overview Report Link`, .data$`Technical Document Link`)
+}
+
+add_lookup <- function(x) {
+  x$lookup <- lapply(x$Limit, get_data)
+  x
+}
+
+add_lookup_condition <- function(x){
+  x$Condition <- mapply(get_lookup_codes, x$Limit, x$lookup, x$Condition)
+  return(x)
+}
+
+get_lookup_codes <- function(Limit, lookup, Condition) {
+  if(!is.null(lookup)){
+      col_names <-  paste0(colnames(lookup), collapse = " ")
+      lookup_parameters <- stringr::str_match_all(col_names, "EMS_.{4}")
+      Condition <- paste0(lookup_parameters[[1]], sep = " ", collapse = "")
+      return(Condition)
+  }
+  return(Condition)
+}
+
+add_lookupnotes <- function(x){
+  x$LookupNotes <- c(rep(NA, nrow(x)))
+  x$LookupNotes <- unlist(lapply(x$lookup, get_note))
+  x
+}
+
+get_note <- function(lookup){
+  if (!is.null(lookup[[1]])){
+    LimitNote <- "Guideline not available for this pH, Hardness and 
+    Dissolved Organic Carbon combination"
+  } else {
+    return(NA)
+  }
+}
+
+process_lookups <- function(limits){
+  # Example of how to access: limits$lookup[280][[1]]["EMS_0004"]
+  limits$lookup <- list(rep(NULL, nrow(limits)))
+  limits[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$"),] %<>% add_lookup()
+  limits <- add_lookup_condition(limits)
+  limits <- add_lookupnotes(limits)
+  limits
+}
+
+
+lookup_variables <- function(limits){
+  variables <- unlist(lapply(1:nrow(limits), function(i){
+  row <- limits[i,]
+  if (!is.na(row$LookupNotes)){
+    return(row$Variable)
+  } else{
+    return(NA_character_)
+  }
+}))
+  variables_clean <- unique(variables)
+  variables_clean[!is.na(variables_clean)]
+}
+
+wqg_filter_variable <- function(variable, x = limits) {
+    dplyr::filter(x, .data$Variable == variable)
+}
+
+lookup_choices <- function(data, cvalue_codes){
+  drop_choices <- dplyr::tibble()
+  drop_choices %<>% 
+    dplyr::bind_rows(data$lookup)
+  drop_choices %<>%
+    dplyr::select(dplyr::contains("EMS_")) %>% 
+    dplyr::distinct() 
+  cvals_active <- colnames(drop_choices)
+  cvals_inactive <- setdiff(cvalue_codes, cvals_active)
+  
+  for (codes in cvals_inactive){
+    drop_choices[codes] <- NA
+  }
+  drop_choices
+}
+
+get_data <- function(file_name){
+  data <- try(bcdata::bcdc_get_data(record = file_name), silent = TRUE)
+  if (is_try_error(data)){
+    i <- file_name
+    internal_data <- internal_tables[[i]]
+    data <- internal_data
+  } else {
+    data <- data
+  }
+  data
 }

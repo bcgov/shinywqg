@@ -1,4 +1,3 @@
-
 source('global.R', local = TRUE)
 
 ui <- function() {

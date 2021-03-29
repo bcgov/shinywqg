@@ -10,7 +10,7 @@ mod_about_ui <- function(id, label = "Mod_about"){
 }
     
 # Module Server
-    
+
 mod_about_server <- function(input, output, session){
   ns <- session$ns
 }

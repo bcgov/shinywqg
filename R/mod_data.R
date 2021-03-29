@@ -39,22 +39,25 @@ mod_data_ui <- function(id) {
 mod_data_server <- function(input, output, session) {
   ns <- session$ns
   observe({
-    limits_bcdc <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
-    limits_bcdc <- process_limits(limits_bcdc)
-    # if guidelines aren't valid, fall back on internal data
-    limits_bcdc <- try(check_guidelines(limits_bcdc), silent = TRUE)
-    if(is_try_error(limits_bcdc)){
-      waiter::waiter_update(html = waiter_html("Guidelines on BC Data Catalogue are not valid. 
-                                               Using guidelines from August 10, 2020."))
-      Sys.sleep(3)
-      limits <- process_limits(limits)
-    } else {
-      limits <- limits_bcdc
-    }
+    
+    file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
+    limits <- get_data(file_name)
 
-    cvalue_codes <<- unique(c(extract_codes(limits$Limit),
+    limits <- try(process_limits(limits))
+    if (is_try_error(limits)) {
+      waiter::waiter_update(html = waiter_html("Issue with Guidelines from BC Data Catalogue.
+                                               Using internal guidelines which may not be most recent version."))
+      Sys.sleep(5)
+      internal_data <- internal_tables[[file_name]]
+    } else {
+      limits <- limits
+    }
+    limits <- process_lookups(limits)
+    cvalue_codes <- unique(c(extract_codes(limits$Limit),
                              extract_codes(limits$Condition))) %>%
       setdiff("EMS_1107")
+    
+    rv$cvalue_codes <- cvalue_codes
     
     rv$limits <- limits
     waiter::waiter_hide()
@@ -64,7 +67,7 @@ mod_data_server <- function(input, output, session) {
     req(input$variable)
     if(input$variable == "" | is.null(input$use)) {
       return({
-        for(i in cvalue_codes) {
+        for(i in rv$cvalue_codes) {
           shinyjs::hide(i)
         }
       })
@@ -83,17 +86,20 @@ mod_data_server <- function(input, output, session) {
     x <- wqg_data_evaluate()
     x <- x[x$ConditionPass,]
     if(any(is.na(suppressWarnings(as.numeric(x$Limit)))) & all(!is.na(x$Limit))){
+      if(any(stringr::str_detect(x$Limit, "\\.csv$"))) {
+        return()
+      }
       return(
         tagList(
           tags$label("Guideline Significant Figures"),
           help_text("Only applies to guidelines calculated from equations"),
-          numericInput(ns("sigfig"), label = NULL, value = 2)
+          numericInput(ns("sigfig"), label = NULL, value = 3)
         ))
     }
   })
 
   cvalues <- reactive({
-    x <- cvalue_codes
+    x <- rv$cvalue_codes
     x <- set_names(lapply(x, function(y) {
       input[[y]]
     }), x)
@@ -127,7 +133,7 @@ mod_data_server <- function(input, output, session) {
     req(wqg_data_evaluate())
     x <-  wqg_data_evaluate()
     if(nrow(x) == 0) return()
-    sigfig <- 2
+    sigfig <- 3
     if(!is.null(input$sigfig)){
       sigfig <- input$sigfig
     }
@@ -147,7 +153,10 @@ mod_data_server <- function(input, output, session) {
     cvalue_inactive = NULL,
     raw = empty_evaluate,
     report = empty_report,
-    limits = NULL
+    limits = NULL,
+    cvalue_codes = NULL,
+    filtered = NULL,
+    lookup_vars = NULL
   )
 
   observe({
@@ -169,7 +178,7 @@ mod_data_server <- function(input, output, session) {
     data <- wqg_data_raw()
     cval <- unique(c(extract_codes(data$Condition), extract_codes(data$Limit)))
     rv$cvalue_active <- cval
-    rv$cvalue_inactive <- setdiff(cvalue_codes, cval)
+    rv$cvalue_inactive <- setdiff(rv$cvalue_codes, cval)
   })
   
   output$ui_variable <- renderUI({
@@ -180,8 +189,29 @@ mod_data_server <- function(input, output, session) {
                    multiple = FALSE)
   })
   
+  observe({
+    rv$lookup_vars <- lookup_variables(rv$limits)
+  })
+  
+  wqg_data_variable <- reactive({
+    req(input$variable)
+    x <- wqg_filter_variable(input$variable, rv$limits)
+    x
+  })
+  
+  observe({
+    req(input$variable)
+    filtered_data <-   wqg_data_variable()
+    rv$filtered <- lookup_choices(filtered_data, rv$cvalue_codes)
+  })
+  
   output$ui_cvalue <- renderUI({
-    shinyjs::hidden(numeric_inputs(cvalue_codes, ns))
+    req(input$variable)
+    if(input$variable %in% rv$lookup_vars){
+      shinyjs::hidden(dropdown_inputs(rv$cvalue_codes, ns, rv$filtered))
+    } else {
+      shinyjs::hidden(numeric_inputs(rv$cvalue_codes, ns))
+    }
   })
 
   output$ui_use <- renderUI({
