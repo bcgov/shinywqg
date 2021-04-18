@@ -5,7 +5,7 @@
 \alias{mod_about_server}
 \title{mod_about_ui and mod_about_server}
 \usage{
-mod_about_ui(id)
+mod_about_ui(id, label = "Mod_about")
 
 mod_about_server(input, output, session)
 }

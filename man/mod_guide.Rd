@@ -5,7 +5,7 @@
 \alias{mod_guide_server}
 \title{mod_guide_ui and mod_guide_server}
 \usage{
-mod_guide_ui(id)
+mod_guide_ui(id, label = "mod_guide")
 
 mod_guide_server(input, output, session)
 }
