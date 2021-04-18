@@ -19,13 +19,19 @@ The shiny application is also available at
 
 ## Installation
 
-Clone the repository from [GitHub](https://github.com/bcgov/shinywqg)
+To install the developmental version from
+[GitHub](https://github.com/bcgov/shinywqg)
+
+``` r
+# install.packages("remotes")
+remotes::install_github("bcgov/shinywqg")
+```
 
 ## Demonstration
 
 ``` r
-# install.packages("shiny")
-shiny::shinyAppDir(".")
+# install.packages("shinywqg")
+shinywqg::run_wqg_app()
 ```
 
 ## How to Test Changes to Water Quality Guidelines Data
@@ -100,7 +106,7 @@ There is more then one way to find the unique hash. Here are few ways.
 Example:
 “<https://catalogue.data.gov.bc.ca/dataset/85d3990a-ec0a-4436-8ebd-150de3ba0747>”
 
-1.  Using the `bcdata` R package
+2.  Using the `bcdata` R package
 
 ``` r
 library(bcdata)

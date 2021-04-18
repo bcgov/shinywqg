@@ -26,12 +26,17 @@ The shiny application is also available at https://bcgov-env.shinyapps.io/bc_wqg
 
 ## Installation
 
-Clone the repository from [GitHub](https://github.com/bcgov/shinywqg)
+To install the developmental version from [GitHub](https://github.com/bcgov/shinywqg)
+```{r, eval=FALSE}
+# install.packages("remotes")
+remotes::install_github("bcgov/shinywqg")
+```
 
+ 
 ## Demonstration
 ```{r, eval=FALSE}
-# install.packages("shiny")
-shiny::shinyAppDir(".")
+# install.packages("shinywqg")
+shinywqg::run_wqg_app()
 ```
 
 ## How to Test Changes to Water Quality Guidelines Data 
