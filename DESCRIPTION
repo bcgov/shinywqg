@@ -30,7 +30,8 @@ Imports:
     webshot
 Suggests: 
     testthat (>= 2.1.0),
-    knitr
+    knitr,
+    covr
 URL: https://github.com/bcgov/shinywqg
 BugReports: https://github.com/bcgov/shinywqg/issues
 Encoding: UTF-8
