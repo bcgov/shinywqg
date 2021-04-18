@@ -1,0 +1,42 @@
+Package: shinywqg
+Title: Water Quality Guideline Shiny App
+Version: 0.0.1
+Authors@R: c(
+    person("Sebastian", "Dalgarno", , "seb@poissonconsulting.ca", c("aut", "cre"), comment = c(ORCID = "0000-0002-3658-4517")),
+    person("Joe", "Thorley", , "joe@poissonconsulting.ca", "ctb", comment = c(ORCID = "0000-0002-7683-4592")),
+    person("Province of British Columbia", role = c("cph", "fnd"))
+    )
+Description: User interface to calculate water quality guidelines.
+License: MIT + file LICENSE
+Depends: 
+    R (>= 3.4.0)
+Imports:
+    stats,
+    chk,
+    lifecycle,
+    shiny,
+    shinyjs,
+    htmltools,
+    waiter,
+    readr,
+    openxlsx,
+    dplyr,
+    shinyWidgets,
+    gt,
+    magrittr,
+    bcdata,
+    rlang,
+    stringr,
+    webshot
+Suggests: 
+    testthat (>= 2.1.0),
+    knitr
+URL: https://github.com/bcgov/shinywqg
+BugReports: https://github.com/bcgov/shinywqg/issues
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+RdMacros: lifecycle
+Language: en-US
+VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)
