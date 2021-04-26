@@ -1,4 +1,10 @@
-# Check guidelines
+#' Check guidelines
+#'
+#' Check that updated DataBC guidelines are valid
+#' 
+#' @param x A data.frame of the guidelines. IF NULL, pull from BC Data Catalogue.
+#' @return A invisible copy of the data.frame of the guidelines.
+#' @export
 check_guidelines <- function(x = NULL){
   
   if(is.null(x)){
