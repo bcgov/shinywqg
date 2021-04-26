@@ -2,7 +2,8 @@ Package: shinywqg
 Title: Water Quality Guideline Shiny App
 Version: 0.1.0
 Authors@R: c(
-    person("Sebastian", "Dalgarno", , "seb@poissonconsulting.ca", c("aut", "cre"), comment = c(ORCID = "0000-0002-3658-4517")),
+    person("Sebastian", "Dalgarno", , "seb@poissonconsulting.ca", "aut", comment = c(ORCID = "0000-0002-3658-4517")),
+    person("Pearson", "Ayla", , "ayla@poissonconsulting.ca", c("aut", "cre"), comment = c(ORCID = "0000-0001-7388-1222")),
     person("Joe", "Thorley", , "joe@poissonconsulting.ca", "ctb", comment = c(ORCID = "0000-0002-7683-4592")),
     person("Province of British Columbia", role = c("cph", "fnd"))
     )
