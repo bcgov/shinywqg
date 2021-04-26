@@ -37,7 +37,9 @@ remotes::install_github("bcgov/shinywqg")
 shinywqg::run_wqg_app()
 ```
 
-## How to Test Changes to Water Quality Guidelines Data
+## Internal Info
+
+#### How to Test Changes to Water Quality Guidelines Data
 
 When you make changes to the water guidelines you can check that they
 don’t break the app before you upload the new version to the BC Data
@@ -62,14 +64,14 @@ mod_data_server <- function(input, output, session) {
 })}
 ```
 
-## To Test Changes to the App
+#### To Test Changes to the App
 
 Make the required changes to the scripts in the `R` folder (like
 described above). Then open the `app.R` script which is located in the
 root folder and run. This should launch the app with your changes
 implemented.
 
-## How to Update the Internal Backups
+#### How to Update the Internal Backups
 
 Once a new version of the guidelines have been added to the BC Data
 Catalogue you will need to update the internal backup data.
@@ -78,7 +80,7 @@ Catalogue you will need to update the internal backup data.
 -   Run the script from the top to bottom
 -   Deploy the app
 
-## How to Add New Lookup Tables
+#### How to Add New Lookup Tables
 
 Obtain the unique ID for downloading the data from the BC Data Catalogue
 once it has been added to the BC Data Catalogue. Add this ID to the
@@ -97,7 +99,7 @@ hash_ni_chronic <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
 lookup_hash <- c(hash_cu_chronic, hash_cu_acute, hash_ni_chronic)
 ```
 
-### How to Find Unique Hash/ID for an Item on the BC Data Catalogue
+##### How to Find Unique Hash/ID for an Item on the BC Data Catalogue
 
 There is more then one way to find the unique hash. Here are few ways.
 
@@ -123,7 +125,7 @@ bcdc_search("water-quality-guidelines-of-b-c-")
 # read the output to get the ID for the record
 ```
 
-### Deployment
+#### Deployment
 
 Run the deploy.R script. To check that everything is fully working run
 the test version first and then the public one. Then push the rsconnect
