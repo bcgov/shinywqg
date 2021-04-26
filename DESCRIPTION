@@ -6,6 +6,7 @@ Authors@R: c(
     person("Pearson", "Ayla", , "ayla@poissonconsulting.ca", c("aut", "cre"), comment = c(ORCID = "0000-0001-7388-1222")),
     person("Joe", "Thorley", , "joe@poissonconsulting.ca", "ctb", comment = c(ORCID = "0000-0002-7683-4592")),
     person("Angeline", "Tillmanns", , , "ctb"),
+    person("Heather", "Thompson", , , "ctb"),
     person("Province of British Columbia", role = c("cph", "fnd"))
     )
 Description: User interface to calculate water quality guidelines.
