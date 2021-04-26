@@ -6,11 +6,11 @@
 <!-- badges: start -->
 
 [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
+[![R-CMD-check](https://github.com/bcgov/shinywqg/workflows/R-CMD-check/badge.svg)](https://github.com/poissonconsulting/shinywqg/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/bcgov/shinywqg/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/shinywqg?branch=master)
 [![Apache
 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Codecov test
-coverage](https://codecov.io/gh/poissonconsulting/shinywqg/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/shinywqg?branch=master)
-[![R-CMD-check](https://github.com/poissonconsulting/shinywqg/workflows/R-CMD-check/badge.svg)](https://github.com/poissonconsulting/shinywqg/actions)
 <!-- badges: end -->
 
 shinywqg is a Shiny application to run the ’B.C. Ambient Water Quality
