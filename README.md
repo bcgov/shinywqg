@@ -20,7 +20,9 @@ Data Catalogue.
 The shiny application is also available at
 <https://bcgov-env.shinyapps.io/bc_wqg/>.
 
-## Installation
+## Usage
+
+### Installation
 
 To install the developmental version from
 [GitHub](https://github.com/bcgov/shinywqg)
@@ -30,7 +32,7 @@ To install the developmental version from
 remotes::install_github("bcgov/shinywqg")
 ```
 
-## Demonstration
+### Demonstration
 
 ``` r
 # install.packages("shinywqg")
