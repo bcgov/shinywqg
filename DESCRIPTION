@@ -12,7 +12,7 @@ Authors@R: c(
 Description: User interface to calculate water quality guidelines.
 License: MIT + file LICENSE
 Depends: 
-    R (>= 3.4)
+    R (>= 3.5)
 Imports:
     stats,
     chk,
