@@ -19,11 +19,18 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Sebastian Dalgarno \email{seb@poissonconsulting.ca} (\href{https://orcid.org/0000-0002-3658-4517}{ORCID})
+\strong{Maintainer}: Pearson Ayla \email{ayla@poissonconsulting.ca} (\href{https://orcid.org/0000-0001-7388-1222}{ORCID})
+
+Authors:
+\itemize{
+  \item Sebastian Dalgarno \email{seb@poissonconsulting.ca} (\href{https://orcid.org/0000-0002-3658-4517}{ORCID})
+}
 
 Other contributors:
 \itemize{
   \item Joe Thorley \email{joe@poissonconsulting.ca} (\href{https://orcid.org/0000-0002-7683-4592}{ORCID}) [contributor]
+  \item Angeline Tillmanns [contributor]
+  \item Heather Thompson [contributor]
   \item Province of British Columbia [copyright holder, funder]
 }
 
