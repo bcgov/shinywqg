@@ -201,7 +201,7 @@ mod_data_server <- function(input, output, session) {
   output$ui_variable <- renderUI({
     selectizeInput(ns("variable"),
                    label = "Select Variable",
-                   choices = c(unique(rv$limits$Variable), ""),
+                   choices = c(sort(unique(rv$limits$Variable)), ""),
                    selected = "",
                    multiple = FALSE)
   })
