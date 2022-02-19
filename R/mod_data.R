@@ -53,12 +53,17 @@ mod_data_server <- function(input, output, session) {
   observe({
     
     file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
-    limits <- get_data(file_name)
-
+    limit_resource <- "6f32a85b-a3d9-44c3-9a14-15175eba25b6"
+    limits <- get_data(file_name, resource = limit_resource)
+    
     limits <- try(process_limits(limits))
     if (is_try_error(limits)) {
-      waiter::waiter_update(html = waiter_html("Issue with Guidelines from BC Data Catalogue.
-                                               Using internal guidelines which may not be most recent version."))
+      waiter::waiter_update(
+        html = waiter_html(
+          "Issue with Guidelines from BC Data Catalogue.
+          Using internal guidelines which may not be most recent version."
+        )
+      )
       Sys.sleep(5)
       internal_data <- internal_tables[[file_name]]
     } else {
