@@ -43,9 +43,9 @@ for (file in lookup_hash) {
 }
 
 internal_tbl_names <- list(
-  "85d3990a-ec0a-4436-8ebd-150de3ba0747" = "guidelines",
-  "23ada5c3-67a6-4703-9369-c8d690b092e1" = "acute copper guidelines",
-  "a35c7d13-76dd-4c23-aab8-7b32b0310e2f" = "chronic copper guidelines"
+  hash_limits = "guidelines",
+  hash_cu_acute = "acute copper guidelines",
+  hash_cu_chronic = "chronic copper guidelines"
 )
 
 codes <-  wqbc::codes
