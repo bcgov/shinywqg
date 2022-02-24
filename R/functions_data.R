@@ -164,14 +164,28 @@ lookup_choices <- function(data, cvalue_codes){
   drop_choices
 }
 
-get_data <- function(file_name){
-  data <- try(bcdata::bcdc_get_data(record = file_name), silent = TRUE)
+get_data <- function(file_name, resource = NULL){
+  data <- try(bcdata::bcdc_get_data(record = file_name, resource = resource), silent = TRUE)
   if (is_try_error(data)){
     i <- file_name
     internal_data <- internal_tables[[i]]
     data <- internal_data
+    tbl_name <- internal_tbl_names[[i]]
+    waiter::waiter_update(
+      html = waiter_html(
+        paste(
+          "Issue with Guidelines from BC Data Catalogue. Using internal", 
+          tbl_name, 
+          "which may not be most recent version."
+        )
+      )
+    )
+    Sys.sleep(5)
+    data
   } else {
     data <- data
+    data
   }
   data
 }
+
