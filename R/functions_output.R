@@ -32,7 +32,7 @@ gt_table <- function(x, cvalues) {
       title = variable,
       subtitle = gt::html(cvalues)
     ) %>%
-    gt::fmt_missing(columns = gt::everything()) %>%
+    gt::sub_missing(columns = gt::everything()) %>%
     gt::cols_align(
       align = "center",
       columns = gt::everything()
