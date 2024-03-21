@@ -25,7 +25,7 @@ process_limits <- function(limits){
                                  stringr::str_c(" (", limits$LimitNotes[limits$PC], ").")))
   
   limits$LimitNotes[limits$PC] <- limit_notes
-  limits <- dplyr::select(limits, -.data$PC)
+  limits <- dplyr::select(limits, -"PC")
   
   #### end convert background percent
   
@@ -79,11 +79,11 @@ wqg_clean <- function(data, sigfig) {
   data %>%
     dplyr::mutate(Notes = gsub("NA", "", paste(.data$ConditionNotes, .data$MethodNotes))) %>%
     dplyr::mutate(Notes = dplyr::if_else(.data$Notes == " ", NA_character_, .data$Notes)) %>%
-    dplyr::select(.data$Variable, .data$Component, Value = .data$Use, 
-                  .data$Media, .data$Type, `Predicted Effect Level` = .data$PredictedEffectLevel,
-      .data$Status, `WQG Narrative` = .data$NarrativeWQG, .data$Notes,
-      .data$Guideline, .data$Reference, .data$`Reference Link`, 
-      .data$`Overview Report Link`, .data$`Technical Document Link`)
+    dplyr::select("Variable", "Component", Value = "Use", 
+                  "Media", "Type", `Predicted Effect Level` = "PredictedEffectLevel",
+      "Status", `WQG Narrative` = "NarrativeWQG", "Notes",
+      "Guideline", "Reference", "Reference Link", 
+      "Overview Report Link", "Technical Document Link")
 }
 
 add_lookup <- function(x) {
