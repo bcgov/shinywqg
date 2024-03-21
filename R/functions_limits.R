@@ -2,10 +2,10 @@ test_condition <- function(x, cvalues) {
   if(is.na(x))
     return (TRUE)
   # pass condition for look-up values
-  if(!stringr::str_detect(x, "[>|<|=]"))
+  if (!stringr::str_detect(x, "[>|<|=]"))
     return(TRUE)
   x <- try(eval(parse(text = x), envir = cvalues), silent = TRUE)
-  if(class(x) != "logical")
+  if(!is.logical(x))
     return (FALSE)
   if(is.na(x))
     return (FALSE)
@@ -14,7 +14,7 @@ test_condition <- function(x, cvalues) {
 
 calc_limit <- function(x, cvalues) {
   x <- try(eval(parse(text = as.character(x)), envir = cvalues), silent = TRUE)
-  if(class(x) != "numeric")
+  if (!is.numeric(x))
     return (NA)
   x
 }
