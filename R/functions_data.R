@@ -97,7 +97,7 @@ add_lookup_condition <- function(x){
 }
 
 get_lookup_codes <- function(Limit, lookup, Condition) {
-  if(!is.null(lookup)){
+  if (!is.null(lookup)) {
       col_names <-  paste0(colnames(lookup), collapse = " ")
       lookup_parameters <- stringr::str_match_all(col_names, "EMS_.{4}")
       Condition <- paste0(lookup_parameters[[1]], sep = " ", collapse = "")
@@ -186,6 +186,7 @@ get_data <- function(file_name, resource = NULL){
     data <- data
     data
   }
-  data
+  # TODO: Temporary workaround until CU lookup tables updated in BCDC
+  dplyr::rename(data, dplyr::any_of(c("EMS_1103" = "EMS_1126")))
 }
 
