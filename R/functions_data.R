@@ -165,7 +165,11 @@ lookup_choices <- function(data, cvalue_codes){
 }
 
 get_data <- function(file_name, resource = NULL){
-  data <- try(bcdata::bcdc_get_data(record = file_name, resource = resource), silent = TRUE)
+  data <- try(bcdata::bcdc_get_data(
+    record = file_name,
+    resource = resource,
+    show_col_types = FALSE
+  ), silent = TRUE)
   if (is_try_error(data)){
     i <- file_name
     internal_data <- internal_tables[[i]]

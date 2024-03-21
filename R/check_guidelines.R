@@ -9,7 +9,8 @@ check_guidelines <- function(x = NULL){
   
   if(is.null(x)){
     message("reading data from BC Data Catalogue ...")
-    x <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747")
+    x <-  bcdata::bcdc_get_data(record = "85d3990a-ec0a-4436-8ebd-150de3ba0747", 
+                                show_col_types = FALSE)
     x <- process_limits(x)
   }
   
