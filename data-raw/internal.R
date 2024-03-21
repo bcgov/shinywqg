@@ -17,7 +17,7 @@ hash_cu_chronic <- "a35c7d13-76dd-4c23-aab8-7b32b0310e2f"
 ## catalogue yet
 # limits <- read_csv("inst/app/all-wqgs-2.csv")
 
-codes <- unique(limits[, c("Variable", "EMS_Code", "Units"), drop = FALSE])
+codes <- read_csv("data-raw/codes.csv")
 
 #limits <- readr::read_csv("https://raw.githubusercontent.com/bcgov/wqg_data/master/all_wqgs.csv")
 
