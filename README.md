@@ -6,9 +6,9 @@
 <!-- badges: start -->
 
 [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
-[![R-CMD-check](https://github.com/bcgov/shinywqg/workflows/R-CMD-check/badge.svg)](https://github.com/poissonconsulting/shinywqg/actions)
+[![R-CMD-check](https://github.com/bcgov/shinywqg/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bcgov/shinywqg/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/bcgov/shinywqg/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/shinywqg?branch=master)
+coverage](https://codecov.io/gh/bcgov/shinywqg/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/shinywqg?branch=master)
 [![Apache
 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 <!-- badges: end -->
@@ -78,9 +78,9 @@ implemented.
 Once a new version of the guidelines have been added to the BC Data
 Catalogue you will need to update the internal backup data.
 
--   Open `data-raw/internal.R`
--   Run the script from the top to bottom
--   Deploy the app
+- Open `data-raw/internal.R`
+- Run the script from the top to bottom
+- Deploy the app
 
 #### How to Add New Lookup Tables
 

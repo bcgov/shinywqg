@@ -53,8 +53,10 @@ mod_data_server <- function(input, output, session) {
   observe({
     
     file_name <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
-    limit_resource <- "6f32a85b-a3d9-44c3-9a14-15175eba25b6"
-    limits <- get_data(file_name, resource = limit_resource)
+    ## TODO: Temporary workaround until CU lookup tables updated in BCDC
+    # limit_resource <- "6f32a85b-a3d9-44c3-9a14-15175eba25b6"
+    # limits <- get_data(file_name, resource = limit_resource)
+    limits <- readr::read_csv("all-wqgs-2.csv", show_col_types = FALSE)
     
     limits <- try(process_limits(limits))
     if (is_try_error(limits)) {

@@ -25,7 +25,7 @@ process_limits <- function(limits){
                                  stringr::str_c(" (", limits$LimitNotes[limits$PC], ").")))
   
   limits$LimitNotes[limits$PC] <- limit_notes
-  limits <- dplyr::select(limits, -.data$PC)
+  limits <- dplyr::select(limits, -"PC")
   
   #### end convert background percent
   
@@ -79,11 +79,11 @@ wqg_clean <- function(data, sigfig) {
   data %>%
     dplyr::mutate(Notes = gsub("NA", "", paste(.data$ConditionNotes, .data$MethodNotes))) %>%
     dplyr::mutate(Notes = dplyr::if_else(.data$Notes == " ", NA_character_, .data$Notes)) %>%
-    dplyr::select(.data$Variable, .data$Component, Value = .data$Use, 
-                  .data$Media, .data$Type, `Predicted Effect Level` = .data$PredictedEffectLevel,
-      .data$Status, `WQG Narrative` = .data$NarrativeWQG, .data$Notes,
-      .data$Guideline, .data$Reference, .data$`Reference Link`, 
-      .data$`Overview Report Link`, .data$`Technical Document Link`)
+    dplyr::select("Variable", "Component", Value = "Use", 
+                  "Media", "Type", `Predicted Effect Level` = "PredictedEffectLevel",
+      "Status", `WQG Narrative` = "NarrativeWQG", "Notes",
+      "Guideline", "Reference", "Reference Link", 
+      "Overview Report Link", "Technical Document Link")
 }
 
 add_lookup <- function(x) {
@@ -97,7 +97,7 @@ add_lookup_condition <- function(x){
 }
 
 get_lookup_codes <- function(Limit, lookup, Condition) {
-  if(!is.null(lookup)){
+  if (!is.null(lookup)) {
       col_names <-  paste0(colnames(lookup), collapse = " ")
       lookup_parameters <- stringr::str_match_all(col_names, "EMS_.{4}")
       Condition <- paste0(lookup_parameters[[1]], sep = " ", collapse = "")
@@ -165,7 +165,11 @@ lookup_choices <- function(data, cvalue_codes){
 }
 
 get_data <- function(file_name, resource = NULL){
-  data <- try(bcdata::bcdc_get_data(record = file_name, resource = resource), silent = TRUE)
+  data <- try(bcdata::bcdc_get_data(
+    record = file_name,
+    resource = resource,
+    show_col_types = FALSE
+  ), silent = TRUE)
   if (is_try_error(data)){
     i <- file_name
     internal_data <- internal_tables[[i]]
@@ -186,6 +190,7 @@ get_data <- function(file_name, resource = NULL){
     data <- data
     data
   }
-  data
+  # TODO: Temporary workaround until CU lookup tables updated in BCDC
+  dplyr::rename(data, dplyr::any_of(c("EMS_1103" = "EMS_1126")))
 }
 

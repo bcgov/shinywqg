@@ -2,16 +2,23 @@ library(readr)
 library(dplyr)
 library(stringr)
 library(magrittr)
-library(wqbc)
 
 hash_limits <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
-limits <-  bcdata::bcdc_get_data(
-  record = hash_limits, 
-  resource = "6f32a85b-a3d9-44c3-9a14-15175eba25b6"
-)
 
 hash_cu_acute <- "23ada5c3-67a6-4703-9369-c8d690b092e1"
 hash_cu_chronic <- "a35c7d13-76dd-4c23-aab8-7b32b0310e2f"
+
+## TODO: Temporary workaround until CU lookup tables updated in BCDC
+## Use local file (the same one as testing within mod_data_server()) to 
+## generate internal limits and codes if it hasn't been updated in the 
+## catalogue yet
+# limits <-  bcdata::bcdc_get_data(
+#   record = hash_limits,
+#   resource = "6f32a85b-a3d9-44c3-9a14-15175eba25b6"
+# )
+limits <- read_csv("inst/app/all-wqgs-2.csv")
+
+codes <- read_csv("data-raw/codes.csv")
 
 #limits <- readr::read_csv("https://raw.githubusercontent.com/bcgov/wqg_data/master/all_wqgs.csv")
 
@@ -35,10 +42,12 @@ internal_tables <- list(limits)
 #names(internal_tables) <- "85d3990a-ec0a-4436-8ebd-150de3ba07"
 names(internal_tables) <- hash_limits
 
-
 lookup_hash <- c(hash_cu_chronic, hash_cu_acute)
+
 for (file in lookup_hash) {
   lookup <- bcdata::bcdc_get_data(record = file)
+  # TODO: Temporary workaround until CU lookup tables updated in BCDC
+  lookup <- rename(lookup, any_of(c("EMS_1103" = "EMS_1126")))
   internal_tables[[paste0(file)]] <- lookup
 }
 
@@ -47,9 +56,6 @@ internal_tbl_names <- list(
   hash_cu_acute = "acute copper guidelines",
   hash_cu_chronic = "chronic copper guidelines"
 )
-
-codes <-  wqbc::codes
-codes <- codes %>% dplyr::rename(EMS_Code = Code)
 
 missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;
