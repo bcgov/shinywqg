@@ -185,12 +185,8 @@ get_data <- function(file_name, resource = NULL){
       )
     )
     Sys.sleep(5)
-    data
-  } else {
-    data <- data
-    data
-  }
-  # TODO: Temporary workaround until CU lookup tables updated in BCDC
-  dplyr::rename(data, dplyr::any_of(c("EMS_1103" = "EMS_1126")))
+  } 
+  
+  data
 }
 
