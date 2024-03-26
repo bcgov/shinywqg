@@ -6,5 +6,5 @@
 NULL
 
 ignore_unused_imports <- function() {
-  webshot::install_phantomjs
+  webshot2::webshot
 }
