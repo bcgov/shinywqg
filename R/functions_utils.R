@@ -83,3 +83,7 @@ report_cvalues <- function(x, active, output = "html") {
     }
   paste0(cvalues, "<br><br>")
 }
+
+remove_list_columns <- function(x) {
+  dplyr::select(x, -dplyr::where(is.list))
+}

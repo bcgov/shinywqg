@@ -263,8 +263,7 @@ mod_data_server <- function(input, output, session) {
     filename = function() "wqg_data_raw.csv",
     content = function(file) {
       readr::write_csv(
-        # Remove lookup list column as it doesn't write nicely to a flat file
-        dplyr::select(rv$raw, -dplyr::any_of("lookup")),
+        remove_list_columns(rv$raw),
         file
       )
     })
@@ -273,7 +272,7 @@ mod_data_server <- function(input, output, session) {
     filename = function() "wqg_data_raw.xlsx",
     content = function(file) {
       openxlsx2::write_xlsx(
-        dplyr::select(rv$raw, -dplyr::any_of("lookup")),
+        remove_list_columns(rv$raw),
         file
       )
     })
@@ -294,8 +293,7 @@ mod_data_server <- function(input, output, session) {
     filename = function() "all_wqgs.xlsx",
     content = function(file) {
       openxlsx2::write_xlsx(
-        # Remove lookup list column as it doesn't write nicely to a flat file
-        dplyr::select(rv$limits, -dplyr::any_of("lookup")),
+        remove_list_columns(rv$limits),
         file
       )
     })
@@ -304,7 +302,7 @@ mod_data_server <- function(input, output, session) {
     filename = function() "all_wqgs.csv",
     content = function(file) {
       readr::write_csv(
-        dplyr::select(rv$limits, -dplyr::any_of("lookup")),
+        remove_list_columns(rv$limits),
         file
       )
     })
@@ -337,3 +335,4 @@ mod_data_server <- function(input, output, session) {
     }
   )
 }
+
