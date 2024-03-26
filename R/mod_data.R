@@ -12,36 +12,36 @@
 #' @keywords internal
 mod_data_ui <- function(id) {
   ns <- NS(id)
-
+  
   sidebarLayout(
     sidebarPanel(width = 3,
-      uiOutput(ns("ui_variable")),
-      uiOutput(ns("ui_use")),
-      uiOutput(ns("ui_media")),
-      uiOutput(ns("ui_cvalue")),
-      uiOutput(ns("ui_sigfig"))
+                 uiOutput(ns("ui_variable")),
+                 uiOutput(ns("ui_use")),
+                 uiOutput(ns("ui_media")),
+                 uiOutput(ns("ui_cvalue")),
+                 uiOutput(ns("ui_sigfig"))
     ),
     mainPanel(width = 9,
-      tagList(
-        shinyWidgets::dropdownButton(status = "primary",
-          label = "Download",
-          # size = "sm",
-          inline = TRUE,
-          circle = FALSE,
-          icon = icon("download"),
-          dl_button(ns("dl_html"), "Report HTML"),
-          dl_button(ns("dl_pdf"), "Report PDF"),
-          dl_button(ns("dl_csv"), "Report CSV"),
-          dl_button(ns("dl_xlsx"), "Report XLSX"),
-          dl_button(ns("dl_raw_csv"), "Raw Data CSV"),
-          dl_button(ns("dl_raw_xlsx"), "Raw Data XLSX"),
-          dl_button(ns("dl_all_xlsx"), "All Limits XLSX"),
-          dl_button(ns("dl_all_csv"), "All Limits CSV")
-        ),
-      br3(),
-      gt::gt_output(ns("table"))
-      )
-  ))
+              tagList(
+                shinyWidgets::dropdownButton(status = "primary",
+                                             label = "Download",
+                                             # size = "sm",
+                                             inline = TRUE,
+                                             circle = FALSE,
+                                             icon = icon("download"),
+                                             dl_button(ns("dl_html"), "Report HTML"),
+                                             dl_button(ns("dl_pdf"), "Report PDF"),
+                                             dl_button(ns("dl_csv"), "Report CSV"),
+                                             dl_button(ns("dl_xlsx"), "Report XLSX"),
+                                             dl_button(ns("dl_raw_csv"), "Raw Data CSV"),
+                                             dl_button(ns("dl_raw_xlsx"), "Raw Data XLSX"),
+                                             dl_button(ns("dl_all_xlsx"), "All Limits XLSX"),
+                                             dl_button(ns("dl_all_csv"), "All Limits CSV")
+                ),
+                br3(),
+                gt::gt_output(ns("table"))
+              )
+    ))
 }
 
 # Module Server
@@ -91,7 +91,7 @@ mod_data_server <- function(input, output, session) {
         }
       })
     }
-
+    
     for(i in rv$cvalue_inactive) {
       shinyjs::hide(i)
     }
@@ -99,7 +99,7 @@ mod_data_server <- function(input, output, session) {
       shinyjs::show(i)
     }
   })
-
+  
   output$ui_sigfig <- renderUI({
     req(wqg_data_evaluate())
     x <- wqg_data_evaluate()
@@ -116,7 +116,7 @@ mod_data_server <- function(input, output, session) {
         ))
     }
   })
-
+  
   cvalues <- reactive({
     x <- rv$cvalue_codes
     x <- set_names(lapply(x, function(y) {
@@ -135,10 +135,10 @@ mod_data_server <- function(input, output, session) {
     req(input$variable)
     req(input$use)
     x <- wqg_filter(input$variable, 
-               input$use, input$media, rv$limits)
+                    input$use, input$media, rv$limits)
     x
   })
-
+  
   wqg_data_evaluate <- reactive({
     req(wqg_data_raw())
     if(any(is.na(clean_cvalues()))) return()
@@ -147,7 +147,7 @@ mod_data_server <- function(input, output, session) {
     x %>%
       wqg_evaluate(cvalues = clean_cvalues())
   })
-
+  
   wqg_data_report <- reactive({
     req(wqg_data_evaluate())
     x <-  wqg_data_evaluate()
@@ -159,13 +159,13 @@ mod_data_server <- function(input, output, session) {
     x %>%
       wqg_clean(sigfig)
   })
-
+  
   combinations <- reactive({
     req(input$variable)
     req(input$use)
     get_combinations(input$variable, input$use, rv$limits)
   })
-
+  
   rv <- reactiveValues(
     path = "inst/extdata/",
     cvalue_active = NULL,
@@ -177,7 +177,7 @@ mod_data_server <- function(input, output, session) {
     filtered = NULL,
     lookup_vars = NULL
   )
-
+  
   observe({
     req(input$variable)
     if(is.null(input$use) | input$variable == "") {
@@ -191,7 +191,7 @@ mod_data_server <- function(input, output, session) {
       rv$report <- wqg_data_report()
     }
   })
-
+  
   observe({
     req(wqg_data_raw())
     data <- wqg_data_raw()
@@ -232,24 +232,24 @@ mod_data_server <- function(input, output, session) {
       shinyjs::hidden(numeric_inputs(rv$cvalue_codes, ns))
     }
   })
-
+  
   output$ui_use <- renderUI({
     req(input$variable)
     uses <- variable_use(input$variable, rv$limits)
     select_input_x(ns("use"),
-      label = "Select Value(s)",
-      choices = uses,
-      selected = "")
+                   label = "Select Value(s)",
+                   choices = uses,
+                   selected = "")
   })
-
+  
   output$ui_media <- renderUI({
     x <- combinations()$media
     checkboxGroupInput(ns("media"), "Select Media",
-      choices = x,
-      selected = x,
-      inline = TRUE)
+                       choices = x,
+                       selected = x,
+                       inline = TRUE)
   })
-
+  
   output$table <- gt::render_gt({
     req(wqg_data_report())
     x <- wqg_data_report()
@@ -258,43 +258,57 @@ mod_data_server <- function(input, output, session) {
     cvalues <- report_cvalues(cvalues(), rv$cvalue_active)
     gt_table(x, cvalues)
   })
-
+  
   output$dl_raw_csv <- downloadHandler(
     filename = function() "wqg_data_raw.csv",
     content = function(file) {
-      readr::write_csv(rv$raw, file)
+      readr::write_csv(
+        # Remove lookup list column as it doesn't write nicely to a flat file
+        dplyr::select(rv$raw, -dplyr::any_of("lookup")),
+        file
+      )
     })
-
+  
   output$dl_raw_xlsx <- downloadHandler(
     filename = function() "wqg_data_raw.xlsx",
     content = function(file) {
-      openxlsx::write.xlsx(rv$raw, file)
+      openxlsx2::write_xlsx(
+        dplyr::select(rv$raw, -dplyr::any_of("lookup")),
+        file
+      )
     })
-
+  
   output$dl_csv <- downloadHandler(
     filename = function() "wqg_data_report.csv",
     content = function(file) {
       readr::write_csv(rv$report, file)
     })
-
+  
   output$dl_xlsx <- downloadHandler(
     filename = function() "wqg_data_report.xlsx",
     content = function(file) {
-      openxlsx::write.xlsx(rv$report, file)
+      openxlsx2::write_xlsx(rv$report, file)
     })
   
   output$dl_all_xlsx <- downloadHandler(
     filename = function() "all_wqgs.xlsx",
     content = function(file) {
-      openxlsx::write.xlsx(rv$iimits, file)
+      openxlsx2::write_xlsx(
+        # Remove lookup list column as it doesn't write nicely to a flat file
+        dplyr::select(rv$limits, -dplyr::any_of("lookup")),
+        file
+      )
     })
   
   output$dl_all_csv <- downloadHandler(
     filename = function() "all_wqgs.csv",
     content = function(file) {
-      readr::write_csv(rv$limits, file)
+      readr::write_csv(
+        dplyr::select(rv$limits, -dplyr::any_of("lookup")),
+        file
+      )
     })
-
+  
   output$dl_html <- downloadHandler(
     filename = "wqg_report.html",
     content = function(file) {
@@ -304,7 +318,7 @@ mod_data_server <- function(input, output, session) {
       gt::gtsave(gt, file)
     }
   )
-
+  
   output$dl_pdf <- downloadHandler(
     filename = "wqg_report.pdf",
     content = function(file) {
@@ -314,7 +328,7 @@ mod_data_server <- function(input, output, session) {
       gt::gtsave(gt, file, zoom = 1.3, expand = 5)
     }
   )
-
+  
   output$dl_rmd <- downloadHandler(
     filename = "wqg_report.Rmd",
     content = function(file) {

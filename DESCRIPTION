@@ -22,7 +22,7 @@ Imports:
     htmltools,
     waiter,
     readr,
-    openxlsx,
+    openxlsx2,
     dplyr,
     shinyWidgets,
     gt,
