@@ -174,3 +174,19 @@ css_body <- function (font_family = "Myriad-Pro, Calibri, Arial, 'sans serif'",
                       text_color = "#494949") {
   css_add(paste0("\nbody, label, input, button, select {{ \n  font-family: ", font_family, ";\n  font-weight: ", font_weight, ";\n  color: ", text_color, ";\n    font-size: ", font_size_body, ";\n}}\nlabel {{\n    font-size: ", font_size_label, ";\n}}\nh1, h2, h3, h4 {{font-weight: ", font_weight, ";}}\nbutton {{background-color: #999999;}}\n"))
 }
+
+setup_chromote <- function() {
+  # This is a workaround to ensure that the chromote package is working on shinyapps.io
+  # It is needed to enable webshot2, the package that produces the pdf output 
+  # of the guideline report
+  if (identical(Sys.getenv("R_CONFIG_ACTIVE"), "shinyapps")) {
+    chromote::set_default_chromote_object(
+      chromote::Chromote$new(chromote::Chrome$new(
+        args = c("--disable-gpu", 
+                 "--no-sandbox", 
+                 "--disable-dev-shm-usage", # required bc the target easily crashes
+                 c("--force-color-profile", "srgb"))
+      ))
+    )
+  }
+}

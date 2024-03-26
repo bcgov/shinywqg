@@ -30,7 +30,8 @@ Imports:
     bcdata,
     rlang,
     stringr,
-    webshot2
+    webshot2,
+    pagedown
 Suggests: 
     testthat (>= 2.1.0),
     knitr,
