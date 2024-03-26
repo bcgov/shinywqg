@@ -6,7 +6,7 @@
 \alias{shinywqg-package}
 \title{shinywqg: Water Quality Guideline Shiny App}
 \description{
-\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
 User interface to calculate water quality guidelines.
 }
