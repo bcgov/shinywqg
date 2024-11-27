@@ -44,5 +44,4 @@ LazyData: true
 RoxygenNote: 7.3.1
 RdMacros: lifecycle
 Language: en-US
-VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
