@@ -29,7 +29,7 @@
 		v. Change Dissolved Organic Carbon to 2
 			1) Should cause guidelines changes
 		vi. Change Significant Figures to 2
-			1) Should drop decimal points (ie only whole numbers left)
+			1) Should update values so only two significant figures are showing on calculated values
 		vii. Change significant figures to 5
 			1) Should increase values to multiple decimal points 
 		viii. Tick off water media
