@@ -18,7 +18,7 @@ Nitrate Nitrite,EMS_0109,mg/L
 Nitrite Dissolved Total,EMS_0111,mg/L
 Nitrogen Total,EMS_0114,mg/L
 Biochemical Oxygen Demand,EMS_0115,mg/L
-Salinity,EMS_0130,ng/L
+Salinity,EMS_0130,ppt
 Chlorophyll A,EMS_0143,mg/L
 Escherichia coli,EMS_0147,CFU/100mL
 Enterococci,EMS_0148,CFU/100mL
