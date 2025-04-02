@@ -87,3 +87,4 @@ Turbidity - Field,EMS_TURF,NTU
 Uranium Dissolved,EMS_U__D,ug/L
 Vanadium Total,EMS_V__T,mg/L
 Zinc Dissolved,EMS_ZN_D,ug/L
+Total Mercury,EMS_HG_T,ug/L
