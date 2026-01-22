@@ -1,5 +1,9 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# shinywqg 0.1.2 (2025-04-02)
+
+- Added total mercury (EMS_HG_T) to codes list to fix bug in Mercury look up.
+
 # shinywqg 0.1.1 (2025-01-20)
 
 - Updated internal data.
