@@ -79,11 +79,21 @@ wqg_clean <- function(data, sigfig) {
   data %>%
     dplyr::mutate(Notes = gsub("NA", "", paste(.data$ConditionNotes, .data$MethodNotes))) %>%
     dplyr::mutate(Notes = dplyr::if_else(.data$Notes == " ", NA_character_, .data$Notes)) %>%
-    dplyr::select("Variable", "Component", Value = "Use", 
-                  "Media", "Type", `Predicted Effect Level` = "PredictedEffectLevel",
-      "Status", `WQG Narrative` = "NarrativeWQG", "Notes",
-      "Guideline", "Reference", "Reference Link", 
-      "Overview Report Link", "Technical Document Link")
+    dplyr::select(
+      "Variable", 
+      "Component", 
+      Value = "Use", 
+      "Media", 
+      "Type", 
+      `Predicted Effect Level` = "PredictedEffectLevel",
+      "Status", 
+      `WQG Narrative` = "NarrativeWQG", "Notes",
+      "Guideline", 
+      "Reference", 
+      "Reference Link", 
+      "Overview Report Link", 
+      "Technical Document Link"
+    )
 }
 
 add_lookup <- function(x) {
@@ -150,9 +160,11 @@ wqg_filter_variable <- function(variable, x = limits) {
 
 lookup_choices <- function(data, cvalue_codes){
   drop_choices <- dplyr::tibble()
-  drop_choices %<>% 
+  drop_choices <- 
+    drop_choices %>% 
     dplyr::bind_rows(data$lookup)
-  drop_choices %<>%
+  drop_choices <- 
+    drop_choices %>%
     dplyr::select(dplyr::contains("EMS_")) %>% 
     dplyr::distinct() 
   cvals_active <- colnames(drop_choices)
