@@ -1,12 +1,37 @@
 library(readr)
 library(dplyr)
 library(stringr)
-library(magrittr)
 
+## Run to see if new lookup tables been added 
+reg_pat <- "^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$"
+limits[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, reg_pat),] |>
+  select(Variable, Type, Limit)
+
+## Define tables to be downloaded for internal data storage
+## When new tables added to limits they need to be added here
 hash_limits <- "85d3990a-ec0a-4436-8ebd-150de3ba0747"
 
 hash_cu_acute <- "23ada5c3-67a6-4703-9369-c8d690b092e1"
 hash_cu_chronic <- "a35c7d13-76dd-4c23-aab8-7b32b0310e2f"
+
+hash_ni_acute <- "065581bf-fd52-4aad-aa82-fc510c074cab"
+hash_ni_chronic <- "d25b348f-a8da-41fc-8141-bd29df155e9c"
+
+hash_nh3_acute <- "6b1cc604-18d1-426c-9d9a-c31b5ba15a16"
+hash_nh3_chronic <- "2396b78b-8782-444d-bade-4487b75b789c"
+
+## Create a list of names of tables, used to let users know which table was pulled from Internal
+internal_tbl_names <- list()
+
+internal_tbl_names[[hash_limits]] <- "guidelines"
+internal_tbl_names[[hash_cu_acute]] <- "acute copper guidelines"
+internal_tbl_names[[hash_cu_chronic]] <- "chronic copper guidelines"
+internal_tbl_names[[hash_ni_acute]] <- "acute nickel guidelines"
+internal_tbl_names[[hash_ni_chronic]] <- "chronic nickel guidelines"
+internal_tbl_names[[hash_nh3_acute]] <- "acute ammonia guidelines"
+internal_tbl_names[[hash_nh3_chronic]] <- "chronic ammonia guidelines"
+
+internal_tbl_names
 
 limits <-  bcdata::bcdc_get_data(
   record = hash_limits,
@@ -15,26 +40,9 @@ limits <-  bcdata::bcdc_get_data(
 
 codes <- read_csv("data-raw/codes.csv")
 
-#limits <- readr::read_csv("https://raw.githubusercontent.com/bcgov/wqg_data/master/all_wqgs.csv")
 
-## modify limits to be what databc should be
-## switch off code to read from databc therefore uses internals.
-## once working then update databc with new limits and lookups.
-# limits$Units[limits$Variable == "Copper" & limits$Component == "Dissolved"] <- "ug/L"
-# limits$Direction[limits$Variable == "Copper" & limits$Component == "Dissolved"] <- "Upper Limit"
-# limits$Limit[limits$Variable == "Copper" &
-#           limits$Use == "Aquatic Life - Freshwater" &
-#           limits$Media == "Water" &
-#           limits$Type == "Short-term acute"] <- hash_acute
-# limits$Limit[limits$Variable == "Copper" &
-#           limits$Use == "Aquatic Life - Freshwater" &
-#           limits$Media == "Water" &
-#           limits$Type == "Long-term chronic"] <- hash_chronic
-# limits$LimitNotes[limits$Variable == "Copper" & limits$Component == "Dissolved"] <- NA
-
+## Create list of lookup table data
 internal_tables <- list(limits)
-#### need to fix hash to be correct - missing last 2 digits 
-#names(internal_tables) <- "85d3990a-ec0a-4436-8ebd-150de3ba07"
 names(internal_tables) <- hash_limits
 
 lookup_hash <- c(hash_cu_chronic, hash_cu_acute)
@@ -44,18 +52,12 @@ for (file in lookup_hash) {
   internal_tables[[paste0(file)]] <- lookup
 }
 
-internal_tbl_names <- list(
-  hash_limits = "guidelines",
-  hash_cu_acute = "acute copper guidelines",
-  hash_cu_chronic = "chronic copper guidelines"
-)
-
 missing_help <- "There are two reasons why guideline values may be missing:
                 1. A condition was not met;
                 2. There is no available equation for that variable/use/term combination."
 
 empty_raw <- limits[0, ]
-empty_evaluate <- limits %>%
+empty_evaluate <- limits |>
   mutate(ConditionPass = NA, Guideline = NA)
 empty_evaluate <- empty_evaluate[0, ]
 
@@ -63,7 +65,7 @@ empty_report <- empty_evaluate[c("Variable", "Use", "Media", "PredictedEffectLev
                                  "Type", "Statistic", "Guideline", "Reference",
                                  "Reference Link", "Overview Report Link",
                                  "Technical Document Link")]
-empty_report <- empty_report %>% rename(`Effect Level` = PredictedEffectLevel)
+empty_report <- empty_report |> rename(`Effect Level` = PredictedEffectLevel)
 
 usethis::use_data(
   limits, internal_tables, internal_tbl_names, codes, empty_raw, empty_report, 
