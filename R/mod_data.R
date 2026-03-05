@@ -120,7 +120,7 @@ mod_data_server <- function(input, output, session) {
         tagList(
           tags$label("Guideline Significant Figures"),
           help_text("Only applies to guidelines calculated from equations"),
-          numericInput(ns("sigfig"), label = NULL, value = 3)
+          numericInput(ns("sigfig"), label = NULL, value = 3, min = 0)
         ))
     }
   })
@@ -283,7 +283,6 @@ mod_data_server <- function(input, output, session) {
     if (input$variable %in% rv$lookup_vars){
 
       choices_dropdown <- processed_info()
-      
       
       shinyjs::hidden(dropdown_inputs(rv$cvalue_codes, ns, choices_dropdown))
     } else {
