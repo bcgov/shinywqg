@@ -52,9 +52,6 @@ get_links <- function(x){
     })
     
     links <- paste(links, collapse = "; ")
-    # if(links == ""){
-    #   links <- NA
-    # }
     links
   })
 }
