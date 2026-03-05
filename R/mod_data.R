@@ -250,9 +250,9 @@ mod_data_server <- function(input, output, session) {
       
       list_lookup_tbls <- 
         rv$limits %>% 
-        dplyr::filter(Variable == input$variable) %>% 
-        dplyr::filter(stringr::str_detect(Limit,"^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$")) %>% 
-        dplyr::pull(lookup)
+        dplyr::filter(.data$Variable == input$variable) %>% 
+        dplyr::filter(stringr::str_detect(.data$Limit,"^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$")) %>% 
+        dplyr::pull(.data$lookup)
       
       is_lookup_missing <- any(vapply(list_lookup_tbls, is.null, logical(1)))
       if (is_lookup_missing) {
