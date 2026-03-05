@@ -120,7 +120,7 @@ mod_data_server <- function(input, output, session) {
         tagList(
           tags$label("Guideline Significant Figures"),
           help_text("Only applies to guidelines calculated from equations"),
-          numericInput(ns("sigfig"), label = NULL, value = 3, min = 0)
+          numericInput(ns("sigfig"), label = NULL, value = 3, min = 0, max = 10)
         ))
     }
   })
