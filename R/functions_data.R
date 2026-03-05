@@ -124,8 +124,7 @@ add_lookupnotes <- function(x){
 
 get_note <- function(lookup){
   if (!is.null(lookup[[1]])){
-    LimitNote <- "Guideline not available for this pH, Hardness and 
-    Dissolved Organic Carbon combination"
+    LimitNote <- "Guideline not available for this compound so using look up table"
   } else {
     return(NA)
   }
