@@ -20,6 +20,9 @@ hash_ni_chronic <- "d25b348f-a8da-41fc-8141-bd29df155e9c"
 hash_nh3_acute <- "6b1cc604-18d1-426c-9d9a-c31b5ba15a16"
 hash_nh3_chronic <- "2396b78b-8782-444d-bade-4487b75b789c"
 
+# No lookup for Manganese acute, only for chronic
+hash_mn_chronic <- "f9edae7a-d2fb-4324-8a3f-6f4ba718ccc1"
+
 ## Create a list of names of tables, used to let users know which table was pulled from Internal
 internal_tbl_names <- list()
 
@@ -30,6 +33,7 @@ internal_tbl_names[[hash_ni_acute]] <- "acute nickel guidelines"
 internal_tbl_names[[hash_ni_chronic]] <- "chronic nickel guidelines"
 internal_tbl_names[[hash_nh3_acute]] <- "acute ammonia guidelines"
 internal_tbl_names[[hash_nh3_chronic]] <- "chronic ammonia guidelines"
+internal_tbl_names[[hash_mn_chronic ]] <- "chronic manganese guidelines"
 
 internal_tbl_names
 
@@ -45,9 +49,7 @@ codes <- read_csv("data-raw/codes.csv")
 internal_tables <- list(limits)
 names(internal_tables) <- hash_limits
 
-lookup_hash <- c(hash_cu_chronic, hash_cu_acute)
-
-for (file in lookup_hash) {
+for (file in names(internal_tbl_names)) {
   lookup <- bcdata::bcdc_get_data(record = file)
   internal_tables[[paste0(file)]] <- lookup
 }
