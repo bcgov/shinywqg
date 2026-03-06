@@ -4,6 +4,9 @@ test_condition <- function(x, cvalues) {
   # pass condition for look-up values
   if (!stringr::str_detect(x, "[>|<|=]"))
     return(TRUE)
+  
+  cvalues <- try(lapply(cvalues, as.numeric), silent = TRUE)
+  
   x <- try(eval(parse(text = x), envir = cvalues), silent = TRUE)
   if(!is.logical(x))
     return (FALSE)
@@ -13,10 +16,12 @@ test_condition <- function(x, cvalues) {
 }
 
 calc_limit <- function(x, cvalues) {
-  x <- try(eval(parse(text = as.character(x)), envir = cvalues), silent = TRUE)
-  if (!is.numeric(x))
+  cvalues <- try(lapply(cvalues, as.numeric), silent = TRUE)
+  
+  y <- try(eval(parse(text = as.character(x)), envir = cvalues), silent = TRUE)
+  if (!is.numeric(y))
     return (NA)
-  x
+  y
 }
 
 lookups <- function(lookup_table, cvalues){
