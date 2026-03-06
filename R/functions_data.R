@@ -79,11 +79,21 @@ wqg_clean <- function(data, sigfig) {
   data %>%
     dplyr::mutate(Notes = gsub("NA", "", paste(.data$ConditionNotes, .data$MethodNotes))) %>%
     dplyr::mutate(Notes = dplyr::if_else(.data$Notes == " ", NA_character_, .data$Notes)) %>%
-    dplyr::select("Variable", "Component", Value = "Use", 
-                  "Media", "Type", `Predicted Effect Level` = "PredictedEffectLevel",
-      "Status", `WQG Narrative` = "NarrativeWQG", "Notes",
-      "Guideline", "Reference", "Reference Link", 
-      "Overview Report Link", "Technical Document Link")
+    dplyr::select(
+      "Variable", 
+      "Component", 
+      Value = "Use", 
+      "Media", 
+      "Type", 
+      `Predicted Effect Level` = "PredictedEffectLevel",
+      "Status", 
+      `WQG Narrative` = "NarrativeWQG", "Notes",
+      "Guideline", 
+      "Reference", 
+      "Reference Link", 
+      "Overview Report Link", 
+      "Technical Document Link"
+    )
 }
 
 add_lookup <- function(x) {
@@ -114,34 +124,28 @@ add_lookupnotes <- function(x){
 
 get_note <- function(lookup){
   if (!is.null(lookup[[1]])){
-    LimitNote <- "Guideline not available for this pH, Hardness and 
-    Dissolved Organic Carbon combination"
+    LimitNote <- "Guideline not available for this compound so using look up table"
   } else {
     return(NA)
   }
 }
 
-process_lookups <- function(limits){
+process_lookups <- function(limits, variable){
   # Example of how to access: limits$lookup[280][[1]]["EMS_0004"]
+  reg_pat <- "^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$"
+  
   limits$lookup <- list(rep(NULL, nrow(limits)))
-  limits[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$"),] %<>% add_lookup()
+  limits <- limits[!is.na(limits$Limit) & limits$Variable == variable & stringr::str_detect(limits$Limit, reg_pat),] %>% 
+    add_lookup()
   limits <- add_lookup_condition(limits)
   limits <- add_lookupnotes(limits)
-  limits
+  limits 
 }
 
 
 lookup_variables <- function(limits){
-  variables <- unlist(lapply(1:nrow(limits), function(i){
-  row <- limits[i,]
-  if (!is.na(row$LookupNotes)){
-    return(row$Variable)
-  } else{
-    return(NA_character_)
-  }
-}))
-  variables_clean <- unique(variables)
-  variables_clean[!is.na(variables_clean)]
+  lookup_vars <- limits[!is.na(limits$Limit) & stringr::str_detect(limits$Limit, "^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$"),]$Variable
+  unique(lookup_vars)
 }
 
 wqg_filter_variable <- function(variable, x = limits) {
@@ -150,9 +154,11 @@ wqg_filter_variable <- function(variable, x = limits) {
 
 lookup_choices <- function(data, cvalue_codes){
   drop_choices <- dplyr::tibble()
-  drop_choices %<>% 
+  drop_choices <- 
+    drop_choices %>% 
     dplyr::bind_rows(data$lookup)
-  drop_choices %<>%
+  drop_choices <- 
+    drop_choices %>%
     dplyr::select(dplyr::contains("EMS_")) %>% 
     dplyr::distinct() 
   cvals_active <- colnames(drop_choices)
@@ -178,9 +184,8 @@ get_data <- function(file_name, resource = NULL){
     waiter::waiter_update(
       html = waiter_html(
         paste(
-          "Issue with Guidelines from BC Data Catalogue. Using internal", 
-          tbl_name, 
-          "which may not be most recent version."
+          "There was an issue with downlaoding the", tbl_name, "from BC Data Catalogue.", 
+          "Using the internal version which may not be most recent version."
         )
       )
     )
@@ -188,5 +193,11 @@ get_data <- function(file_name, resource = NULL){
   } 
   
   data
+}
+
+prep_lookup <- function(x) {
+  x$lookup <- list(NULL)
+  x$LookupNotes <- NA
+  x
 }
 

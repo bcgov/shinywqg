@@ -76,7 +76,8 @@ mod_data_server <- function(input, output, session) {
     } else {
       limits <- limits
     }
-    limits <- process_lookups(limits)
+    limits <- prep_lookup(limits)
+    
     cvalue_codes <- unique(c(extract_codes(limits$Limit),
                              extract_codes(limits$Condition))) %>%
       setdiff("EMS_1107")
@@ -84,6 +85,8 @@ mod_data_server <- function(input, output, session) {
     rv$cvalue_codes <- cvalue_codes
     
     rv$limits <- limits
+    rv$chemical_list <- sort(unique(limits$Variable))
+    
     waiter::waiter_hide()
   })
   
@@ -117,7 +120,7 @@ mod_data_server <- function(input, output, session) {
         tagList(
           tags$label("Guideline Significant Figures"),
           help_text("Only applies to guidelines calculated from equations"),
-          numericInput(ns("sigfig"), label = NULL, value = 3)
+          numericInput(ns("sigfig"), label = NULL, value = 3, min = 0, max = 10)
         ))
     }
   })
@@ -155,7 +158,7 @@ mod_data_server <- function(input, output, session) {
   
   wqg_data_report <- reactive({
     req(wqg_data_evaluate())
-    x <-  wqg_data_evaluate()
+     x <- wqg_data_evaluate()
     if(nrow(x) == 0) return()
     sigfig <- 3
     if(!is.null(input$sigfig)){
@@ -180,7 +183,8 @@ mod_data_server <- function(input, output, session) {
     limits = NULL,
     cvalue_codes = NULL,
     filtered = NULL,
-    lookup_vars = NULL
+    lookup_vars = NULL,
+    chemical_list = NULL
   )
   
   observe({
@@ -208,7 +212,7 @@ mod_data_server <- function(input, output, session) {
   output$ui_variable <- renderUI({
     selectizeInput(ns("variable"),
                    label = "Select Variable",
-                   choices = c(sort(unique(rv$limits$Variable)), ""),
+                   choices = c(rv$chemical_list, ""),
                    selected = "",
                    multiple = FALSE)
   })
@@ -223,16 +227,64 @@ mod_data_server <- function(input, output, session) {
     x
   })
   
-  observe({
+  needs_lookup <- reactive({
     req(input$variable)
-    filtered_data <-   wqg_data_variable()
-    rv$filtered <- lookup_choices(filtered_data, rv$cvalue_codes)
+    any(input$variable %in% rv$lookup_vars)
+  })
+  
+  processed_info <- reactive({
+    req(input$variable)
+    
+    if (needs_lookup()) {
+      filtered_data <- wqg_data_variable()
+      lookup_choices(filtered_data, rv$cvalue_codes)
+    } 
+  })
+  
+  observeEvent(input$variable, {
+    # This adds the lookups when a lookup chemical is selected
+    # Only adds the lookup for the selected chemical
+    # Checks if a lookup is present first, only added the first time it is selected
+    
+    if (input$variable %in% rv$lookup_vars) {
+      
+      list_lookup_tbls <- 
+        rv$limits %>% 
+        dplyr::filter(.data$Variable == input$variable) %>% 
+        dplyr::filter(stringr::str_detect(.data$Limit,"^[:alnum:]{8}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{4}-[:alnum:]{12}$")) %>% 
+        dplyr::pull(.data$lookup)
+      
+      is_lookup_missing <- any(vapply(list_lookup_tbls, is.null, logical(1)))
+      if (is_lookup_missing) {
+        # only add lookup table if not present already
+        waiter::waiter_show(
+          html = tagList(
+            waiter::spin_chasing_dots(),   
+            br2(),
+            h3(paste("Please wait downloading lookup tables for", input$variable))
+          ),
+          color = "rgba(51, 62, 72, 0.8)"
+        )
+        
+         limit_lookup_rows <- process_lookups(rv$limits, input$variable)
+        
+         rv$limits <- 
+           dplyr::anti_join(rv$limits, limit_lookup_rows, by = "UniqueID") %>% 
+           dplyr::bind_rows(limit_lookup_rows) 
+         
+        waiter::waiter_hide()
+      }
+    }
   })
   
   output$ui_cvalue <- renderUI({
     req(input$variable)
-    if(input$variable %in% rv$lookup_vars){
-      shinyjs::hidden(dropdown_inputs(rv$cvalue_codes, ns, rv$filtered))
+    
+    if (input$variable %in% rv$lookup_vars){
+
+      choices_dropdown <- processed_info()
+      
+      shinyjs::hidden(dropdown_inputs(rv$cvalue_codes, ns, choices_dropdown))
     } else {
       shinyjs::hidden(numeric_inputs(rv$cvalue_codes, ns))
     }
