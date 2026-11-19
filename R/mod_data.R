@@ -60,8 +60,9 @@ mod_data_server <- function(input, output, session) {
     ## - uncomment the third line (limits <- readr::read_csv(...))
     ## - run pkgload::load_all(); run_wqg_app()
     limit_resource <- "6f32a85b-a3d9-44c3-9a14-15175eba25b6"
+    
     limits <- get_data(file_name, resource = limit_resource)
-    # limits <- readr::read_csv("all-wqgs-2.csv", show_col_types = FALSE)
+     #limits <- readr::read_csv("all-wqgs-2.csv", show_col_types = FALSE)
     
     limits <- try(process_limits(limits))
     if (is_try_error(limits)) {

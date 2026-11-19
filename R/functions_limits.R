@@ -33,16 +33,24 @@ lookups <- function(lookup_table, cvalues){
   guideline
 }
 
-evaluate_guideline <- function(limit, lookup, cvalues) {
+evaluate_guideline <- function(limit, lookup, cvalues, variable) {
+  
   ### deals with one limit at a time
   if(!length(limit)) 
     return()
   # if lookup table present do lookup otherwise calc as per normal
-  if(!is.null(lookup[[1]])){
-      if (!length(cvalues)) {
-        return(NA_real_)
-      }
-    return(lookups(lookup[[1]], cvalues))
+  if (!is.null(lookup[[1]])){
+    if (!length(cvalues)) {
+      return(NA_real_)
+    }
+    # Check if table has the substance column
+    if ("Substance" %in% colnames(lookup[[1]])) {
+      # If it does then filter to just those rows 
+      lookup[[1]] <- dplyr::filter(lookup[[1]], .data$Substance == variable)
+      return(lookups(lookup[[1]], cvalues))
+    } else {
+      return(lookups(lookup[[1]], cvalues))
+    }
   }
   calc_limit(limit, cvalues)
 }
