@@ -51,11 +51,12 @@ wqg_filter <- function(variable, use, media, x = limits) {
 }
 
 wqg_evaluate <- function(x, cvalues) {
+  selected_var <- unique(x$Variable)
+  
   x$ConditionPass <- vapply(x$Condition, test_condition, cvalues, FUN.VALUE = logical(1) , USE.NAMES = FALSE)
   ### assumes that never a LimitNote AND Limit
   x$Guideline <- unlist(lapply(1:nrow(x), function(y) {
-    evaluate_guideline(x$Limit[y], x$lookup[y],
-      cvalues)
+    evaluate_guideline(x$Limit[y], x$lookup[y], cvalues, selected_var)
   }))
   x
 }
