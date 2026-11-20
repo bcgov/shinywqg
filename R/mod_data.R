@@ -78,9 +78,8 @@ mod_data_server <- function(input, output, session) {
     }
     limits <- prep_lookup(limits)
     
-    cvalue_codes <- unique(c(extract_codes(limits$Limit),
-                             extract_codes(limits$Condition))) %>%
-      setdiff("EMS_1107")
+    # drop Hardness Dissolved (EMS_1107) so Hardness has a single input box which is Hardness Total (EMS_0107);
+    cvalue_codes <- codes$EMS_Code %>% setdiff("EMS_1107")
     
     rv$cvalue_codes <- cvalue_codes
     
