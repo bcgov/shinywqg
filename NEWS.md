@@ -2,52 +2,9 @@
 
 # shinywqg 0.1.4 (2026-11-24)
 
-- Merge pull request #99 from poissonconsulting/numeric-input.
-
-- Merge pull request #100 from poissonconsulting/update-data-local.
-
-- Only limits table is downloaded at the launch of the app (#98) (#98).
-
-- Merge pull request #97 from poissonconsulting/checks-march.
-
-- Merge pull request #96 from poissonconsulting/checks-jan.
-
-- Merge pull request #95 from poissonconsulting/checks-dec.
-
-- Merge pull request #91 from poissonconsulting/main.
-
-- Remove limits csv file.
-
-- Don't need to rename cu lookup columns since updated in BCDC.
-
-- Rebuild internal data.
-
-- Merge pull request #90 from bcgov/fix-xls-download.
-
-- Merge pull request #89 from bcgov/remove-wqbc.
-
-- Merge pull request #86 from poissonconsulting/data_pull_correction.
-
-- Merge pull request #83 from poissonconsulting/framework_cleanup.
-
-- Merge pull request #71 from poissonconsulting/restructure.
-
-- Merge pull request #70 from poissonconsulting/copper_lookup.
-
-- Merge pull request #69 from poissonconsulting/restructure.
-
-- Merge pull request #61 from poissonconsulting/master.
-
-- Merge pull request #60 from poissonconsulting/master.
-
-- Merge pull request #58 from poissonconsulting/rbuildignorecomplianceyaml.
-
-- Merge pull request #57 from poissonconsulting/master.
-
-- Merge pull request #56 from bcgov/repo-mountie/add-compliance.
-
-- Merge branch 'master' of github.com:poissonconsulting/shinywqg.
-
+- Added support for lookup tables that contain multiple substances, such as the chlorophenols lookup table (#102).
+- Input boxes are now created for all EMS codes in the codes table rather than only those referenced in the Limit and Condition columns (#103).
+- Added app version to About page (#103)
 
 # shinywqg 0.1.3 (2026-03-06)
 
