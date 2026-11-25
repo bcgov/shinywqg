@@ -23,6 +23,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Pearson Ayla \email{ayla@poissonconsulting.ca} (\href{https://orcid.org/0000-0001-7388-1222}{ORCID})
   \item Sebastian Dalgarno \email{seb@poissonconsulting.ca} (\href{https://orcid.org/0000-0002-3658-4517}{ORCID})
 }
 
